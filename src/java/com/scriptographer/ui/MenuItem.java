@@ -156,6 +156,8 @@ public class MenuItem extends NativeObject{
 
 	public static void removeAll() {
 		// As remove() modifies the map, using an iterator is not possible here:
+		if (MenuItem.items == null)
+			return;
 		Object[] items = MenuItem.items.values().toArray();
 		for (int i = 0; i < items.length; i++) {
 			((MenuItem) items[i]).remove();

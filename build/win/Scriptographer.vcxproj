@@ -94,6 +94,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CCx64 Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CS4 Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -311,8 +312,8 @@
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='CS5 Release|Win32'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='CS6 Debug|Win32'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='CS6 Release|Win32'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='CC Debug|Win32'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='CCx64 Debug|x64'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='CC Debug|Win32'">C:\Program Files\Java\jdk1.7.0_45\include/win32;C:\Program Files\Java\jdk1.7.0_45\include;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='CCx64 Debug|x64'">C:\Program Files\Java\jdk1.7.0_45\include/win32;C:\Program Files\Java\jdk1.7.0_45\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">C:\Program Files\Java\jdk1.7.0_40\include/win32;C:\Program Files\Java\jdk1.7.0_40\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='CS2 Release|Win32'">
@@ -957,8 +958,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Button.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1010,7 +1009,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Item.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1062,7 +1060,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_TextItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1114,7 +1111,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_TextValueItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1166,7 +1162,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ValueItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1218,7 +1213,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_TextEditItem.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">true</ExcludedFromBuild>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
@@ -1270,7 +1264,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='CC Release|Win32'">$(IntDir)%(Filename)3.xdc</XMLDocumentationFileName>
     </ClCompile>
-
     <ClCompile Include="..\..\src\native\jni\registerNatives.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='CS Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>

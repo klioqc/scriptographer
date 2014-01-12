@@ -263,7 +263,7 @@ public abstract class Dialog extends Component {
 			
 			
 			
-		//	nativeDestroy(handle);
+			nativeDestroy(handle);
 			dialogs.remove(this);
 			dialogsByName.remove(name);
 			handle = 0;

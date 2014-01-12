@@ -447,9 +447,9 @@ public class ScriptographerEngine {
 	public static void destroyAllDialogs(boolean ignoreKeepAlive, boolean force)
 	{
 		if (getIllustratorVersion() < 16)
-			com.scriptographer.adm.Dialog.destroyAll(false, false);
+			com.scriptographer.adm.Dialog.destroyAll(ignoreKeepAlive, force);
 		else
-			com.scriptographer.widget.Dialog.destroyAll(false, false);
+			com.scriptographer.widget.Dialog.destroyAll(ignoreKeepAlive, force);
 		
 		
 	}

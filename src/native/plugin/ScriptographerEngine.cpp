@@ -241,7 +241,7 @@ void ScriptographerEngine::init() {
     CreateJavaVMProc createJavaVM = NULL;
     GetDefaultJavaVMInitArgsProc getDefaultJavaVMInitArgs = NULL;
 #ifdef WIN_ENV
-	loadJavaVM("client", &createJavaVM, &getDefaultJavaVMInitArgs);
+	loadJavaVM("server", &createJavaVM, &getDefaultJavaVMInitArgs); //todo: server or client ?
 #else // !WIN_ENV
 	createJavaVM = JNI_CreateJavaVM;
 	getDefaultJavaVMInitArgs = JNI_GetDefaultJavaVMInitArgs;
@@ -304,7 +304,7 @@ void ScriptographerEngine::init() {
 
 	cls_Loader = env->FindClass("com/scriptographer/loader/Loader");
 	if (cls_Loader == NULL)
-		throw new StringException("Unable to load loader.jar. Make sure that the java folder was copied together with the Scriptographer plugin.");
+            		throw new StringException("Unable to load loader.jar. Make sure that the java folder was copied together with the Scriptographer plugin.");
 	mid_Loader_init = getStaticMethodID(env, cls_Loader, "init", "(Ljava/lang/String;)V");
 	mid_Loader_reload = getStaticMethodID(env, cls_Loader, "reload", "()Ljava/lang/String;");
 	mid_Loader_loadClass = getStaticMethodID(env, cls_Loader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");

@@ -63,6 +63,7 @@ protected:
 	bool m_supressDuplicateErrors;
 	unsigned long m_lastErrorTime;
 	AINotifierHandle m_appStartedNotifier;
+  AINotifierHandle m_appShutDownNotifier;
 	AINotifierHandle m_selectionChangedNotifier;
 	AINotifierHandle m_documentClosedNotifier;
 	AINotifierHandle m_afterUndoNotifier;
@@ -157,6 +158,8 @@ public:
 	}
 
 	ASErr onPostStartupPlugin();
+
+  ASErr onBeforeShutdownPlugin();
 
 	ASErr getFilterParameters(AIFilterMessage *message) {
 		return kUnhandledMsgErr;

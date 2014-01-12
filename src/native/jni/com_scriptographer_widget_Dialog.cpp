@@ -147,7 +147,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 	//if (error)
 	//	return error;
 
-	error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+	//error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
 
 	//::SetPropA(hDlg, "TPNL", this);
 	//fDefaultWindProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hDlg, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(EmptyPanelPlugin::NewWindowProc)));
@@ -247,7 +247,42 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 		AIErr error = kNoErr;
 		if(fPanel)
 		{
+      
+      AIPanelUserData uData;
+			
+			AIErr err = sAIPanel->GetUserData(fPanel, uData);
 
+			jobject obj = (jobject) uData;
+			gEngine->callOnDestroy(obj);
+			// Clear the handle:
+			gEngine->setIntField(env, obj,
+					gEngine->fid_ui_NativeObject_handle, 0);
+			env->DeleteGlobalRef(obj);
+
+
+    #ifdef WIN_ENV
+			
+			AIPanelPlatformWindow panelPlatfromWindow = NULL;
+			err = sAIPanel->GetPlatformWindow(fPanel, panelPlatfromWindow);
+
+			if(panelPlatfromWindow)
+			{
+				//RemovePropA(panelPlatfromWindow, "TPNL");
+        DialogDataMap::iterator it = dialogDataMap.find(panelPlatfromWindow);
+	      if (it != dialogDataMap.end()) {
+          SetWindowLongPtr(panelPlatfromWindow, GWLP_WNDPROC, (LONG_PTR)(it->second.defaultProc));
+          dialogDataMap.erase(it);
+        }
+        DestroyWindow(panelPlatfromWindow);
+			}
+		#endif
+/*
+			result = sAIPanel->Destroy(fPanel);
+			fPanel = NULL;
+		*/
+
+
+    
 			AIPanelFlyoutMenuRef fPanelFlyoutMenu;
 
 			sAIPanel->GetFlyoutMenu(fPanel, fPanelFlyoutMenu);
@@ -263,8 +298,11 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 
 		//TODO call back call on destoy - from win proc notifier!?!
 
-		error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+	//	error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
 		
+    JNIEnv *env = gEngine->getEnv();
+
+      
 	
 	} EXCEPTION_CONVERT(env);
 }

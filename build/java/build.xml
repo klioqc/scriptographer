@@ -295,7 +295,7 @@ Scriptographer build instructions
 			<param name="target" value="CS"/>
 		</antcall>
 
-	<antcall target="packages.cleanup" /> 
+<!--	<antcall target="packages.cleanup" /> -->
 	</target>
 
 	<target name="packages.cleanup" depends="init">
@@ -373,11 +373,10 @@ Scriptographer build instructions
 				<exclude name="**/uiGlobals.h"/>
 			</fileset>
 		</delete>
-		<javah destdir="${src.jni}" classpath="${target.classes}">
+		<javah destdir="${src.jni}" classpath="${target.classes}" force="yes">
 			<classpath refid="target.classpath" />
 
 			<class name="com.scriptographer.ScriptographerEngine" />
-
 			<class name="com.scriptographer.ai.Item" />
 			<class name="com.scriptographer.ai.Path" />
 			<class name="com.scriptographer.ai.PathStyle" />
@@ -459,7 +458,7 @@ Scriptographer build instructions
 		   	<class name="com.scriptographer.adm.Drawer" />
 		   	<class name="com.scriptographer.adm.Image" />
 		   	<class name="com.scriptographer.adm.Tracker" />
-		   	
+
 		   	<!--widget-->
 		   	<class name="com.scriptographer.widget.Dialog" />
 			<class name="com.scriptographer.widget.Notifier" />

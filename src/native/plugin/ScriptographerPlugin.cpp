@@ -39,6 +39,7 @@ ScriptographerPlugin::ScriptographerPlugin(SPMessageData *messageData) {
 	m_errorTimeout = 5;		// seconds
 	m_lastErrorTime = 0;
 	m_appStartedNotifier = NULL;
+  m_appShutDownNotifier = NULL;
 	m_selectionChangedNotifier = NULL;
 	m_documentClosedNotifier = NULL;
 	m_afterUndoNotifier = NULL;
@@ -500,6 +501,9 @@ ASErr ScriptographerPlugin::onStartupPlugin(SPInterfaceMessage *message) {
 	// Add app started notifier
 	RETURN_ERROR(sAINotifier->AddNotifier(m_pluginRef, "Scriptographer Started",
 			kAIApplicationStartedNotifier, &m_appStartedNotifier));
+	// Add shutdown notifier
+	RETURN_ERROR(sAINotifier->AddNotifier(m_pluginRef, "Scriptographer Shutdown Notifier", 
+    kAIApplicationShutdownNotifier, &m_appShutDownNotifier));
 	
 	// Add selection changed notifier
 	RETURN_ERROR(sAINotifier->AddNotifier(m_pluginRef, "Scriptographer Selection Changed",
@@ -640,16 +644,25 @@ ASErr ScriptographerPlugin::onPostStartupPlugin() {
 #endif
 	return error;
 }
+ASErr ScriptographerPlugin::onBeforeShutdownPlugin() {
+	log("onBeforeShutdownPlugin. Engine: %x", m_engine);
+	if (m_engine == NULL)
+		return kCantHappenErr;
+  
+  m_engine->onShutdown();
+
+  return 0;
+}
 
 ASErr ScriptographerPlugin::onShutdownPlugin(SPInterfaceMessage *message) {
 	log("onShutdownPlugin");
 #ifdef WIN_ENV
-	// If we have overridden the default WindowProc, set it back now, since ours
 	// wont exist anymore after unloading and that will lead to a crash.
 	if (s_defaultAppWindowProc != NULL) {
 #ifndef ADM_FREE
 		HWND hWnd = (HWND) sADMWinHost->GetPlatformAppWindow();
 		::SetWindowLong(hWnd, GWL_WNDPROC, (LONG) s_defaultAppWindowProc);
+	// If we have overridden the default WindowProc, set it back now, since ours
 #else
 		AIWindowRef  windowRefParent;
 		AIErr  error = sAIAppContext->GetPlatformAppWindow(&windowRefParent);
@@ -873,7 +886,10 @@ ASErr ScriptographerPlugin::handleMessage(char *caller, char *selector,
 						(AIDocumentHandle) msg->notifyData);
 		} else if (msg->notifier == m_appStartedNotifier) {
 			error = onPostStartupPlugin();
-		}
+		} else if (msg->notifier == m_appShutDownNotifier) {
+      error = onBeforeShutdownPlugin();
+    }
+
 		if (!error || error == kUnhandledMsgErr) {
 			if (sSPBasic->IsEqual(selector, kSelectorAINotify)) {
 				int i = 0;
