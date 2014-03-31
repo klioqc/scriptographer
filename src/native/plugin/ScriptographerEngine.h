@@ -775,6 +775,19 @@ public:
 
 extern ScriptographerEngine *gEngine;
 
+//mydebug
+extern AIMenuItemHandle fEmptyPanelPanelMenuItemHandle;
+typedef struct {
+	AIPanelRef panel;
+	WNDPROC defaultProc;
+} DialogData;
+
+#include <hash_map>
+typedef hash_map<HWND, DialogData> DialogDataMap;
+extern DialogDataMap dialogDataMap;
+//end mydebug
+
+
 // Callback function pointers for dynamically loading JNI invocation functions on Windows
 typedef jint (JNICALL *CreateJavaVMProc)(JavaVM **jvm, void **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgsProc)(void *args);

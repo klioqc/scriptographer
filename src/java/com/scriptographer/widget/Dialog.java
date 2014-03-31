@@ -218,12 +218,12 @@ public abstract class Dialog extends Component {
 					}
 				}
 				// Center it on screen now if prefs were not loaded above
-				if (!prefsLoaded)
+			//temp	if (!prefsLoaded)
 					centerOnScreen();
 				initialized = true;
 				// Execute callback handler
 				onInitialize();
-				if (show)
+				//tempif (show)
 					setVisible(true);
 			}
 			// setBoundaries is set to false when calling from initializeAll,
@@ -343,6 +343,7 @@ public abstract class Dialog extends Component {
 
 	public boolean loadPreferences(String name) {
 		try {
+			if (1==1) return false;
 			if (preferences.nodeExists(name)) {
 				Preferences prefs = preferences.node(name);
 

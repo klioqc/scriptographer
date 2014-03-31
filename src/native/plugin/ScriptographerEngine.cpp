@@ -33,6 +33,10 @@
 
 ScriptographerEngine *gEngine = NULL;
 
+//debug
+ AIMenuItemHandle fEmptyPanelPanelMenuItemHandle = NULL;
+
+
 // Workaround for MacOS: The JVM needs to be created on a thread other than
 // the main thread. only like this, java.awt.* becomes available, even in
 // headless mode! otherwise, the following error would be printed out:
@@ -2454,9 +2458,22 @@ ASErr ScriptographerEngine::MenuItem_onSelect(AIMenuMessage *message) {
 	try {
 
 
-		////temp - debug
-		//if (!checkMenu(message->menuItem))
+		////temp - mydebug
+    if (message->menuItem == fEmptyPanelPanelMenuItemHandle)
+    {
+        for (DialogDataMap::iterator iter = dialogDataMap.begin(); 
+                                        iter != dialogDataMap.end(); 
+                                        ++iter)
+        {
+          AIPanelRef fPanel = iter->second.panel;
+          AIBoolean isShown = false;
+			    AIErr error = sAIPanel->IsShown(fPanel, isShown);
+			    error = sAIPanel->Show(fPanel, !isShown);
 
+
+        }
+    }
+    ////temp - end mydebug
 
 		callStaticVoidMethod(env, cls_ui_MenuItem, mid_ui_MenuItem_onSelect,
 				(jint) message->menuItem);

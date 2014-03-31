@@ -4,11 +4,15 @@
 #include "com_scriptographer_widget_Dialog.h"
 #include <Uxtheme.h>
 
+#include <AIMenuGroups.h> //temp
+
+
 /*
  * com.scriptographer.widget.Dialog
  */
+#define CHECK_ERROR  if (error) {return error;}
 
-void PanelClosedNotifyProc(AIPanelRef inPanel)
+void PanelClosedNotifyProc(AIPanelRef fPanel)
 {
 	if (gEngine != NULL) {
 		
@@ -16,7 +20,7 @@ void PanelClosedNotifyProc(AIPanelRef inPanel)
 		try {
 			AIPanelUserData uData;
 			
-			AIErr err = sAIPanel->GetUserData(inPanel, uData);
+			AIErr err = sAIPanel->GetUserData(fPanel, uData);
 
 			jobject obj = (jobject) uData;
 			gEngine->callOnDestroy(obj);
@@ -25,6 +29,19 @@ void PanelClosedNotifyProc(AIPanelRef inPanel)
 					gEngine->fid_ui_NativeObject_handle, 0);
 			env->DeleteGlobalRef(obj);
 
+      //todod:common code with destroy
+      	AIPanelPlatformWindow panelPlatfromWindow = NULL;
+			err = sAIPanel->GetPlatformWindow(fPanel, panelPlatfromWindow);
+
+			if(panelPlatfromWindow)
+			{
+				//RemovePropA(panelPlatfromWindow, "TPNL");
+        DialogDataMap::iterator it = dialogDataMap.find(panelPlatfromWindow);
+	      if (it != dialogDataMap.end()) {
+          SetWindowLongPtr(panelPlatfromWindow, GWLP_WNDPROC, (LONG_PTR)(it->second.defaultProc));
+          dialogDataMap.erase(it);
+        }
+      }
 
 		} EXCEPTION_CATCH_REPORT(env);
 	}
@@ -40,13 +57,14 @@ void PanelClosedNotifyProc(AIPanelRef inPanel)
 #include <hash_map>
 
 using namespace stdext;
-
-typedef struct {
-	AIPanelRef panel;
-	WNDPROC defaultProc;
-} DialogData;
-
-typedef hash_map<HWND, DialogData> DialogDataMap;
+//mydebug
+//typedef struct {
+//	AIPanelRef panel;
+//	WNDPROC defaultProc;
+//} DialogData;
+//
+//typedef hash_map<HWND, DialogData> DialogDataMap;
+//end mydebug
 
 DialogDataMap dialogDataMap;
 
@@ -69,6 +87,9 @@ LRESULT CALLBACK Dialog_windowProc(HWND hWnd, UINT uMsg,
 
 #endif // WIN_ENV_INSTALL_WNDPROC
 
+
+AIErr SetIcon(		AIPanelRef fPanel);
+AIErr GetIcon(AIDataFilter* dataFilterIn, string* buffStrIn, size_t* lenIn);
 
 /*
  * int nativeCreate(java.lang.String arg1, int arg2, int arg3)
@@ -98,9 +119,9 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 
 		AIPanelRef fPanel;
 
-		//AIPanelFlyoutMenuRef fPanelFlyoutMenu;
+		AIPanelFlyoutMenuRef fPanelFlyoutMenu;
 
-		AIMenuItemHandle fEmptyPanelPanelMenuItemHandle;
+
 		//todo:
 		AISize pnSize = {240, 320};
 	
@@ -117,12 +138,46 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 	@param outPanel			[out] A buffer in which to return the new panel object.
  	*/
 
+      	error = sAIMenu->AddMenuItemZString(gPlugin->getPluginRef(), "A my test Panel", kOtherPalettesMenuGroup, ZREF("A Third Party Panel"),
+										kMenuItemNoOptions, &fEmptyPanelPanelMenuItemHandle);
+	if (error)
+		return error;
+
+  fPanelFlyoutMenu = NULL;
+	error = sAIPanelFlyoutMenu->Create(fPanelFlyoutMenu);
+	if (error)
+		return error;
+
+	//error = sAIPanelFlyoutMenu->AppendItem(fPanelFlyoutMenu, 1, ai::UnicodeString("First Item"));
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->AppendItem(fPanelFlyoutMenu, 3, ai::UnicodeString("Third Item"));
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->InsertItem(fPanelFlyoutMenu, 3, 2, ai::UnicodeString("Second Item"));
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->InsertSeparator(fPanelFlyoutMenu, 3, 5);
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->AppendItem(fPanelFlyoutMenu, 4, ai::UnicodeString("Fourth Item"));
+ //   CHECK_ERROR
+ //   
+	//error = sAIPanelFlyoutMenu->SetItemEnabled(fPanelFlyoutMenu, 4, false);
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->SetItemMark(fPanelFlyoutMenu, 1 , kAIPanelFlyoutMenuItemMark_BULLET);
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->SetItemMark(fPanelFlyoutMenu, 2 , kAIPanelFlyoutMenuItemMark_CHECK);
+ //   CHECK_ERROR
+	//error = sAIPanelFlyoutMenu->SetItemMark(fPanelFlyoutMenu, 3 , kAIPanelFlyoutMenuItemMark_DASH);
+	//CHECK_ERROR
+
+
+
+
+
 			error = sAIPanel->Create(gPlugin->getPluginRef(), 
 				ai::UnicodeString("kEmptyDialogID"), 
-				ai::UnicodeString("qq"), 3,
+				ai::UnicodeString("default"), 3,
 				pnSize,
 				true, 
-				NULL, //fPanelFlyoutMenu, 
+				 fPanelFlyoutMenu, 
 				
 				env->NewGlobalRef(obj), //user data
 				
@@ -132,22 +187,23 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 
 	if (error)
 			throw new StringException("Unable to create dialog.");
-	/*AISize minSize = {50, 50};
+  	error = sAIPanel->Show(fPanel, true);
+
+	AISize minSize = {50, 50};
 	AISize maxSize = {800, 800};
 	AISize prefConstSize = {100, 100};
 	AISize prefUnconstSize = {600, 600};
 
 	error = sAIPanel->SetSizes(fPanel, minSize, prefUnconstSize, prefConstSize, maxSize);
-	*/
-	error = sAIPanel->Show(fPanel, true);
-
+	
+	
 	//AIPanelPlatformWindow hDlg = NULL;
 	//error = sAIPanel->GetPlatformWindow(fPanel, hDlg);
 
 	//if (error)
 	//	return error;
 
-	//error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+	error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
 
 	//::SetPropA(hDlg, "TPNL", this);
 	//fDefaultWindProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hDlg, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(EmptyPanelPlugin::NewWindowProc)));
@@ -168,12 +224,89 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 
 #endif // WIN_ENV
 
+  //error = SetIcon(fPanel);
+    
 
 	return (jint) fPanel;
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
 
+
+#define bufMax 1024
+
+
+
+AIErr SetIcon(		AIPanelRef fPanel)
+{
+	AIErr error = kNoErr;
+	AIDataFilterSuite* sAIDataFilter = NULL;
+	error = sSPBasic->AcquireSuite(kAIDataFilterSuite, kAIDataFilterVersion, (const void **)&sAIDataFilter);
+	if (sAIDataFilter)
+	{
+		AIDataFilter *dataFilter(NULL);
+		error = sAIDataFilter->NewResourceDataFilter(gPlugin->getPluginRef(), 'Icon', 0, "kEmptyIconID", &dataFilter);	
+        AIDataFilter *dataFilterHiDPI(NULL);
+        error = sAIDataFilter->NewResourceDataFilter(gPlugin->getPluginRef(), 'Icon', 0, "kEmptyIconID", &dataFilterHiDPI);
+
+		if (error == kNoErr && dataFilter)
+		{
+            
+			error = sAIDataFilter->LinkDataFilter(NULL, dataFilter);
+            error = sAIDataFilter->LinkDataFilter(NULL, dataFilterHiDPI);
+			
+			size_t len = 0;
+			string buffStr;
+            GetIcon(dataFilter, &buffStr, &len);
+
+            string buffStrHIDPI;
+            size_t lenHIDPI = 0;
+            GetIcon(dataFilterHiDPI, &buffStrHIDPI, &lenHIDPI);
+            
+            ai::AutoBuffer<const ai::uint8*> inPNGData(2);
+			inPNGData[(size_t)0] = (ai::uint8*)buffStr.c_str();//regular
+			inPNGData[(size_t)1] = (ai::uint8*)buffStrHIDPI.c_str();//hidpi
+			ai::AutoBuffer<ai::uint32> size(2);
+			size[(size_t)0] = len;//regular
+			size[(size_t)1] = lenHIDPI;//hidpi
+
+			//                          light			dark
+			sAIPanel->SetIcon(fPanel, inPNGData, size, inPNGData, size);
+		}
+
+		error = sAIDataFilter->UnlinkDataFilter(dataFilter, NULL);
+		error = sAIDataFilter->UnlinkDataFilter(dataFilterHiDPI, NULL);
+		sSPBasic->ReleaseSuite(kAIDataFilterSuite, kAIDataFilterVersion);
+	}
+	return error;
+}
+
+AIErr GetIcon(AIDataFilter* dataFilterIn, string* buffStrIn, size_t* lenIn)
+{
+    AIErr error = kNoErr;
+    AIDataFilterSuite* sAIDataFilter = NULL;
+	error = sSPBasic->AcquireSuite(kAIDataFilterSuite, kAIDataFilterVersion, (const void **)&sAIDataFilter);
+
+    error = sAIDataFilter->LinkDataFilter(NULL, dataFilterIn);
+    
+    char buf[bufMax];
+    
+    for(;;)
+    {
+        size_t count = bufMax;
+        const ASErr error = sAIDataFilter->ReadDataFilter(dataFilterIn, buf, &count);
+        if (error)
+        {
+            return error;
+        }
+        *lenIn += count;
+        buffStrIn->append(buf, count);
+        if (count != bufMax)
+        {
+            break;
+        }
+    }
+}
 
 #ifdef test
 LRESULT CALLBACK EmptyPanelPlugin::NewWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -259,6 +392,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 					gEngine->fid_ui_NativeObject_handle, 0);
 			env->DeleteGlobalRef(obj);
 
+      error = sAIPanel->SetClosedNotifyProc(fPanel, NULL);
 
     #ifdef WIN_ENV
 			
@@ -298,7 +432,6 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 
 		//TODO call back call on destoy - from win proc notifier!?!
 
-	//	error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
 		
     JNIEnv *env = gEngine->getEnv();
 
@@ -340,7 +473,11 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetVisible(
 		
 		AIPanelPlatformWindow hDlg = NULL;
 		AIBoolean bVis;
-		AIErr error = sAIPanel->Show(fPanel, isVisible);
+    AIErr error;
+    error = sAIPanel->IsShown(fPanel, bVis);
+		error = sAIPanel->Show(fPanel,isVisible == 1);
+     error = sAIPanel->IsShown(fPanel, bVis);
+     bVis =isVisible;
 	} EXCEPTION_CONVERT(env);
 	
 }
@@ -546,6 +683,6 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setEnabled(
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetTitle(
 		JNIEnv *env, jobject obj, jstring arg1) {
 	try {
-		// TODO: define nativeSetTitle
+		
 	} EXCEPTION_CONVERT(env);
 }
