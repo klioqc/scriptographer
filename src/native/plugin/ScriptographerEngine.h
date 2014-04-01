@@ -722,6 +722,12 @@ public:
 		return (AIPanelRef ) getControlObjectHandle(env, obj, "AiPanelRef");
 	}
 
+	inline HWND getItemHandle(JNIEnv *env, jobject obj) {
+		return (HWND) getControlObjectHandle(env, obj, "item");
+	}
+  
+
+
 #endif //#ifndef ADM_FREE
 	//common notifiers
 	void callOnNotify(jobject handler, char *notifier); 

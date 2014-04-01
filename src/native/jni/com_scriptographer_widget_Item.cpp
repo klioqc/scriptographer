@@ -9,10 +9,152 @@
 /*
  * int nativeCreate(com.scriptographer.widget.Dialog arg1, java.lang.String arg2, int arg3)
  */
+
+
+//mydebug
+
+/* Initialize static variables */
+	static WNDPROC defWndProc = NULL;
+	static bool	registered = false;
+
+
+#define CustomEditClassName "CustomEdit"
+/* Declaration */
+	LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+
+	void RegisterWithOS(HINSTANCE inAppInstance)
+	{
+	//	if(!registered)
+		{
+			WNDCLASSEX customEditClass;
+			customEditClass.cbSize = sizeof(customEditClass);
+
+			::GetClassInfoEx(NULL, "EDIT", &customEditClass);
+
+			customEditClass.hInstance = inAppInstance;
+			customEditClass.lpszClassName = CustomEditClassName;
+			defWndProc = customEditClass.lpfnWndProc;
+			customEditClass.lpfnWndProc = CustomEditWndProc;
+
+			::RegisterClassEx(&customEditClass);
+
+			registered = true;
+		}
+	}
+
+
+
+HWND CreateCustomEdit(DWORD inExStyle, LPCTSTR inWindowName, DWORD inStyle, int x, int y, int inWidth, int inHeight, 
+									HWND inParent, HMENU inMenu, HINSTANCE inHinstance, LPVOID inLpParam)
+{
+//	if(!registered)
+	{
+		RegisterWithOS(inHinstance);
+	}
+
+	return ::CreateWindowEx(	inExStyle
+						,CustomEditClassName
+						,inWindowName
+						,inStyle
+						,x
+						,y
+						,inWidth
+						,inHeight
+						,inParent
+						,inMenu
+						,inHinstance
+						,inLpParam
+						);
+	
+}
+
+
+
+HWND CreateItem( char * itemType, HWND hDlg)
+{
+  return CreateCustomEdit( 
+		0, //L"EDIT",   // Predefined class; Unicode assumed. 
+		"",		//  
+		WS_VISIBLE | WS_CHILD | ES_RIGHT /*| ES_NUMBER*/ | WS_TABSTOP,  // Styles. 
+		0,         // x position. 
+		0,         // y position. 
+		100,        // width.
+		20,        // height.
+		hDlg,       // Parent window.
+		NULL, //(HMENU) ID_YEdit,
+		(HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
+		NULL);     
+}
+
+LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	{
+		switch(msg)
+		{
+			case WM_KEYDOWN:
+			{
+				/* Process only TAB and SHIFT + TAB */
+				if( wParam == VK_TAB )
+				{
+					HWND parent = ::GetParent(hWnd);
+					/* Poor implementation - Assumes that parent of edit knows about next focusable control */
+					HWND nextFocusableItem = ::GetNextDlgTabItem(parent, hWnd, (::GetKeyState(VK_SHIFT) & 0x8000) != 0 ? true : false);
+					if(nextFocusableItem)	::SetFocus(nextFocusableItem);
+				
+					/* Tell that we processed the message */
+					return 0;
+				}
+			}
+		}
+
+		/* For all other messages call default window proc */
+		return CallWindowProc(defWndProc, hWnd, msg, wParam, lParam);
+	}
+
+
+
+//end mydebug
+
+
+
+
+
+
+
+
+
+
+
+
 JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeCreate(
-		JNIEnv *env, jobject obj, jobject arg1, jstring arg2, jint arg3) {
+		JNIEnv *env, jobject obj, jobject dialogObj, jstring type, jint options) {
 	try {
-		// TODO: define nativeCreate
+	  AIPanelRef fPanel = gEngine->getAIPanelRef(env, dialogObj);
+
+		char *itemType = gEngine->convertString(env, type);
+		// create with default dimensions:
+		/*DEFINE_ADM_RECT(rect, 0, 0, 100, 100);
+		DEFINE_CALLBACK_PROC(Item_onInit);
+		ADMItemRef item = sADMItem->Create(dialog, kADMUniqueItemID, itemType, &rect, 
+      (ADMItemInitProc) CALLBACK_PROC(Item_onInit), env->NewGlobalRef(obj), options);*/
+    
+	  AIPanelPlatformWindow hDlg = NULL;
+	  sAIPanel->GetPlatformWindow(fPanel, hDlg);
+
+#ifdef WIN_ENV
+ 
+    HWND item = CreateItem(itemType, hDlg);
+
+#endif
+
+ 		delete itemType;
+
+    if (item == NULL)
+			throw new StringException("Unable to create dialog item.");
+
+
+
+		return (jint) item;
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -222,7 +364,11 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setWantsFocus(
 JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_nativeGetBounds(
 		JNIEnv *env, jobject obj) {
 	try {
-		// TODO: define nativeGetBounds
+		
+    HWND item = gEngine->getItemHandle(env, obj);
+		RECT rt;
+		GetWindowRect(item, &rt);
+		return gEngine->convertRectangle(env, &rt);
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -231,9 +377,12 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_nativeGetBounds(
  * void nativeSetBounds(int arg1, int arg2, int arg3, int arg4)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
+		JNIEnv *env, jobject obj, jint x, jint y, jint width, jint height) {
 	try {
-		// TODO: define nativeSetBounds
+		
+    HWND item = gEngine->getItemHandle(env, obj);
+		RECT rt;
+		SetWindowPos(item, NULL, x, y, width, height, SWP_SHOWWINDOW);
 	} EXCEPTION_CONVERT(env);
 }
 

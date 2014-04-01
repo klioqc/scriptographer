@@ -2685,6 +2685,7 @@ int ScriptographerEngine::getControlObjectHandle(JNIEnv *env, jobject obj, const
 	return handle;
 }
 
+
 void ScriptographerEngine::callOnNotify(jobject handler, char *notifier) {
 	JNIEnv *env = getEnv();
 	AppContext context;

@@ -474,10 +474,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetVisible(
 		AIPanelPlatformWindow hDlg = NULL;
 		AIBoolean bVis;
     AIErr error;
-    error = sAIPanel->IsShown(fPanel, bVis);
 		error = sAIPanel->Show(fPanel,isVisible == 1);
-     error = sAIPanel->IsShown(fPanel, bVis);
-     bVis =isVisible;
 	} EXCEPTION_CONVERT(env);
 	
 }
@@ -547,10 +544,22 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetBounds(
  * void nativeSetBounds(int arg1, int arg2, int arg3, int arg4)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetBounds(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
+		JNIEnv *env, jobject obj, jint x, jint y, jint width, jint height) {
 	try {
-		// TODO: define nativeSetBounds
-	} EXCEPTION_CONVERT(env);
+      	AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
+	    //  AISize size = new AISize(x, y, width, height);
+
+        
+        //sAIPanel->S(fPanel, .SetMinimumSize();
+
+
+#ifdef WIN_ENV
+  
+
+#endif
+  
+  
+  } EXCEPTION_CONVERT(env);
 }
 
 /*
@@ -681,8 +690,20 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setEnabled(
  * void nativeSetTitle(java.lang.String arg1)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetTitle(
-		JNIEnv *env, jobject obj, jstring arg1) {
+		JNIEnv *env, jobject obj, jstring title) {
 	try {
-		
+	
+    AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
+	 
+		if (title != NULL) {
+		  	char *chars = gEngine->convertString(env, title);
+        ai::UnicodeString str =  ai::UnicodeString(chars); 
+
+			  sAIPanel->SetTitle(fPanel, str);
+			delete chars;
+		} else {
+			  sAIPanel->SetTitle(fPanel, ai::UnicodeString(""));
+		}
+
 	} EXCEPTION_CONVERT(env);
 }
