@@ -268,7 +268,7 @@ public class Image extends NativeObject {
 	/*
 	 * This is pretty stupid: ADM seems to take care of destruction of attached
 	 * pictures itself (for list entries and dialog items). Therefore one
-	 * image cannot be attached to more than on item or entry, otherwise it
+	 * image cannot be attached to more than on item or e3ntry, otherwise it
 	 * would be deleted several times. so in order to create an image to attach
 	 * it somewhere, a new instance of the image needs to be created everytime,
 	 * and an icon needs to be created as well. We don't have to take care of

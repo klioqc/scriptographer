@@ -389,10 +389,11 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
 /*
  * void nativeSetSize(int arg1, int arg2)
  */
-JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetSize(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
+JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetSize(JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		// TODO: define nativeSetSize
+		 HWND item = gEngine->getItemHandle(env, obj);
+	
+		SetWindowPos(item, 0, 0,0,width,height, SWP_NOMOVE);
 	} EXCEPTION_CONVERT(env);
 }
 

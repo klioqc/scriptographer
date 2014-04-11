@@ -4,4 +4,7 @@
     <LocalDebuggerCommand>C:\Program Files\Adobe\Adobe Illustrator CC (64 Bit)\Support Files\Contents\Windows\Illustrator.exe</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup>
+    <ShowAllFiles>true</ShowAllFiles>
+  </PropertyGroup>
 </Project>

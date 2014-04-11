@@ -383,6 +383,11 @@ public:
 #endif
 #else // for non ADM
 
+	jclass cls_widget_Image;
+	jfieldID fid_widget_Image_byteWidth;
+	jfieldID fid_widget_Image_bitsPerPixel;
+	jmethodID mid_widget_Image_getIconHandle;
+
 
 	jclass cls_widget_NotificationHandler;
 	jmethodID mid_widget_NotificationHandler_onNotify;
@@ -483,7 +488,8 @@ public:
 	}
 	void convertSize(JNIEnv *env, jobject size, AIRealPoint *res);
 	void convertSize(JNIEnv *env, jobject size, AISize *res);
-
+	
+  jobject convertUISize(JNIEnv *env, float width, float height, jobject res = NULL);
 
 	// com.scriptoggrapher.ai.Matrix <-> AIRealMatrix
 	jobject convertMatrix(JNIEnv *env, CoordinateSystem from, CoordinateSystem to, AIRealMatrix *mt, jobject res = NULL);
@@ -726,7 +732,9 @@ public:
 		return (HWND) getControlObjectHandle(env, obj, "item");
 	}
   
-
+  inline HBITMAP getImageHandle(JNIEnv *env, jobject obj) {
+		return (HBITMAP) getControlObjectHandle(env, obj, "image");
+	}
 
 #endif //#ifndef ADM_FREE
 	//common notifiers

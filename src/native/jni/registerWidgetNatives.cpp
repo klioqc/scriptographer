@@ -71,6 +71,7 @@
 #include "com_scriptographer_ui_MenuItem.h"
 #include "com_scriptographer_widget_Button.h"
 #include "com_scriptographer_widget_Dialog.h"
+#include "com_scriptographer_widget_Image.h"
 #include "com_scriptographer_widget_Item.h"
 #include "com_scriptographer_widget_TextEditItem.h"
 #include "com_scriptographer_widget_TextItem.h"
@@ -871,6 +872,18 @@ static const JNINativeMethod com_scriptographer_widget_Dialog_methods[] = {
 	{ "nativeSetMaximumSize", "(II)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetMaximumSize }
 };
 
+/* Native methods for class com_scriptographer_widget_Image */
+static const JNINativeMethod com_scriptographer_widget_Image_methods[] = {
+	{ "nativeCreate", "(III)I", (void *) &Java_com_scriptographer_widget_Image_nativeCreate },
+	{ "nativeDestroy", "(II)V", (void *) &Java_com_scriptographer_widget_Image_nativeDestroy },
+	{ "nativeSetPixels", "([IIII)V", (void *) &Java_com_scriptographer_widget_Image_nativeSetPixels___3IIII },
+	{ "nativeGetPixels", "([IIII)V", (void *) &Java_com_scriptographer_widget_Image_nativeGetPixels },
+	{ "nativeSetPixels", "(II)V", (void *) &Java_com_scriptographer_widget_Image_nativeSetPixels__II },
+	{ "nativeCreateIcon", "()I", (void *) &Java_com_scriptographer_widget_Image_nativeCreateIcon },
+	{ "nativeBeginDrawer", "()I", (void *) &Java_com_scriptographer_widget_Image_nativeBeginDrawer },
+	{ "nativeEndDrawer", "()V", (void *) &Java_com_scriptographer_widget_Image_nativeEndDrawer }
+};
+
 /* Native methods for class com_scriptographer_widget_Item */
 static const JNINativeMethod com_scriptographer_widget_Item_methods[] = {
 	{ "nativeCreate", "(Lcom/scriptographer/widget/Dialog;Ljava/lang/String;I)I", (void *) &Java_com_scriptographer_widget_Item_nativeCreate },
@@ -1120,6 +1133,9 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 
 	registerClassNatives(env, "com/scriptographer/widget/Dialog", com_scriptographer_widget_Dialog_methods,
 		sizeof(com_scriptographer_widget_Dialog_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/Image", com_scriptographer_widget_Image_methods,
+		sizeof(com_scriptographer_widget_Image_methods) / sizeof(JNINativeMethod));
 
 	registerClassNatives(env, "com/scriptographer/widget/Item", com_scriptographer_widget_Item_methods,
 		sizeof(com_scriptographer_widget_Item_methods) / sizeof(JNINativeMethod));

@@ -81,7 +81,7 @@ public abstract class Dialog extends Component {
 
 	private EnumSet<DialogOption> options;
 	// The inside dimensions of the dialog, as used by layout managers and such
-	private Size size;
+	private com.scriptographer.ui.Size size;
 	private Size minSize = null;
 	private Size maxSize = null;
 	private boolean isResizing = false;
@@ -871,13 +871,12 @@ public abstract class Dialog extends Component {
 	}
 
 	public Size getSize() {
-		return new Size (200, 300);
-		//return (Size) size.clone();
+		return (Size) size.clone();
 	}
 
 	public void setSize(int width, int height) {
 		ignoreSizeChange = true;
-	//	nativeSetSize(width, height);
+	 	nativeSetSize(width, height);
 		updateSize(width - size.width, height - size.height);
 		ignoreSizeChange = false;
 		sizeSet = true;
@@ -899,7 +898,7 @@ public abstract class Dialog extends Component {
 	 */
 	protected void updateSize(int deltaX, int deltaY) {
 		if (deltaX != 0 || deltaY != 0) {
-			size.set(size.width + deltaX, size.height + deltaY);
+		 	size.set(size.width + deltaX, size.height + deltaY);
 			// If a container was created, the layout needs to be recalculated
 			// now:
 			if (container != null)

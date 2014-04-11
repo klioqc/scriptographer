@@ -89,7 +89,8 @@ import com.scriptographer.ui.MenuItem;
 import com.scriptographer.ui.Palette;
 
 
-//tmp - add swt unconditionally
+import com.scriptographer.widget.Button;
+//tmp - add  unconditionally
 import com.scriptographer.widget.FloatingDialog;
 import com.scriptographer.widget.Image;
 import com.scriptographer.widget.ListEntry;
@@ -98,6 +99,7 @@ import com.scriptographer.widget.ModalDialog;
 import com.scriptographer.widget.PopupDialog;
 import com.scriptographer.widget.TextEdit;
 import com.scriptographer.widget.TextValueItem;
+import com.scriptographer.widget.ImageButton;
 
 /**
  * @author Olga
@@ -164,7 +166,7 @@ public class WidgetClasses {
 		Timer.class,
 		
 		// UI, alphabetically
-		Dialog.class,
+	
 		Key.class,
 		MenuGroup.class,
 		MenuItem.class,
@@ -173,9 +175,11 @@ public class WidgetClasses {
 		Border.class,
 		DialogColor.class,
 		
-		//not adm, but swt 
-
+		//not adm, but native 
 		
+		Button.class,
+		Dialog.class,
+		ImageButton.class,
 	 	FloatingDialog.class,
 	 	ModalDialog.class,
 	 	PopupDialog.class,

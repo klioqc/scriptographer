@@ -501,7 +501,8 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetSize(
 		AIPanelPlatformWindow hDlg = NULL;
 		AISize size;
 		AIErr error = sAIPanel->GetSize(fPanel, size);
-		return gEngine->convertSize(env, &size);
+		
+    return gEngine->convertUISize(env, size.width, size.height);
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -510,9 +511,16 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetSize(
  * void nativeSetSize(int arg1, int arg2)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetSize(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
+  JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		// TODO: define nativeSetSize
+		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
+		
+		AIPanelPlatformWindow hDlg = NULL;
+		AISize size;
+    size.width = width;
+    size.height = height;
+		AIErr error = sAIPanel->SetSize(fPanel, size);
+
 	} EXCEPTION_CONVERT(env);
 }
 

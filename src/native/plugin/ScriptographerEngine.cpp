@@ -712,8 +712,18 @@ void ScriptographerEngine::initReflection(JNIEnv *env) {
 #endif
 #else
 	//TODO: widget classes...
+
+  cls_widget_Image = loadClass(env, "com/scriptographer/widget/Image");
+	fid_widget_Image_byteWidth = getFieldID(env, cls_widget_Image, "byteWidth", "I");
+	fid_widget_Image_bitsPerPixel = getFieldID(env, cls_widget_Image, "bitsPerPixel", "I");
+	mid_widget_Image_getIconHandle = getMethodID(env, cls_widget_Image, "getIconHandle", "()I");
+
+
 	cls_widget_NotificationHandler = loadClass(env, "com/scriptographer/widget/NotificationHandler");
 	mid_widget_NotificationHandler_onNotify = getMethodID(env, cls_widget_NotificationHandler, "onNotify", "(Ljava/lang/String;)V");
+
+
+
 
 #endif //#ifndef ADM_FREE
 }
@@ -1176,6 +1186,19 @@ jobject ScriptographerEngine::convertSize(JNIEnv *env, float width,
 				(jdouble) width, (jdouble) height);
 	} else {
 		callVoidMethod(env, res, mid_ai_Size_set,
+				(jdouble) width, (jdouble) height);
+		return res;
+	}
+}
+
+// com.scriptographer.ui.Size <-> AIRealPoint, AISize
+jobject ScriptographerEngine::convertUISize(JNIEnv *env, float width,
+		float height, jobject res) {
+	if (res == NULL) {
+		return newObject(env, cls_ui_Size, cid_ui_Size,
+				(jdouble) width, (jdouble) height);
+	} else {
+		callVoidMethod(env, res, mid_ui_Size_set,
 				(jdouble) width, (jdouble) height);
 		return res;
 	}
