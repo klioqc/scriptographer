@@ -1366,7 +1366,7 @@ void ScriptographerEngine::convertSize(JNIEnv *env,
 }
 #else //ADM_FREE
 
-// com.scriptographer.adm.Rectangle <-> ADMRect
+// com.scriptographer.ui.Rectangle <-> ADMRect
 jobject ScriptographerEngine::convertRectangle(JNIEnv *env,
 		RECT *rect, jobject res) {
 	if (res == NULL) {
@@ -2708,6 +2708,16 @@ int ScriptographerEngine::getControlObjectHandle(JNIEnv *env, jobject obj, const
 	return handle;
 }
 
+jobject ScriptographerEngine::getItemObject(CommonControl * item) {
+	jobject obj = NULL;
+	if (item != NULL && item != NULL) {
+		obj = (jobject) item->GetUserData();
+		if (obj == NULL) throw new StringException("The item is not linked to a scripting object.");
+	}
+	return obj;
+}
+
+
 
 void ScriptographerEngine::callOnNotify(jobject handler, char *notifier) {
 	JNIEnv *env = getEnv();
@@ -2717,7 +2727,7 @@ void ScriptographerEngine::callOnNotify(jobject handler, char *notifier) {
 }
 
 void ScriptographerEngine::callOnDestroy(jobject handler) {
-	callOnNotify(handler, kWidgetDestroyNotifier);
+	callOnNotify(handler, kUIDestroyNotifier);
 }
 
 #endif //#ifndef ADM_FREE

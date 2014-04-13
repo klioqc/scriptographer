@@ -1,126 +1,83 @@
 #include "StdHeaders.h"
 #include "ScriptographerEngine.h"
+#include "ScriptographerPlugin.h"
 #include "com_scriptographer_widget_Item.h"
-
-/*
- * com.scriptographer.widget.Item
- */
-
-/*
- * int nativeCreate(com.scriptographer.widget.Dialog arg1, java.lang.String arg2, int arg3)
- */
+#include "uiGlobals.h"
+#include "commonctrls.h"
 
 
-//mydebug
-
-/* Initialize static variables */
-	static WNDPROC defWndProc = NULL;
-	static bool	registered = false;
-
-
-#define CustomEditClassName "CustomEdit"
-/* Declaration */
-	LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-
-	void RegisterWithOS(HINSTANCE inAppInstance)
-	{
-	//	if(!registered)
-		{
-			WNDCLASSEX customEditClass;
-			customEditClass.cbSize = sizeof(customEditClass);
-
-			::GetClassInfoEx(NULL, "EDIT", &customEditClass);
-
-			customEditClass.hInstance = inAppInstance;
-			customEditClass.lpszClassName = CustomEditClassName;
-			defWndProc = customEditClass.lpfnWndProc;
-			customEditClass.lpfnWndProc = CustomEditWndProc;
-
-			::RegisterClassEx(&customEditClass);
-
-			registered = true;
-		}
-	}
-
-
-
-HWND CreateCustomEdit(DWORD inExStyle, LPCTSTR inWindowName, DWORD inStyle, int x, int y, int inWidth, int inHeight, 
-									HWND inParent, HMENU inMenu, HINSTANCE inHinstance, LPVOID inLpParam)
-{
-//	if(!registered)
-	{
-		RegisterWithOS(inHinstance);
-	}
-
-	return ::CreateWindowEx(	inExStyle
-						,CustomEditClassName
-						,inWindowName
-						,inStyle
-						,x
-						,y
-						,inWidth
-						,inHeight
-						,inParent
-						,inMenu
-						,inHinstance
-						,inLpParam
-						);
+int Item_onInit(CommonControl* inItem) {
+	// Attach the item-level callbacks
+	DEFINE_CALLBACK_PROC(Item_onDestroy);
+  inItem->SetDestroyProc((CommonControlDestroyProc) CALLBACK_PROC(Item_onDestroy));
 	
+	DEFINE_CALLBACK_PROC(Item_onNotify);
+	inItem->SetNotifyProc((CommonControlNotifyProc) CALLBACK_PROC(Item_onNotify));
+
+	// Call onNotify with kADMInitializeNotifier
+	JNIEnv *env = gEngine->getEnv();
+	try {
+		jobject obj = gEngine->getItemObject(inItem);
+		gEngine->callOnNotify(obj, kUIInitializeNotifier);
+	} EXCEPTION_CATCH_REPORT(env);
+	return kNoErr;
+
 }
+void Item_onDestroy(CommonControl* inItem) {
+	if (gEngine != NULL) {
+		JNIEnv *env = gEngine->getEnv();
+		try {
+			jobject obj = gEngine->getItemObject(inItem);
+			gEngine->callOnDestroy(obj);
+			// clear the handle:
+			gEngine->setIntField(env, obj, gEngine->fid_ui_NativeObject_handle, 0);
 
+			// is this a list or hierarchy list?
+			// if so, call its destroy function, as this is not automatically done:
+			// SetUserData needs to be called again as the user data is not valid anymore here:
 
-
-HWND CreateItem( char * itemType, HWND hDlg)
-{
-  return CreateCustomEdit( 
-		0, //L"EDIT",   // Predefined class; Unicode assumed. 
-		"",		//  
-		WS_VISIBLE | WS_CHILD | ES_RIGHT /*| ES_NUMBER*/ | WS_TABSTOP,  // Styles. 
-		0,         // x position. 
-		0,         // y position. 
-		100,        // width.
-		20,        // height.
-		hDlg,       // Parent window.
-		NULL, //(HMENU) ID_YEdit,
-		(HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
-		NULL);     
-}
-
-LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-	{
-		switch(msg)
-		{
-			case WM_KEYDOWN:
-			{
-				/* Process only TAB and SHIFT + TAB */
-				if( wParam == VK_TAB )
-				{
-					HWND parent = ::GetParent(hWnd);
-					/* Poor implementation - Assumes that parent of edit knows about next focusable control */
-					HWND nextFocusableItem = ::GetNextDlgTabItem(parent, hWnd, (::GetKeyState(VK_SHIFT) & 0x8000) != 0 ? true : false);
-					if(nextFocusableItem)	::SetFocus(nextFocusableItem);
-				
-					/* Tell that we processed the message */
-					return 0;
+		/*	if (env->IsInstanceOf(obj, gEngine->cls_adm_ListItem)) {
+				if (env->IsInstanceOf(obj, gEngine->cls_adm_HierarchyListBox)) {
+					ADMHierarchyListRef list = gEngine->getHierarchyListBoxHandle(env, obj);
+					sADMHierarchyList->SetUserData(list, obj);
+					HierarchyListBox_onDestroy(list);
+				} else {
+					ADMListRef list = gEngine->getListBoxHandle(env, obj);
+					sADMList->SetUserData(list, obj);
+					ListItem_onDestroy(list);
 				}
-			}
-		}
+			}*/
+			env->DeleteGlobalRef(obj);
+		} EXCEPTION_CATCH_REPORT(env);
+  }
+}
 
-		/* For all other messages call default window proc */
-		return CallWindowProc(defWndProc, hWnd, msg, wParam, lParam);
+void Item_onNotify(CommonControl* inItem, char * notifier) {
+	//sADMItem->DefaultNotify(item, notifier);
+	if (gEngine != NULL) {
+		jobject obj = gEngine->getItemObject(inItem);
+		gEngine->callOnNotify(obj, notifier);
 	}
+}
+
+/*
+ASBoolean ASAPI Item_onTrack(ADMItemRef item, ADMTrackerRef tracker) {
+	jobject obj = gEngine->getItemObject(item);
+	ASBoolean ret = gEngine->callOnTrack(obj, tracker);
+	if (ret)
+		ret = sADMItem->DefaultTrack(item, tracker);
+	return ret;
+}
+
+void ASAPI Item_onDraw(ADMItemRef item, ADMDrawerRef drawer) {
+	jobject obj = gEngine->getItemObject(item);
+	ASBoolean ret = gEngine->callOnDraw(obj, drawer);
+	if (ret)
+		sADMItem->DefaultDraw(item, drawer);
+}
 
 
-
-//end mydebug
-
-
-
-
-
-
-
+*/
 
 
 
@@ -131,23 +88,21 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeCreate(
 	try {
 	  AIPanelRef fPanel = gEngine->getAIPanelRef(env, dialogObj);
 
-		char *itemType = gEngine->convertString(env, type);
-		// create with default dimensions:
-		/*DEFINE_ADM_RECT(rect, 0, 0, 100, 100);
-		DEFINE_CALLBACK_PROC(Item_onInit);
-		ADMItemRef item = sADMItem->Create(dialog, kADMUniqueItemID, itemType, &rect, 
-      (ADMItemInitProc) CALLBACK_PROC(Item_onInit), env->NewGlobalRef(obj), options);*/
+		char * itemType =  gEngine->convertString(env, type);
     
 	  AIPanelPlatformWindow hDlg = NULL;
 	  sAIPanel->GetPlatformWindow(fPanel, hDlg);
 
 #ifdef WIN_ENV
- 
-    HWND item = CreateItem(itemType, hDlg);
+    DEFINE_UI_RECT(rect, 0, 0, 100, 100);
+		DEFINE_CALLBACK_PROC(Item_onInit);
+    
+      CommonControl * item = commonCtrlManager->CreateItem(hDlg, itemType, &rect, 
+      (CommonControlInitProc)CALLBACK_PROC(Item_onInit),
+      env->NewGlobalRef(obj));
 
-#endif
 
- 		delete itemType;
+    delete itemType;
 
     if (item == NULL)
 			throw new StringException("Unable to create dialog item.");
@@ -155,6 +110,9 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeCreate(
 
 
 		return (jint) item;
+
+ #endif
+
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -365,9 +323,9 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_nativeGetBounds(
 		JNIEnv *env, jobject obj) {
 	try {
 		
-    HWND item = gEngine->getItemHandle(env, obj);
+    CommonControl * item = gEngine->getItemObject(env, obj);
 		RECT rt;
-		GetWindowRect(item, &rt);
+    item->GetBounds(&rt);
 		return gEngine->convertRectangle(env, &rt);
 	} EXCEPTION_CONVERT(env);
 	return NULL;
@@ -380,9 +338,9 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
 		JNIEnv *env, jobject obj, jint x, jint y, jint width, jint height) {
 	try {
 		
-    HWND item = gEngine->getItemHandle(env, obj);
-		RECT rt;
-		SetWindowPos(item, NULL, x, y, width, height, SWP_SHOWWINDOW);
+    CommonControl * item = gEngine->getItemObject(env, obj);
+    item->SetBounds( x, y, width, height);
+	
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -391,9 +349,9 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetSize(JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		 HWND item = gEngine->getItemHandle(env, obj);
+		 CommonControl * item = gEngine->getItemObject(env, obj);
+	   item->SetWindowSize(width, height);
 	
-		SetWindowPos(item, 0, 0,0,width,height, SWP_NOMOVE);
 	} EXCEPTION_CONVERT(env);
 }
 

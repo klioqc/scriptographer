@@ -78,7 +78,21 @@ LRESULT CALLBACK Dialog_windowProc(HWND hWnd, UINT uMsg,
 		if (uMsg == WM_NCACTIVATE || uMsg == WM_PARENTNOTIFY && wParam > 0x200) {
 			//jobject obj = gEngine->getDialogObject(it->second.panel);
 			//TODOgEngine->callOnNotify(obj, kADMWindowActivateNotifier);
+
+    
 		}
+
+
+    if (uMsg == WM_COMMAND) 
+		{
+			 commonCtrlManager->OnCommand(hWnd, wParam, lParam);
+    }
+    if (uMsg == WM_PARENTNOTIFY) 
+		{
+			 commonCtrlManager->OnParentNotify(hWnd, wParam, lParam);
+    }
+
+
 		return ::CallWindowProc(it->second.defaultProc, hWnd, uMsg, wParam,
 				lParam);
 	}
@@ -87,6 +101,107 @@ LRESULT CALLBACK Dialog_windowProc(HWND hWnd, UINT uMsg,
 
 #endif // WIN_ENV_INSTALL_WNDPROC
 
+/*
+
+ASErr ASAPI Dialog_onInit(ADMDialogRef dialog) {
+
+	// Hide the dialog by default:
+	sADMDialog->Show(dialog, false);
+	
+	// Attach the dialog-level callbacks
+	DEFINE_CALLBACK_PROC(Dialog_onDestroy);
+	sADMDialog->SetDestroyProc(dialog,
+			(ADMDialogDestroyProc) CALLBACK_PROC(Dialog_onDestroy));
+	
+	DEFINE_CALLBACK_PROC(Dialog_onNotify);
+	sADMDialog->SetNotifyProc(dialog,
+			(ADMDialogNotifyProc) CALLBACK_PROC(Dialog_onNotify));
+	
+	// Resize handler:
+	ADMItemRef resizeItemRef = sADMDialog->GetItem(dialog, kADMResizeItemID);
+	if (resizeItemRef) {
+		DEFINE_CALLBACK_PROC(Dialog_onSizeChanged);
+		sADMItem->SetNotifyProc(resizeItemRef,
+				(ADMItemNotifyProc) CALLBACK_PROC(Dialog_onSizeChanged));
+	}
+	
+	// Execute a one-shot timer right after creation of the dialog,
+	// to run initialize()
+	// Call onNotify with kADMInitializeNotifier
+	JNIEnv *env = gEngine->getEnv();
+	try {
+		jobject obj = gEngine->getDialogObject(dialog);
+		gEngine->callOnNotify(obj, kADMInitializeNotifier);
+	} EXCEPTION_CATCH_REPORT(env);
+
+#ifdef WIN_ENV_INSTALL_WNDPROC
+
+	HWND hWnd = (HWND) sADMDialog->GetWindowRef(dialog);
+	WNDPROC defaultProc = (WNDPROC) ::SetWindowLong(hWnd, GWL_WNDPROC,
+			(LONG) Dialog_windowProc);
+	DialogData data = { dialog, defaultProc };
+	dialogDataMap[hWnd] = data;
+
+#endif // WIN_ENV_INSTALL_WNDPROC
+
+	return kNoErr;
+}
+
+void ASAPI Dialog_onDestroy(ADMDialogRef dialog) {
+	if (gEngine != NULL) {
+		JNIEnv *env = gEngine->getEnv();
+		try {
+			jobject obj = gEngine->getDialogObject(dialog);
+			gEngine->callOnDestroy(obj);
+			// Clear the handle:
+			gEngine->setIntField(env, obj,
+					gEngine->fid_ui_NativeObject_handle, 0);
+			env->DeleteGlobalRef(obj);
+		} EXCEPTION_CATCH_REPORT(env);
+	}
+}
+
+void ASAPI Dialog_onSizeChanged(ADMItemRef item, ADMNotifierRef notifier) {
+	sADMItem->DefaultNotify(item, notifier);
+	if (sADMNotifier->IsNotifierType(notifier, kADMBoundsChangedNotifier)) {
+		JNIEnv *env = gEngine->getEnv();
+		try {
+			ADMDialogRef dialog = sADMItem->GetDialog(item);
+			jobject obj = gEngine->getDialogObject(dialog);
+			ADMRect size;
+			sADMDialog->GetLocalRect(dialog, &size);
+			AppContext context;
+			gEngine->callVoidMethod(env, obj,
+					gEngine->mid_adm_Dialog_onSizeChanged,
+					size.right, size.bottom, true);
+		} EXCEPTION_CATCH_REPORT(env);
+	}
+}
+
+void ASAPI Dialog_onNotify(ADMDialogRef dialog, ADMNotifierRef notifier) {
+	sADMDialog->DefaultNotify(dialog, notifier);
+	if (gEngine != NULL) {
+		jobject obj = gEngine->getDialogObject(dialog);
+		gEngine->callOnNotify(obj, notifier);
+	}
+}
+
+ASBoolean ASAPI Dialog_onTrack(ADMDialogRef dialog, ADMTrackerRef tracker) {
+	jobject obj = gEngine->getDialogObject(dialog);
+	ASBoolean ret = gEngine->callOnTrack(obj, tracker);
+	if (ret)
+		ret = sADMDialog->DefaultTrack(dialog, tracker);
+	return ret;
+}
+
+void ASAPI Dialog_onDraw(ADMDialogRef dialog, ADMDrawerRef drawer) {
+	jobject obj = gEngine->getDialogObject(dialog);
+	ASBoolean ret = gEngine->callOnDraw(obj, drawer);
+	if (ret)
+		sADMDialog->DefaultDraw(dialog, drawer);
+}
+
+*/
 
 AIErr SetIcon(		AIPanelRef fPanel);
 AIErr GetIcon(AIDataFilter* dataFilterIn, string* buffStrIn, size_t* lenIn);
@@ -474,7 +589,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetVisible(
 		AIPanelPlatformWindow hDlg = NULL;
 		AIBoolean bVis;
     AIErr error;
-		error = sAIPanel->Show(fPanel,isVisible == 1);
+		error = sAIPanel->Show(fPanel, isVisible);
 	} EXCEPTION_CONVERT(env);
 	
 }

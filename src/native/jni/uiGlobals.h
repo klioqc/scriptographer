@@ -58,9 +58,30 @@ void ASAPI HierarchyListEntry_onDraw(ADMListEntryRef entry, ADMDrawerRef drawer)
 
 #else !ADM
 
+int  ASAPI Item_onInit(CommonControl * item);
+void ASAPI Item_onDestroy(CommonControl * item);
+void ASAPI Item_onNotify(CommonControl * item, char * notifier);
+
+
+
 // Pseudo notifiers: 
-#define kWidgetInitializeNotifier "Widget Initialize Notifier"
-#define kWidgetDestroyNotifier "Widget Destroy Notifier"
+#define kUIInitializeNotifier "ADM Initialize Notifier"
+#define kUIDestroyNotifier "ADM Destroy Notifier"
+
+
+#define DEFINE_UI_POINT(PT, X, Y) \
+	Point PT; \
+	PT.h = (short) X; \
+	PT.v = (short) Y;
+
+
+#define DEFINE_UI_RECT(RT, X, Y, WIDTH, HEIGHT) \
+	RECT RT; \
+	RT.left = (short) X; \
+	RT.top  = (short) Y; \
+	RT.right =  (short) (X + WIDTH); \
+	RT.bottom = (short) (Y + HEIGHT);
+
 
 
 #endif //#ifndef ADM_FREE

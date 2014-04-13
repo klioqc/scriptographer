@@ -724,17 +724,22 @@ public:
 
 	int getControlObjectHandle(JNIEnv *env, jobject obj, const char *name);
 	
+  jobject getItemObject(CommonControl * item);
+  
+  inline CommonControl* getItemObject(JNIEnv *env, jobject obj) {
+		return (CommonControl *) getControlObjectHandle(env, obj, "item");
+	}
+
 	inline AIPanelRef  getAIPanelRef (JNIEnv *env, jobject obj) {
 		return (AIPanelRef ) getControlObjectHandle(env, obj, "AiPanelRef");
 	}
 
-	inline HWND getItemHandle(JNIEnv *env, jobject obj) {
-		return (HWND) getControlObjectHandle(env, obj, "item");
-	}
+
   
   inline HBITMAP getImageHandle(JNIEnv *env, jobject obj) {
 		return (HBITMAP) getControlObjectHandle(env, obj, "image");
 	}
+
 
 #endif //#ifndef ADM_FREE
 	//common notifiers

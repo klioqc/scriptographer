@@ -30,7 +30,7 @@ import com.scriptographer.ui.PaletteProxy;
 
 /**
  * @author lehni
- *
+ * 
  */
 public class AdmPaletteProxy extends PaletteProxy {
 
@@ -38,19 +38,20 @@ public class AdmPaletteProxy extends PaletteProxy {
 
 	public AdmPaletteProxy(Palette palette, Component[] components) {
 		super(palette);
-		
-		dialog = new FloatingDialog(new DialogOption[] {
-				DialogOption.TABBED,
-				DialogOption.SHOW_CYCLE,
-				DialogOption.REMEMBER_PLACING
-		}) {
-			protected void onInitialize() {
-				// Since palettes remember placing, we need to explicitly set
-				// them visible when they are created.
-				setVisible(true);
-				super.onInitialize();
-			}
-		};
+
+		dialog =
+				new FloatingDialog(
+						new DialogOption[] { DialogOption.TABBED,
+								DialogOption.SHOW_CYCLE,
+								DialogOption.REMEMBER_PLACING }) {
+					protected void onInitialize() {
+						// Since palettes remember placing, we need to
+						// explicitly set
+						// them visible when they are created.
+						setVisible(true);
+						super.onInitialize();
+					}
+				};
 
 		double version = ScriptographerEngine.getIllustratorVersion();
 		boolean upperCase = false;
@@ -70,8 +71,9 @@ public class AdmPaletteProxy extends PaletteProxy {
 		// Calculate title size. Temporarily set bold font
 		dialog.setFont(DialogFont.PALETTE_BOLD);
 		String title = palette.getTitle();
-		int width = Math.round(dialog.getTextSize(upperCase 
-				? title.toUpperCase() : title).width);
+		int width =
+				Math.round(dialog.getTextSize(upperCase ? title.toUpperCase()
+						: title).width);
 		dialog.setFont(DialogFont.PALETTE);
 		// UI Requires 64px more to show title fully in palette windows.
 		dialog.setMinimumSize(width + extraWidth, -1);
@@ -126,11 +128,10 @@ public class AdmPaletteProxy extends PaletteProxy {
 			logo.setImage(AdmUiFactory.getImage("logo.png"));
 			logo.setMargin(-4, 4, -4, -4);
 			// Logo uses all rows of components + filler row
-			content.put("0, 0, 0, " + row + ", left, top",
-					logo);
+			content.put("0, 0, 0, " + row + ", left, top", logo);
 			row++;
 		}
-	
+
 		double[] rows = new double[row + extraRows];
 		for (int i = 0; i < rows.length; i++)
 			rows[i] = TableLayout.PREFERRED;
@@ -141,13 +142,12 @@ public class AdmPaletteProxy extends PaletteProxy {
 		else if (rows.length > 0)
 			rows[rows.length - 1] = TableLayout.FILL;
 
-		double[][] sizes = {
-			hasLogo
-				? new double[] { TableLayout.PREFERRED, TableLayout.PREFERRED,
-					TableLayout.FILL }
-				: new double[] { TableLayout.PREFERRED, TableLayout.FILL },
-			rows
-		};
+		double[][] sizes =
+				{
+						hasLogo ? new double[] { TableLayout.PREFERRED,
+								TableLayout.PREFERRED, TableLayout.FILL }
+								: new double[] { TableLayout.PREFERRED,
+										TableLayout.FILL }, rows };
 		TableLayout layout = new TableLayout(sizes, 0, gap);
 		dialog.setLayout(layout);
 		dialog.setContent(content);

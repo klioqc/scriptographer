@@ -48,9 +48,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\native\jni\admGlobals.h">
-      <Filter>Native\JNI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\native\jni\aiGlobals.h">
       <Filter>Native\JNI</Filter>
     </ClInclude>
@@ -90,6 +87,7 @@
     <ClInclude Include="resources\resource.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\native\jni\uiGlobals.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_ScriptographerEngine.cpp">
@@ -416,6 +414,10 @@
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_TextEditItem.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\win\commonctrls.cpp" />
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Image.cpp">
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
   </ItemGroup>

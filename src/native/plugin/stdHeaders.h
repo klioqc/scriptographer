@@ -51,6 +51,9 @@
 #define isnan(x) _isnan(x)
 #define isinf(x) (!_finite(x))
 
+
+#include "commonctrls.h"
+
 #endif // WIN_ENV
 
 // JNI
