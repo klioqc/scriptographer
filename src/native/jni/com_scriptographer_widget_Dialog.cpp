@@ -3,8 +3,12 @@
 #include "ScriptographerPlugin.h"
 #include "com_scriptographer_widget_Dialog.h"
 #include <Uxtheme.h>
-
+#include "uiGlobals.h"
 #include <AIMenuGroups.h> //temp
+
+//my debug
+DialogDataMap dialogDataMap;
+//end
 
 
 /*
@@ -12,157 +16,23 @@
  */
 #define CHECK_ERROR  if (error) {return error;}
 
-void PanelClosedNotifyProc(AIPanelRef fPanel)
-{
+void ASAPI Dialog_onDestroy(CControl * ctrl) {
 	if (gEngine != NULL) {
-		
 		JNIEnv *env = gEngine->getEnv();
 		try {
-			AIPanelUserData uData;
-			
-			AIErr err = sAIPanel->GetUserData(fPanel, uData);
-
-			jobject obj = (jobject) uData;
+      CDialog* dlg = reinterpret_cast<CDialog*> (ctrl);
+			jobject obj = gEngine->getDialogObject(dlg);
 			gEngine->callOnDestroy(obj);
 			// Clear the handle:
 			gEngine->setIntField(env, obj,
 					gEngine->fid_ui_NativeObject_handle, 0);
 			env->DeleteGlobalRef(obj);
-
-      //todod:common code with destroy
-      	AIPanelPlatformWindow panelPlatfromWindow = NULL;
-			err = sAIPanel->GetPlatformWindow(fPanel, panelPlatfromWindow);
-
-			if(panelPlatfromWindow)
-			{
-				//RemovePropA(panelPlatfromWindow, "TPNL");
-        DialogDataMap::iterator it = dialogDataMap.find(panelPlatfromWindow);
-	      if (it != dialogDataMap.end()) {
-          SetWindowLongPtr(panelPlatfromWindow, GWLP_WNDPROC, (LONG_PTR)(it->second.defaultProc));
-          dialogDataMap.erase(it);
-        }
-      }
-
 		} EXCEPTION_CATCH_REPORT(env);
 	}
 }
-
-#ifdef WIN_ENV
-
-// Set up a data structure and a hash map that keeps track of dialog references
-// and default window procs per hWnd of native dialog windows.
-// This is needed on Windows < CS3 to capture dialog activation and internally
-// fire the required events again.
-
-#include <hash_map>
-
-using namespace stdext;
-//mydebug
-//typedef struct {
-//	AIPanelRef panel;
-//	WNDPROC defaultProc;
-//} DialogData;
-//
-//typedef hash_map<HWND, DialogData> DialogDataMap;
-//end mydebug
-
-DialogDataMap dialogDataMap;
-
-LRESULT CALLBACK Dialog_windowProc(HWND hWnd, UINT uMsg,
-		WPARAM wParam, LPARAM lParam) {
-	DialogDataMap::iterator it = dialogDataMap.find(hWnd);
-	if (it != dialogDataMap.end()) {
-		// Consider this window activated if we either receive a WM_NCACTIVATE
-		// message or if a WM_PARENTNOTIFY with a mouse message is received
-		// (see ScriptographerPlugin::appWindowProc for more information).
-		if (uMsg == WM_NCACTIVATE || uMsg == WM_PARENTNOTIFY && wParam > 0x200) {
-			//jobject obj = gEngine->getDialogObject(it->second.panel);
-			//TODOgEngine->callOnNotify(obj, kADMWindowActivateNotifier);
-
-    
-		}
-
-
-    if (uMsg == WM_COMMAND) 
-		{
-			 commonCtrlManager->OnCommand(hWnd, wParam, lParam);
-    }
-    if (uMsg == WM_PARENTNOTIFY) 
-		{
-			 commonCtrlManager->OnParentNotify(hWnd, wParam, lParam);
-    }
-
-
-		return ::CallWindowProc(it->second.defaultProc, hWnd, uMsg, wParam,
-				lParam);
-	}
-	return 0;
-}
-
-#endif // WIN_ENV_INSTALL_WNDPROC
-
 /*
-
-ASErr ASAPI Dialog_onInit(ADMDialogRef dialog) {
-
-	// Hide the dialog by default:
-	sADMDialog->Show(dialog, false);
-	
-	// Attach the dialog-level callbacks
-	DEFINE_CALLBACK_PROC(Dialog_onDestroy);
-	sADMDialog->SetDestroyProc(dialog,
-			(ADMDialogDestroyProc) CALLBACK_PROC(Dialog_onDestroy));
-	
-	DEFINE_CALLBACK_PROC(Dialog_onNotify);
-	sADMDialog->SetNotifyProc(dialog,
-			(ADMDialogNotifyProc) CALLBACK_PROC(Dialog_onNotify));
-	
-	// Resize handler:
-	ADMItemRef resizeItemRef = sADMDialog->GetItem(dialog, kADMResizeItemID);
-	if (resizeItemRef) {
-		DEFINE_CALLBACK_PROC(Dialog_onSizeChanged);
-		sADMItem->SetNotifyProc(resizeItemRef,
-				(ADMItemNotifyProc) CALLBACK_PROC(Dialog_onSizeChanged));
-	}
-	
-	// Execute a one-shot timer right after creation of the dialog,
-	// to run initialize()
-	// Call onNotify with kADMInitializeNotifier
-	JNIEnv *env = gEngine->getEnv();
-	try {
-		jobject obj = gEngine->getDialogObject(dialog);
-		gEngine->callOnNotify(obj, kADMInitializeNotifier);
-	} EXCEPTION_CATCH_REPORT(env);
-
-#ifdef WIN_ENV_INSTALL_WNDPROC
-
-	HWND hWnd = (HWND) sADMDialog->GetWindowRef(dialog);
-	WNDPROC defaultProc = (WNDPROC) ::SetWindowLong(hWnd, GWL_WNDPROC,
-			(LONG) Dialog_windowProc);
-	DialogData data = { dialog, defaultProc };
-	dialogDataMap[hWnd] = data;
-
-#endif // WIN_ENV_INSTALL_WNDPROC
-
-	return kNoErr;
-}
-
-void ASAPI Dialog_onDestroy(ADMDialogRef dialog) {
-	if (gEngine != NULL) {
-		JNIEnv *env = gEngine->getEnv();
-		try {
-			jobject obj = gEngine->getDialogObject(dialog);
-			gEngine->callOnDestroy(obj);
-			// Clear the handle:
-			gEngine->setIntField(env, obj,
-					gEngine->fid_ui_NativeObject_handle, 0);
-			env->DeleteGlobalRef(obj);
-		} EXCEPTION_CATCH_REPORT(env);
-	}
-}
-
-void ASAPI Dialog_onSizeChanged(ADMItemRef item, ADMNotifierRef notifier) {
-	sADMItem->DefaultNotify(item, notifier);
+void ASAPI Dialog_onSizeChanged(CControl * item, ADMNotifierRef notifier) {
+	item->DefaultNotify(notifier);
 	if (sADMNotifier->IsNotifierType(notifier, kADMBoundsChangedNotifier)) {
 		JNIEnv *env = gEngine->getEnv();
 		try {
@@ -177,40 +47,102 @@ void ASAPI Dialog_onSizeChanged(ADMItemRef item, ADMNotifierRef notifier) {
 		} EXCEPTION_CATCH_REPORT(env);
 	}
 }
+*/
 
-void ASAPI Dialog_onNotify(ADMDialogRef dialog, ADMNotifierRef notifier) {
-	sADMDialog->DefaultNotify(dialog, notifier);
+void ASAPI Dialog_onNotify(CControl * ctrl, char * notifier) {
+
+   CDialog* dlg = reinterpret_cast<CDialog*> (ctrl);
+
+
+	dlg->DefaultNotify(notifier);
 	if (gEngine != NULL) {
-		jobject obj = gEngine->getDialogObject(dialog);
+		jobject obj = gEngine->getDialogObject(dlg);
 		gEngine->callOnNotify(obj, notifier);
 	}
 }
 
-ASBoolean ASAPI Dialog_onTrack(ADMDialogRef dialog, ADMTrackerRef tracker) {
-	jobject obj = gEngine->getDialogObject(dialog);
+ASBoolean ASAPI Dialog_onTrack(CControl * ctrl, int tracker) {
+  CDialog* dlg = reinterpret_cast<CDialog*> (ctrl);
+
+	jobject obj = gEngine->getDialogObject(dlg);
 	ASBoolean ret = gEngine->callOnTrack(obj, tracker);
 	if (ret)
-		ret = sADMDialog->DefaultTrack(dialog, tracker);
+		ret = dlg->DefaultTrack(tracker);
 	return ret;
 }
+ 
+void ASAPI Dialog_onDraw(CControl * ctrl, int drawer) {
+   CDialog* dlg = reinterpret_cast<CDialog*> (ctrl);
 
-void ASAPI Dialog_onDraw(ADMDialogRef dialog, ADMDrawerRef drawer) {
-	jobject obj = gEngine->getDialogObject(dialog);
+	jobject obj = gEngine->getDialogObject(dlg);
 	ASBoolean ret = gEngine->callOnDraw(obj, drawer);
-	if (ret)
-		sADMDialog->DefaultDraw(dialog, drawer);
+	//if (ret)
+	//	dlg->DefaultDraw(dialog, drawer);
 }
 
-*/
+ASErr ASAPI Dialog_onInit(CControl * ctrl) {
 
-AIErr SetIcon(		AIPanelRef fPanel);
-AIErr GetIcon(AIDataFilter* dataFilterIn, string* buffStrIn, size_t* lenIn);
+  CDialog* dlg = reinterpret_cast<CDialog*> (ctrl);
+	// Hide the dialog by default:
+  AIPanelRef panel = dlg->Panel();
+	sAIPanel->Show(panel, false);
+	
+	// Attach the dialog-level callbacks
+	DEFINE_CALLBACK_PROC(Dialog_onDestroy);
+	dlg->SetDestroyProc(Dialog_onDestroy);
+	
+	DEFINE_CALLBACK_PROC(Dialog_onNotify);
+	dlg->SetNotifyProc( Dialog_onNotify);
+	
+	// Resize handler:
+	/*ADMItemRef resizeItemRef = sADMDialog->GetItem(dialog, kADMResizeItemID);
+	if (resizeItemRef) {
+		DEFINE_CALLBACK_PROC(Dialog_onSizeChanged);
+		sADMItem->SetNotifyProc(resizeItemRef,
+				(ADMItemNotifyProc) CALLBACK_PROC(Dialog_onSizeChanged));
+	}*/
+	
+	// Execute a one-shot timer right after creation of the dialog,
+	// to run initialize()
+	// Call onNotify with kADMInitializeNotifier
+	JNIEnv *env = gEngine->getEnv();
+	try {
+		jobject obj = gEngine->getDialogObject(dlg);
+		gEngine->callOnNotify(obj, kUIInitializeNotifier);
+	} EXCEPTION_CATCH_REPORT(env);
+  
+	return kNoErr;
+}
+
+
 
 /*
  * int nativeCreate(java.lang.String arg1, int arg2, int arg3)
  */
 JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
   JNIEnv *env, jobject obj, jstring name, jint style, jint options)
+{
+  try {
+		ASUnicode *str = gEngine->convertString_ASUnicode(env, name);
+    CDialog * dialog = CDialog::CreateCDialog(str, style, Dialog_onInit, env->NewGlobalRef(obj), options);
+		delete str;
+
+    //mydebug
+    sAIMenu->AddMenuItemZString(gPlugin->getPluginRef(), "A my test Panel", kOtherPalettesMenuGroup, ZREF("A Third Party Panel"),
+										kMenuItemNoOptions, &fEmptyPanelPanelMenuItemHandle);
+
+
+    if (dialog == NULL)
+			throw new StringException("Unable to create dialog.");
+
+		return (jint) dialog;
+	} EXCEPTION_CONVERT(env);
+	return 0;
+
+}
+
+
+#ifdef test
 {
 
 	/*try {
@@ -312,11 +244,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 	error = sAIPanel->SetSizes(fPanel, minSize, prefUnconstSize, prefConstSize, maxSize);
 	
 	
-	//AIPanelPlatformWindow hDlg = NULL;
-	//error = sAIPanel->GetPlatformWindow(fPanel, hDlg);
-
-	//if (error)
-	//	return error;
+  Dialog_onInit(fPanel);
 
 	error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
 
@@ -422,6 +350,7 @@ AIErr GetIcon(AIDataFilter* dataFilterIn, string* buffStrIn, size_t* lenIn)
         }
     }
 }
+#endif
 
 #ifdef test
 LRESULT CALLBACK EmptyPanelPlugin::NewWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -491,64 +420,12 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 	
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		AIErr error = kNoErr;
-		if(fPanel)
-		{
-      
-      AIPanelUserData uData;
-			
-			AIErr err = sAIPanel->GetUserData(fPanel, uData);
+		CDialog * dlg = gEngine->getDialog(env, obj);
+    if (dlg)
+    {
+      dlg->Destroy();
+    }
 
-			jobject obj = (jobject) uData;
-			gEngine->callOnDestroy(obj);
-			// Clear the handle:
-			gEngine->setIntField(env, obj,
-					gEngine->fid_ui_NativeObject_handle, 0);
-			env->DeleteGlobalRef(obj);
-
-      error = sAIPanel->SetClosedNotifyProc(fPanel, NULL);
-
-    #ifdef WIN_ENV
-			
-			AIPanelPlatformWindow panelPlatfromWindow = NULL;
-			err = sAIPanel->GetPlatformWindow(fPanel, panelPlatfromWindow);
-
-			if(panelPlatfromWindow)
-			{
-				//RemovePropA(panelPlatfromWindow, "TPNL");
-        DialogDataMap::iterator it = dialogDataMap.find(panelPlatfromWindow);
-	      if (it != dialogDataMap.end()) {
-          SetWindowLongPtr(panelPlatfromWindow, GWLP_WNDPROC, (LONG_PTR)(it->second.defaultProc));
-          dialogDataMap.erase(it);
-        }
-        DestroyWindow(panelPlatfromWindow);
-			}
-		#endif
-/*
-			result = sAIPanel->Destroy(fPanel);
-			fPanel = NULL;
-		*/
-
-
-    
-			AIPanelFlyoutMenuRef fPanelFlyoutMenu;
-
-			sAIPanel->GetFlyoutMenu(fPanel, fPanelFlyoutMenu);
-
-			error = sAIPanel->Destroy(fPanel);
-			fPanel = NULL;
-
-			
-			error = sAIPanelFlyoutMenu->Destroy(fPanelFlyoutMenu);
-			fPanelFlyoutMenu = NULL;
-
-		}
-
-		//TODO call back call on destoy - from win proc notifier!?!
-
-		
-    JNIEnv *env = gEngine->getEnv();
 
       
 	
@@ -564,15 +441,15 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Dialog_nativeIsVisible
   JNIEnv * env, jobject obj)
 {
 try {
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		
-		AIPanelPlatformWindow hDlg = NULL;
-		AIBoolean bVis;
-		AIErr error = sAIPanel->IsShown (fPanel, bVis);
-		if (error)
-			return false;
-		return bVis;
-
+		CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+		  AIBoolean bVis;
+		  AIErr error = sAIPanel->IsShown (dlg->Panel(), bVis);
+		  if (error)
+			  return false;
+		  return bVis;
+    }
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -584,12 +461,13 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetVisible(
   JNIEnv * env, jobject obj, jboolean isVisible)
 {
 	try {
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		
-		AIPanelPlatformWindow hDlg = NULL;
-		AIBoolean bVis;
-    AIErr error;
-		error = sAIPanel->Show(fPanel, isVisible);
+		CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+		  AIBoolean bVis;
+      AIErr error;
+		  error = sAIPanel->Show(dlg->Panel(), isVisible);
+    }
 	} EXCEPTION_CONVERT(env);
 	
 }
@@ -611,13 +489,13 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetSize(
   JNIEnv *env, jobject obj) {
 	
 	  try {
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		
-		AIPanelPlatformWindow hDlg = NULL;
-		AISize size;
-		AIErr error = sAIPanel->GetSize(fPanel, size);
-		
-    return gEngine->convertUISize(env, size.width, size.height);
+		CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+		  AISize size;
+		  AIErr error = sAIPanel->GetSize(dlg->Panel(), size);
+		  return gEngine->convertUISize(env, size.width, size.height);
+    }
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -628,14 +506,15 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetSize(
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetSize(
   JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		
-		AIPanelPlatformWindow hDlg = NULL;
-		AISize size;
-    size.width = width;
-    size.height = height;
-		AIErr error = sAIPanel->SetSize(fPanel, size);
 
+    CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+      AISize size;
+      size.width = width;
+      size.height = height;
+		  AIErr error = sAIPanel->SetSize(dlg->Panel(), size);
+    }
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -646,19 +525,13 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetBounds(
   JNIEnv * env, jobject obj)
 {
 	try {
-		AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-		
-		AIPanelPlatformWindow hDlg = NULL;
-		AIErr error = sAIPanel->GetPlatformWindow(fPanel, hDlg);
-		//win:
-#ifdef WIN_ENV
-			RECT rc;
-			if (!GetWindowRect(hDlg, &rc))
-				throw new StringException("Error calling GetWindowRect.");
+		CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+      RECT rc;
+      dlg->GetBounds(&rc);
 			return gEngine->convertRectangle(env, &rc);
-#endif
-		//todo MAC
-
+    }
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -669,18 +542,12 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetBounds(
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetBounds(
 		JNIEnv *env, jobject obj, jint x, jint y, jint width, jint height) {
 	try {
-      	AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-	    //  AISize size = new AISize(x, y, width, height);
-
-        
-        //sAIPanel->S(fPanel, .SetMinimumSize();
-
-
-#ifdef WIN_ENV
-  
-
-#endif
-  
+		CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+      DEFINE_UI_RECT(rc, x, y, width, height);
+      dlg->SetBounds(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+    }
   
   } EXCEPTION_CONVERT(env);
 }
@@ -816,17 +683,18 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetTitle(
 		JNIEnv *env, jobject obj, jstring title) {
 	try {
 	
-    AIPanelRef fPanel = gEngine->getAIPanelRef(env, obj);
-	 
-		if (title != NULL) {
-		  	char *chars = gEngine->convertString(env, title);
-        ai::UnicodeString str =  ai::UnicodeString(chars); 
+    CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+	 		  if (title != NULL) {
+		  	  char *chars = gEngine->convertString(env, title);
+          ai::UnicodeString str =  ai::UnicodeString(chars); 
 
-			  sAIPanel->SetTitle(fPanel, str);
-			delete chars;
-		} else {
-			  sAIPanel->SetTitle(fPanel, ai::UnicodeString(""));
-		}
-
+			    sAIPanel->SetTitle(dlg->Panel(), str);
+			  delete chars;
+		  } else {
+			    sAIPanel->SetTitle(dlg->Panel(), ai::UnicodeString(""));
+		  }
+    }
 	} EXCEPTION_CONVERT(env);
 }

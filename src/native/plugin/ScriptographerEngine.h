@@ -723,15 +723,15 @@ public:
 #else //non ADM
 
 	int getControlObjectHandle(JNIEnv *env, jobject obj, const char *name);
-	
-  jobject getItemObject(CommonControl * item);
+	jobject getDialogObject(CDialog * dlg);
+  jobject getItemObject(CCommonControl * item);
   
-  inline CommonControl* getItemObject(JNIEnv *env, jobject obj) {
-		return (CommonControl *) getControlObjectHandle(env, obj, "item");
+  inline CCommonControl* getItemObject(JNIEnv *env, jobject obj) {
+		return (CCommonControl *) getControlObjectHandle(env, obj, "item");
 	}
 
-	inline AIPanelRef  getAIPanelRef (JNIEnv *env, jobject obj) {
-		return (AIPanelRef ) getControlObjectHandle(env, obj, "AiPanelRef");
+	inline CDialog * getDialog (JNIEnv *env, jobject obj) {
+		return (CDialog * ) getControlObjectHandle(env, obj, "dialog");
 	}
 
 
@@ -740,6 +740,8 @@ public:
 		return (HBITMAP) getControlObjectHandle(env, obj, "image");
 	}
 
+   bool ScriptographerEngine::callOnTrack(jobject handler, int tracker) ;
+   bool ScriptographerEngine::callOnDraw(jobject handler,  int drawer);
 
 #endif //#ifndef ADM_FREE
 	//common notifiers

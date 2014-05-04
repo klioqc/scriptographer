@@ -2708,10 +2708,22 @@ int ScriptographerEngine::getControlObjectHandle(JNIEnv *env, jobject obj, const
 	return handle;
 }
 
-jobject ScriptographerEngine::getItemObject(CommonControl * item) {
+jobject ScriptographerEngine::getDialogObject(CDialog * dlg)
+{
+  jobject obj = NULL;
+	if (dlg != NULL && sAIPanel != NULL) {
+    AIPanelUserData userData;
+		 sAIPanel->GetUserData(dlg->Panel(), userData);
+     obj = (jobject)userData;
+		 if (obj == NULL) throw new StringException("The dialog is not linked to a scripting object.");
+	}
+	return obj;
+}
+
+jobject ScriptographerEngine::getItemObject(CCommonControl * item) {
 	jobject obj = NULL;
-	if (item != NULL && item != NULL) {
-		obj = (jobject) item->GetUserData();
+	if (item != NULL) {
+	   obj = (jobject) item->GetUserData();
 		if (obj == NULL) throw new StringException("The item is not linked to a scripting object.");
 	}
 	return obj;
@@ -2729,6 +2741,41 @@ void ScriptographerEngine::callOnNotify(jobject handler, char *notifier) {
 void ScriptographerEngine::callOnDestroy(jobject handler) {
 	callOnNotify(handler, kUIDestroyNotifier);
 }
+
+bool ScriptographerEngine::callOnTrack(jobject handler, int tracker) {
+	JNIEnv *env = getEnv();
+	try {
+	/*	AppContext context;
+		jobject trackerObj = getObjectField(env, handler,
+				fid_adm_NotificationHandler_tracker);
+		ADMPoint pt;
+		sADMTracker->GetPoint(tracker, &pt);
+		return callBooleanMethod(env, trackerObj,
+				mid_adm_Tracker_onTrack, handler,
+				(jint) tracker, (jint) sADMTracker->GetAction(tracker),
+				(jint) sADMTracker->GetModifiers(tracker), pt.h, pt.v,
+				(jint) sADMTracker->GetMouseState(tracker),
+				(jint) sADMTracker->GetVirtualKey(tracker),
+				(jchar) sADMTracker->GetCharacter(tracker),
+				(jlong) sADMTracker->GetTime(tracker));*/
+	} EXCEPTION_CATCH_REPORT(env);
+	return true;
+}
+
+bool ScriptographerEngine::callOnDraw(jobject handler, int drawer) {
+	JNIEnv *env = getEnv();
+	try {
+    /*
+		AppContext context;
+		jobject drawerObj = getObjectField(env, handler,
+				fid_adm_NotificationHandler_drawer);
+		setIntField(env, drawerObj, fid_ui_NativeObject_handle, (jint) drawer);
+		return callBooleanMethod(env, handler,
+				mid_adm_NotificationHandler_onDraw, drawerObj);*/
+	} EXCEPTION_CATCH_REPORT(env);
+	return true;
+}
+
 
 #endif //#ifndef ADM_FREE
 

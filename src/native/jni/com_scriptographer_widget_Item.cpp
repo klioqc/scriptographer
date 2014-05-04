@@ -5,29 +5,34 @@
 #include "uiGlobals.h"
 #include "commonctrls.h"
 
+void Item_onDestroy(CControl* inItem);
+void Item_onNotify(CControl* inItem, char * notifier);
 
-int Item_onInit(CommonControl* inItem) {
+
+int Item_onInit(CControl* inItem) {
 	// Attach the item-level callbacks
 	DEFINE_CALLBACK_PROC(Item_onDestroy);
-  inItem->SetDestroyProc((CommonControlDestroyProc) CALLBACK_PROC(Item_onDestroy));
+  inItem->SetDestroyProc((CControlDestroyProc) CALLBACK_PROC(Item_onDestroy));
 	
 	DEFINE_CALLBACK_PROC(Item_onNotify);
-	inItem->SetNotifyProc((CommonControlNotifyProc) CALLBACK_PROC(Item_onNotify));
+	inItem->SetNotifyProc((CControlNotifyProc) CALLBACK_PROC(Item_onNotify));
 
 	// Call onNotify with kADMInitializeNotifier
 	JNIEnv *env = gEngine->getEnv();
 	try {
-		jobject obj = gEngine->getItemObject(inItem);
+		CCommonControl * ctrl = reinterpret_cast<CCommonControl*>(inItem);
+		jobject obj = gEngine->getItemObject(ctrl);
 		gEngine->callOnNotify(obj, kUIInitializeNotifier);
 	} EXCEPTION_CATCH_REPORT(env);
 	return kNoErr;
 
 }
-void Item_onDestroy(CommonControl* inItem) {
+void Item_onDestroy(CControl* inItem) {
 	if (gEngine != NULL) {
 		JNIEnv *env = gEngine->getEnv();
 		try {
-			jobject obj = gEngine->getItemObject(inItem);
+      CCommonControl * ctrl = reinterpret_cast<CCommonControl*>(inItem);
+			jobject obj = gEngine->getItemObject(ctrl);
 			gEngine->callOnDestroy(obj);
 			// clear the handle:
 			gEngine->setIntField(env, obj, gEngine->fid_ui_NativeObject_handle, 0);
@@ -52,10 +57,13 @@ void Item_onDestroy(CommonControl* inItem) {
   }
 }
 
-void Item_onNotify(CommonControl* inItem, char * notifier) {
+void Item_onNotify(CControl* inItem, char * notifier) {
 	//sADMItem->DefaultNotify(item, notifier);
 	if (gEngine != NULL) {
-		jobject obj = gEngine->getItemObject(inItem);
+
+		CCommonControl * ctrl = reinterpret_cast<CCommonControl*>(inItem);
+		jobject obj = gEngine->getItemObject(ctrl);
+
 		gEngine->callOnNotify(obj, notifier);
 	}
 }
@@ -86,32 +94,23 @@ void ASAPI Item_onDraw(ADMItemRef item, ADMDrawerRef drawer) {
 JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeCreate(
 		JNIEnv *env, jobject obj, jobject dialogObj, jstring type, jint options) {
 	try {
-	  AIPanelRef fPanel = gEngine->getAIPanelRef(env, dialogObj);
-
-		char * itemType =  gEngine->convertString(env, type);
+	  CDialog * dlg = gEngine->getDialog(env, dialogObj);
+    if (dlg)
+    {
+		    char * itemType =  gEngine->convertString(env, type);
     
-	  AIPanelPlatformWindow hDlg = NULL;
-	  sAIPanel->GetPlatformWindow(fPanel, hDlg);
-
-#ifdef WIN_ENV
-    DEFINE_UI_RECT(rect, 0, 0, 100, 100);
-		DEFINE_CALLBACK_PROC(Item_onInit);
+        DEFINE_UI_RECT(rect, 0, 0, 100, 100);
+		    DEFINE_CALLBACK_PROC(Item_onInit);
     
-      CommonControl * item = commonCtrlManager->CreateItem(hDlg, itemType, &rect, 
-      (CommonControlInitProc)CALLBACK_PROC(Item_onInit),
-      env->NewGlobalRef(obj));
+        CControl * item = dlg->CreateItem(itemType, &rect, (CControlInitProc)CALLBACK_PROC(Item_onInit), env->NewGlobalRef(obj));
 
+        delete itemType;
 
-    delete itemType;
+      if (item == NULL)
+			  throw new StringException("Unable to create dialog item.");
 
-    if (item == NULL)
-			throw new StringException("Unable to create dialog item.");
-
-
-
-		return (jint) item;
-
- #endif
+		  return (jint) item;
+    }
 
 	} EXCEPTION_CONVERT(env);
 	return 0;
@@ -323,7 +322,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_nativeGetBounds(
 		JNIEnv *env, jobject obj) {
 	try {
 		
-    CommonControl * item = gEngine->getItemObject(env, obj);
+    CCommonControl * item = gEngine->getItemObject(env, obj);
 		RECT rt;
     item->GetBounds(&rt);
 		return gEngine->convertRectangle(env, &rt);
@@ -338,7 +337,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
 		JNIEnv *env, jobject obj, jint x, jint y, jint width, jint height) {
 	try {
 		
-    CommonControl * item = gEngine->getItemObject(env, obj);
+    CCommonControl * item = gEngine->getItemObject(env, obj);
     item->SetBounds( x, y, width, height);
 	
 	} EXCEPTION_CONVERT(env);
@@ -349,7 +348,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetSize(JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		 CommonControl * item = gEngine->getItemObject(env, obj);
+		 CCommonControl * item = gEngine->getItemObject(env, obj);
 	   item->SetWindowSize(width, height);
 	
 	} EXCEPTION_CONVERT(env);

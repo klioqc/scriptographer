@@ -3,53 +3,53 @@
 
 
 /*
- * com.scriptographer.widget.Item
- */
+* com.scriptographer.widget.Item
+*/
 //temp //todo: rename without adm, sync with widget itemtype
 #define DIAL "ADM Dial Type" // wrapped		
 #define FRAME "ADM Frame Type"  // wrapped
-	#define ITEMGROUP "ADM Item Group Type" // wrapped
-	#define TABBED_MENU "ADM Tabbed Menu Type" // deprecated
-	#define LISTBOX "ADM List Box Type" // wrapped
-	#define HIERARCHY_LISTBOX "ADM Hierarchy List Box Type" // wrapped
-	#define PICTURE_CHECKBOX "ADM Picture Check Box Button Type" // wrapped
-	#define PICTURE_PUSHBUTTON "ADM Picture Push Button Type" // wrapped
-	#define PICTURE_RADIOBUTTON "ADM Picture Radio Button Type" // wrapped
-	#define PICTURE_STATIC "ADM Picture Static Type" // wrapped
-	#define POPUP_CONTROL "ADM Popup Control Type"
-	#define POPUP_CONTROLBUTTON "ADM Popup Control Button Type"
-	#define POPUP_SPINEDIT_CONTROL "ADM Popup Spin Edit Control Type"
-	#define POPUP_LIST "ADM Popup List Type" // wrapped
-	#define POPUP_MENU "ADM Popup Menu Type" // wrapped
-	#define RESIZE "ADM Resize Type" // wrapped  dialog.getResizeButton ) Button)
-	#define SCROLLBAR "ADM Scrollbar Type" // wrapped
-	#define SCROLLING_POPUP_LIST "ADM Scrolling Popup List Type" // wrapped
-	#define SLIDER "ADM Slider Type" // wrapped
-	#define SPINEDIT "ADM Spin Edit Type" // wrapped
-	#define SPINEDIT_POPUP "ADM Spin Edit Popup Type" // wrapped
-	#define SPINEDIT_SCROLLING_POPUP "ADM Spin Edit Scrolling Popup Type" // wrapped
-	#define TEXT_CHECKBOX "ADM Text Check Box Type" // wrapped
-	#define TEXT_EDIT "ADM Text Edit Type" // wrapped
-	#define TEXT_EDIT_READONLY "ADM Text Edit Read-only Type" // wrapped
-	#define TEXT_EDIT_MULTILINE "ADM Text Edit Multi Line Type" // wrapped
-	#define TEXT_EDIT_MULTILINE_READONLY "ADM Text Edit Multi Line Read-only Type" // wrapped
-	#define TEXT_EDIT_POPUP "ADM Text Edit Popup Type" // wrapped
-	#define TEXT_EDIT_SCROLLING_POPUP "ADM Text Edit Scrolling Popup Type" // wrapped
-	#define TEXT_EDIT_PASSWORD "ADM Password Text Edit Type" // wrapped
-	#define TEXT_PUSHBUTTON "ADM Text Push Button Type" // wrapped
-	#define TEXT_RADIOBUTTON "ADM Text Radio Button Type" // wrapped
-	#define TEXT_STATIC "ADM Text Static Type" // wrapped
-	#define TEXT_STATIC_MULTILINE "ADM Text Static Multi Line Type" // wrapped
-	#define PROGRESS_BAR "ADM Progress Bar Type" // wrapped
-	#define CHASING_ARROWS "ADM Chasing Arrows Type" // wrapped
-	#define USER "ADM User Type"
-	#define MULTICOLUMN_LISTVIEW "ADM Multi Column List View Type"
-	#define SCROLLING_VIEW "ADM Scrolling View Type"
-	#define TABGROUP "ADM Tab Group Type"
-	// Fake Types
-	#define SPACER "ADM Spacer"
+#define ITEMGROUP "ADM Item Group Type" // wrapped
+#define TABBED_MENU "ADM Tabbed Menu Type" // deprecated
+#define LISTBOX "ADM List Box Type" // wrapped
+#define HIERARCHY_LISTBOX "ADM Hierarchy List Box Type" // wrapped
+#define PICTURE_CHECKBOX "ADM Picture Check Box Button Type" // wrapped
+#define PICTURE_PUSHBUTTON "ADM Picture Push Button Type" // wrapped
+#define PICTURE_RADIOBUTTON "ADM Picture Radio Button Type" // wrapped
+#define PICTURE_STATIC "ADM Picture Static Type" // wrapped
+#define POPUP_CONTROL "ADM Popup Control Type"
+#define POPUP_CONTROLBUTTON "ADM Popup Control Button Type"
+#define POPUP_SPINEDIT_CONTROL "ADM Popup Spin Edit Control Type"
+#define POPUP_LIST "ADM Popup List Type" // wrapped
+#define POPUP_MENU "ADM Popup Menu Type" // wrapped
+#define RESIZE "ADM Resize Type" // wrapped  dialog.getResizeButton ) Button)
+#define SCROLLBAR "ADM Scrollbar Type" // wrapped
+#define SCROLLING_POPUP_LIST "ADM Scrolling Popup List Type" // wrapped
+#define SLIDER "ADM Slider Type" // wrapped
+#define SPINEDIT "ADM Spin Edit Type" // wrapped
+#define SPINEDIT_POPUP "ADM Spin Edit Popup Type" // wrapped
+#define SPINEDIT_SCROLLING_POPUP "ADM Spin Edit Scrolling Popup Type" // wrapped
+#define TEXT_CHECKBOX "ADM Text Check Box Type" // wrapped
+#define TEXT_EDIT "ADM Text Edit Type" // wrapped
+#define TEXT_EDIT_READONLY "ADM Text Edit Read-only Type" // wrapped
+#define TEXT_EDIT_MULTILINE "ADM Text Edit Multi Line Type" // wrapped
+#define TEXT_EDIT_MULTILINE_READONLY "ADM Text Edit Multi Line Read-only Type" // wrapped
+#define TEXT_EDIT_POPUP "ADM Text Edit Popup Type" // wrapped
+#define TEXT_EDIT_SCROLLING_POPUP "ADM Text Edit Scrolling Popup Type" // wrapped
+#define TEXT_EDIT_PASSWORD "ADM Password Text Edit Type" // wrapped
+#define TEXT_PUSHBUTTON "ADM Text Push Button Type" // wrapped
+#define TEXT_RADIOBUTTON "ADM Text Radio Button Type" // wrapped
+#define TEXT_STATIC "ADM Text Static Type" // wrapped
+#define TEXT_STATIC_MULTILINE "ADM Text Static Multi Line Type" // wrapped
+#define PROGRESS_BAR "ADM Progress Bar Type" // wrapped
+#define CHASING_ARROWS "ADM Chasing Arrows Type" // wrapped
+#define USER "ADM User Type"
+#define MULTICOLUMN_LISTVIEW "ADM Multi Column List View Type"
+#define SCROLLING_VIEW "ADM Scrolling View Type"
+#define TABGROUP "ADM Tab Group Type"
+// Fake Types
+#define SPACER "ADM Spacer"
 
- #define USER_CHANGED "ADM User Changed Notifier"
+#define USER_CHANGED "ADM User Changed Notifier"
 #define 	INTERMEDIATE_CHANGED "ADM Intermediate Changed Notifier"
 #define 	BOUNDS_CHANGED "ADM Bounds Changed Notifier"
 #define 	VIEW_BOUNDS_CHANGED "ADM View Bounds Changed Notifier"
@@ -82,119 +82,179 @@
 #define 	POST_CLIPBOARD_REDO "ADM Post Clipboard Redo Notifier"
 #define 	PRE_CLIPBOARD_UNDO "ADM Pre Clipboard Undo Notifier"
 #define 	POST_CLIPBOARD_UNDO "ADM Post Clipboard Undo Notifier"
- 
 
 
 
 
-class CommonControl;
 
-typedef int (*CommonControlInitProc)(CommonControl* inItem);
-typedef void (*CommonControlDestroyProc)(CommonControl* inItem);
-typedef void (*CommonControlNotifyProc)(CommonControl* inItem, char * notifier);
+class CControl;
+
+//typedef int (*CommonControlInitProc)(CommonControl* inItem);
+//typedef void (*CommonControlDestroyProc)(CommonControl* inItem);
+//typedef void (*CommonControlNotifyProc)(CommonControl* inItem, char * notifier);
+
+typedef int (*CControlInitProc)( CControl* inItem );
+typedef void (*CControlDestroyProc)(  CControl* inItem );
+typedef void (*CControlNotifyProc)( CControl* inItem , char * notifier);
+
+
+class CControl
+{
+public: 
+  CControl(){};
+
+
+  void SetInitProc(CControlInitProc initProc)
+  {
+    this->initProc = initProc;
+  }
+  void SetNotifyProc(CControlNotifyProc notifyProc)
+  {
+    this->notifyProc = notifyProc;
+  }
+  void SetDestroyProc(CControlDestroyProc destroyProc)
+  {
+
+    this->destroyProc = destroyProc;
+  }
+
+
+  virtual bool DefaultNotify(char * notifier) { return true;};
+  virtual bool DefaultTrack(int tracker) {return true;};
 
 
 
-class CommonControl
+  void * GetUserData()
+  {
+    return this->userData;
+  }
+
+  void SetUserData(void * data)
+  {
+    this->userData = data;
+  }
+
+  //virtual bool Create(HWND hDlg, RECT* rect);
+
+
+  bool OnCreate()
+  {
+    if (initProc != NULL)
+      initProc(this);
+    return true;
+  }
+  bool OnDestroy()
+  {
+    if (destroyProc != NULL)
+      destroyProc(this);
+    return true;
+  }
+  bool OnNotify(char * notifier)
+  {
+      if (notifyProc != NULL)
+        notifyProc(this, notifier);
+      return true;
+  }
+
+  void SetWindowSize(int width, int height)
+  {
+    SetWindowPos(hWnd, 0, 0,0,width,height, SWP_NOMOVE);
+  }
+  void GetBounds(RECT * rc)
+  {
+    GetWindowRect(hWnd, rc);
+  }
+  void SetBounds(int x,int y, int width, int height)
+  {
+    SetWindowPos(hWnd, NULL, x, y, width, height, SWP_SHOWWINDOW);
+  }
+
+  void SetText(char *text)
+  {
+    SetWindowText(hWnd, text);
+  }
+
+
+protected:
+  HWND hWnd;
+
+private:
+  void * userData;
+
+
+  CControlInitProc initProc;
+  CControlNotifyProc notifyProc;
+  CControlDestroyProc destroyProc;
+};
+
+
+
+class CCommonControl : public CControl
 {
 
 public:
-  CommonControl(int id) {
+  CCommonControl(int id) {
     controlID = id;
   }
 
 public:
-  void SetInitProc(CommonControlInitProc initProc);
-  void SetNotifyProc(CommonControlNotifyProc notifyProc);
-  void SetDestroyProc(CommonControlDestroyProc destroyProc);
-  
 
-
-  
-   bool OnCreate()
-   {
-     if (initProc != NULL)
-       initProc(this);
-      return true;
-   }
-   bool OnDestroy()
-   {
-      if (destroyProc != NULL)
-       destroyProc(this);
-      return true;
-   }
-
-
-  void * GetUserData();
-  void SetUserData(void *);
-
-    virtual bool Create(HWND hDlg, RECT* rect);
-    virtual bool OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam);
-
-
-    void SetWindowSize(int width, int height)
-    {
-        SetWindowPos(hWnd, 0, 0,0,width,height, SWP_NOMOVE);
-    }
-    void GetBounds(RECT * rc)
-    {
-       GetWindowRect(hWnd, rc);
-    }
-    void SetBounds(int x,int y, int width, int height)
-    {
-      SetWindowPos(hWnd, NULL, x, y, width, height, SWP_SHOWWINDOW);
-    }
-
-    void SetText(char *text)
-    {
-       SetWindowText(hWnd, text);
-    }
+  virtual bool OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam);
+  virtual bool Create(HWND hDlg, RECT* rect);
 
 private:
-    void * userData;
+  void * userData;
 
 
 protected:
-    int controlID;
-    HWND hWnd;
-
-      
-    CommonControlInitProc initProc;
-    CommonControlNotifyProc notifyProc;
-    CommonControlDestroyProc destroyProc;
+  int controlID;
 
 };
 
 
 #include <hash_map>
-typedef stdext::hash_map<int, CommonControl *> ControlMap;
-
-class CommonControlManager
+typedef stdext::hash_map<int, CCommonControl *> ControlMap;
+#include <aipanel.h>
+class CDialog : public CControl
 {
 public:
-   CommonControlManager();
+  CDialog( AIPanelRef panel );
+  
+  static CDialog * CreateCDialog(ASUnicode * dlgname, int style, CControlInitProc Dialog_onInit, void * userData, int options);
 
-   CommonControl * CreateItem(HWND hDlg, char * itemType,  RECT* rect, CommonControlInitProc Item_onInit, void * userData);
+  CCommonControl * CreateItem(char * itemType,  RECT* rect, CControlInitProc Item_onInit, void * userData);
 
-   bool OnParentNotify(HWND hWnd, WPARAM wParam, LPARAM lParam);
+  CCommonControl * GetControl(int id)
+  {
+    ControlMap::iterator it = ctrlMap.find(id);
+    if (it != ctrlMap.end()) {
+      return it->second;
+    }
+    return NULL; //todo throw
+  }
 
-   bool OnCommand(HWND hWnd, WPARAM wParam, LPARAM lParam);
+   
+  bool OnParentNotify(HWND hWnd, WPARAM wParam, LPARAM lParam);
 
-   CommonControl * GetControl(int id)
-   {
-        ControlMap::iterator it = ctrlMap.find(id);
-	      if (it != ctrlMap.end()) {
-          return it->second;
-        }
-        return NULL; //todo throw
-   }
+  bool OnCommand(HWND hWnd, WPARAM wParam, LPARAM lParam);
+
+  AIPanelRef Panel()
+  {
+    return fPanel;
+  }
+  void Destroy();
 
 private:
-  static int nextid;
+  AIPanelRef fPanel;
+  int nextid;
   ControlMap ctrlMap;
+
+  void SetWindowProc();
+  static LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam);
+  LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam);
+  WNDPROC oldWndProc;
 };
 
 
-extern CommonControlManager*  commonCtrlManager;
 
 #endif

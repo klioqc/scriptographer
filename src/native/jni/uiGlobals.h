@@ -58,10 +58,10 @@ void ASAPI HierarchyListEntry_onDraw(ADMListEntryRef entry, ADMDrawerRef drawer)
 
 #else !ADM
 
-int  ASAPI Item_onInit(CommonControl * item);
-void ASAPI Item_onDestroy(CommonControl * item);
-void ASAPI Item_onNotify(CommonControl * item, char * notifier);
-
+//int  ASAPI Item_onInit();
+//void ASAPI Item_onDestroy();
+//void ASAPI Item_onNotify(char * notifier);
+//
 
 
 // Pseudo notifiers: 

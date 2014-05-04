@@ -12,50 +12,63 @@
 
 #include "stdHeaders.h"
 #include "ScriptographerEngine.h"
+#include "ScriptographerPlugin.h"
 #include <hash_map>
 #include "commonctrls.h"
-
 #include <CommCtrl.h>
 #pragma comment(lib,"comctl32.lib")
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-int CommonControlManager::nextid = 33000;
+LRESULT CALLBACK CDialog::StaticWndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam) {
 
-//delete on plugin end
-CommonControlManager* commonCtrlManager;
+  CDialog * dlg = (CDialog*)GetWindowLongPtr(hWnd,GWLP_USERDATA);
+  if(!dlg) return DefWindowProc(hWnd,uMsg,wParam,lParam);
 
-CommonControlManager::CommonControlManager()
-{
-   INITCOMMONCONTROLSEX icex;           // Structure for control initialization.
-    icex.dwICC = ICC_STANDARD_CLASSES ;
-    bool res =  InitCommonControlsEx(&icex);
-    if (!res)
-      ; //throw?
-
-    //ctrlMap = new ControlMap();
+		// Consider this window activated if we either receive a WM_NCACTIVATE
+		// message or if a WM_PARENTNOTIFY with a mouse message is received
+		// (see ScriptographerPlugin::appWindowProc for more information).
+		if (uMsg == WM_NCACTIVATE || uMsg == WM_PARENTNOTIFY && wParam > 0x200) {
+			//jobject obj = gEngine->getDialogObject(it->second.panel);
+			//TODOgEngine->callOnNotify(obj, kADMWindowActivateNotifier);
+          
+		}
+    return dlg->WndProc(hWnd, uMsg, wParam, lParam);
+   
 }
 
-   bool CommonControlManager::OnCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
+LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
+{
+  //deal with usual messages
+	switch(uMsg)
+	{
+    case WM_COMMAND:
+      OnCommand(hWnd, wParam, lParam);
+      break;
+    case WM_PARENTNOTIFY:
+      OnParentNotify(hWnd, wParam, lParam);
+      break;
+
+	default:
+		return DefWindowProc(hWnd,uMsg,wParam,lParam);
+	};
+	return 0;
+}
+
+
+
+   bool CDialog::OnCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
    {
       int nNotifyCode =HIWORD(wParam); 
-     // BN_CLICKED
-      //== BN_CLICKED )
      int id = LOWORD(wParam);
      HWND child = (HWND)lParam;
-     
-     GetControl(id)->OnCommand(nNotifyCode, wParam, lParam);
-
-     return false;
+     return GetControl(id)->OnCommand(nNotifyCode, wParam, lParam);
    }
   
  
-   bool CommonControlManager::OnParentNotify(HWND hWnd, WPARAM wParam, LPARAM lParam)
+   bool CDialog::OnParentNotify(HWND hWnd, WPARAM wParam, LPARAM lParam)
    {
-     int msg = LOWORD(wParam);
-
+      int msg = LOWORD(wParam);
       int id = HIWORD(wParam);
-
-
      if (msg == WM_CREATE)
      {
        //call create for id;
@@ -72,61 +85,182 @@ CommonControlManager::CommonControlManager()
      return false;
    }
   
-   CommonControl *  CreateControl(char * itemType, int controlID);
+ void PanelClosedNotifyProc(AIPanelRef fPanel)
+{
+	if (gEngine != NULL) {
 
-   CommonControl * CommonControlManager::CreateItem(HWND hDlg, char * itemType,  RECT* rect, CommonControlInitProc Item_onInit, void * userData)
+		JNIEnv *env = gEngine->getEnv();
+		try {
+			AIPanelUserData uData;
+		
+      //HERE CALL Dialog_OnDestroy!!!!
+
+			AIErr err = sAIPanel->GetUserData(fPanel, uData);
+
+			jobject obj = (jobject) uData;
+			gEngine->callOnDestroy(obj);
+			// Clear the handle:
+			gEngine->setIntField(env, obj,
+					gEngine->fid_ui_NativeObject_handle, 0);
+			env->DeleteGlobalRef(obj);
+
+      //todod:common code with destroy
+      	AIPanelPlatformWindow panelPlatfromWindow = NULL;
+			err = sAIPanel->GetPlatformWindow(fPanel, panelPlatfromWindow);
+
+			if(panelPlatfromWindow)
+			{
+				//RemovePropA(panelPlatfromWindow, "TPNL");
+        DialogDataMap::iterator it = dialogDataMap.find(panelPlatfromWindow);
+	      if (it != dialogDataMap.end()) {
+          SetWindowLongPtr(panelPlatfromWindow, GWLP_WNDPROC, (LONG_PTR)(it->second.defaultProc));
+          dialogDataMap.erase(it);
+        }
+      }
+
+		} EXCEPTION_CATCH_REPORT(env);
+	}
+}
+
+
+   CDialog::CDialog( AIPanelRef panel )
   {
-      int ctrlId = CommonControlManager::nextid++;
-      CommonControl * ctrl = CreateControl(itemType, ctrlId);
+    nextid = 33000;
+    fPanel = panel;
+    AIPanelPlatformWindow wnd;
+    sAIPanel->GetPlatformWindow(fPanel, wnd);
+    hWnd = (HWND)wnd;
+  }
+
+ 
+
+   CDialog * CDialog::CreateCDialog(ASUnicode * dlgName, int style, CControlInitProc Dialog_onInit, void * userData, int options)
+   {
+      	AIPanelRef fPanel;
+        AIPanelFlyoutMenuRef fPanelFlyoutMenu;
+        ASErr error = sAIPanelFlyoutMenu->Create(fPanelFlyoutMenu);
+	     if (error)
+	      	 throw new StringException("Unable to create dialog menu.");
+
+        AISize pnSize = {240, 320};
+        error = sAIPanel->Create(gPlugin->getPluginRef(), 
+				ai::UnicodeString("kEmptyDialogID"), 
+				ai::UnicodeString("qwe"), 3,
+				pnSize,
+				true, 
+				 fPanelFlyoutMenu, //?
+				userData, //user data
+				fPanel);
+	      if (error)
+	      	 throw new StringException("Unable to create dialog panel.");
+
+       CDialog * dlg = new CDialog(fPanel);
+       dlg->SetWindowProc();
+       dlg->SetInitProc(Dialog_onInit);
+       dlg->OnCreate();
+
+       error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+    
+       return dlg;
+
+   }
+   void CDialog::SetWindowProc()
+   {
+        oldWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(hWnd, GWLP_WNDPROC,  reinterpret_cast<LONG_PTR>(StaticWndProc)));
+        SetWindowLongPtr(hWnd,GWLP_USERDATA,(LONG_PTR)this);
+  
+        //mydebug
+	      DialogData data = {fPanel, oldWndProc };
+	      dialogDataMap[hWnd] = data;
+ 
+   
+   }
+
+void CDialog::Destroy()
+{
+	if (gEngine != NULL) {
+
+		JNIEnv *env = gEngine->getEnv();
+  
+    AIErr error = kNoErr;
+		
+    if(fPanel)
+		{
+      
+      AIPanelUserData uData;
+			
+			AIErr err = sAIPanel->GetUserData(fPanel, uData);
+
+			jobject obj = (jobject) uData;
+			gEngine->callOnDestroy(obj);
+			// Clear the handle:
+			gEngine->setIntField(env, obj, gEngine->fid_ui_NativeObject_handle, 0);
+			env->DeleteGlobalRef(obj);
+
+      error = sAIPanel->SetClosedNotifyProc(fPanel, NULL);
+
+       SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)(oldWndProc));
+       SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(0));
+
+       DestroyWindow(hWnd);
+	
+			AIPanelFlyoutMenuRef fPanelFlyoutMenu;
+
+			sAIPanel->GetFlyoutMenu(fPanel, fPanelFlyoutMenu);
+
+			error = sAIPanel->Destroy(fPanel);
+			fPanel = NULL;
+
+			
+			error = sAIPanelFlyoutMenu->Destroy(fPanelFlyoutMenu);
+			fPanelFlyoutMenu = NULL;
+
+		}
+
+		//TODO call back call on destoy - from win proc notifier!?!
+  }
+
+}
+
+   CCommonControl *  CreateControl(char * itemType, int controlID);
+
+   CCommonControl * CDialog::CreateItem(char * itemType,  RECT* rect, CControlInitProc Item_onInit, void * userData)
+  {
+      int ctrlId = nextid++;
+      CCommonControl * ctrl = CreateControl(itemType, ctrlId);
       ctrl->SetInitProc(Item_onInit);
       ctrl->SetUserData(userData);
       ctrlMap[ctrlId] = ctrl;
 
-      ctrl->Create(hDlg, rect);
-      //todo: map : id -> control;
+      ctrl->Create(hWnd, rect);
+
       return ctrl;
   }
 
 
-  void CommonControl::SetInitProc(CommonControlInitProc initProc)
-  {
-      this->initProc = initProc;
-  }
-  void CommonControl::SetNotifyProc(CommonControlNotifyProc notifyProc)
-  {
-      this->notifyProc = notifyProc;
-  }
-  void CommonControl::SetDestroyProc(CommonControlDestroyProc destroyProc)
-  {
-      this->destroyProc = destroyProc;
-  }
 
-  void * CommonControl::GetUserData()
-  {
-    return this->userData;
-  }
 
-  void   CommonControl::SetUserData(void * data)
-  {
-    this->userData = data;
-  }
 
-  bool CommonControl::Create(HWND hDlg, RECT* rect)
+  bool CCommonControl::Create(HWND hDlg, RECT* rect)
   {
     return false;
   }
 
-  bool CommonControl::OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam)
+  bool CCommonControl::OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam)
   {
       return false;
   }
 
+
+
+
+
 /*windows controls*/
 
-  class ButtonControl : public CommonControl
+  class ButtonControl : public CCommonControl
   {
     public:
-        ButtonControl(int id):CommonControl(id) {};
+        ButtonControl(int id):CCommonControl(id) {};
     
         virtual bool Create(HWND hDlg, RECT* rect)
         {
@@ -149,8 +283,7 @@ CommonControlManager::CommonControlManager()
 
      bool ButtonControl::OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam)
      {
-        if (this->notifyProc != NULL)
-         notifyProc(this, USER_CHANGED);
+        return OnNotify(USER_CHANGED);
         return true;
      }
   };
@@ -162,12 +295,12 @@ CommonControlManager::CommonControlManager()
         Password = 4,
     } ;
 
- class EditControl : public CommonControl
+ class EditControl : public CCommonControl
   {
     DWORD editFlags;
 
     public:
-        EditControl(int id, DWORD flags ):CommonControl(id) 
+        EditControl(int id, DWORD flags ):CCommonControl(id) 
           {editFlags = flags;};
     
       virtual bool Create(HWND hDlg, RECT* rect)
@@ -195,7 +328,7 @@ CommonControlManager::CommonControlManager()
 
 
 //factory for creating control
-CommonControl *  CreateControl(char * itemType, int controlID)
+CCommonControl *  CreateControl(char * itemType, int controlID)
 {
 
     if (strcmpi(itemType, TEXT_PUSHBUTTON) == 0)
@@ -213,7 +346,7 @@ CommonControl *  CreateControl(char * itemType, int controlID)
     
     
     
-    return new CommonControl(controlID);
+    return new CCommonControl(controlID);
 }
 
 
