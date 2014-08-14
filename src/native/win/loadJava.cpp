@@ -11,20 +11,21 @@
  */
 
 #include "stdHeaders.h"
+#include <TCHAR.H>
 #include "ScriptographerEngine.h"
 #include "loadJava.h"
 #include <sys/stat.h>
 
 #define JRE_KEY "Software\\JavaSoft\\Java Runtime Environment"
 
-void getJVMPath(const char *jrePath, const char *jvmType, char *jvmPath) {
-	struct stat s;
-	sprintf(jvmPath, "%s\\bin\\%s\\jvm.dll" , jrePath, jvmType);
-	if (stat(jvmPath, &s) != 0)
+void getJVMPath(const TCHAR *jrePath, const TCHAR *jvmType, TCHAR *jvmPath) {
+	struct _stat s;
+	_stprintf(jvmPath, _T("%s\\bin\\%s\\jvm.dll") , jrePath, jvmType);
+	if (_tstat(jvmPath, &s) != 0)
 		throw new StringException("No JVM of type `%s' found at `%s'", jvmType, jvmPath);
 }
 
-bool getStringFromRegistry(HKEY key, const char *name, char *buf, jint bufsize) {
+bool getStringFromRegistry(HKEY key, const TCHAR *name, TCHAR *buf, jint bufsize) {
 	DWORD type, size;
 	return (RegQueryValueEx(key, name, 0, &type, 0, &size) == 0
 		&& type == REG_SZ
@@ -32,14 +33,14 @@ bool getStringFromRegistry(HKEY key, const char *name, char *buf, jint bufsize) 
 		&& RegQueryValueEx(key, name, 0, 0, (unsigned char*) buf, &size) == 0);
 }
 
-void getJREPath(char *jrePath) {
+void getJREPath(TCHAR *jrePath) {
 	HKEY key, subkey;
 
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, JRE_KEY, 0, KEY_READ, &key) != 0)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T(JRE_KEY), 0, KEY_READ, &key) != 0)
 		throw new StringException("Error opening registry key '" JRE_KEY);
 
-	char version[64];
-	if (!getStringFromRegistry(key, "CurrentVersion", version, sizeof(version))) {
+	TCHAR version[64];
+	if (!getStringFromRegistry(key, _T("CurrentVersion"), version, sizeof(version))) {
 		RegCloseKey(key);
 		throw new StringException("Failed to read registry key '" JRE_KEY "\\CurrentVersion'");
 	}
@@ -49,7 +50,7 @@ void getJREPath(char *jrePath) {
 		throw new StringException("Error opening registry key '" JRE_KEY "\\%s'", version);
 	}
 
-	if (!getStringFromRegistry(subkey, "JavaHome", jrePath, MAX_PATH)) {
+	if (!getStringFromRegistry(subkey, _T("JavaHome"), jrePath, MAX_PATH)) {
 		RegCloseKey(key);
 		RegCloseKey(subkey);
 		throw new StringException("Failed to read registry key '" JRE_KEY "\\%s\\JavaHome'", version);
@@ -59,11 +60,11 @@ void getJREPath(char *jrePath) {
 	RegCloseKey(subkey);
 }
 
-void loadJavaVM(const char *jvmType, CreateJavaVMProc *createJavaVM, GetDefaultJavaVMInitArgsProc *getDefaultJavaVMInitArgs) {
-	char jrePath[MAX_PATH];
+void loadJavaVM(const TCHAR *jvmType, CreateJavaVMProc *createJavaVM, GetDefaultJavaVMInitArgsProc *getDefaultJavaVMInitArgs) {
+	TCHAR jrePath[MAX_PATH];
 	getJREPath(jrePath);
 
-	char jvmPath[MAX_PATH];
+	TCHAR jvmPath[MAX_PATH];
 	getJVMPath(jrePath, jvmType, jvmPath);
 
 	// load the Java VM DLL

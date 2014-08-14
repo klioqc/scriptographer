@@ -10,5 +10,5 @@
  * All rights reserved. See LICENSE file for details.
  */
 
-void loadJavaVM(const char *jvmType, CreateJavaVMProc *createJavaVM, GetDefaultJavaVMInitArgsProc *getDefaultJavaVMInitArgs);
+void loadJavaVM(const TCHAR *jvmType, CreateJavaVMProc *createJavaVM, GetDefaultJavaVMInitArgsProc *getDefaultJavaVMInitArgs);
 int getMaxHeapAvailable(int maxPermSize, int maxHeapSize, int extraSize);

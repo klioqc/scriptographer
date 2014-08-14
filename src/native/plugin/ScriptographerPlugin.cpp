@@ -9,6 +9,8 @@
  *
  * All rights reserved. See LICENSE file for details.
  */
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wx.h"
 
 #include "stdHeaders.h"
 #include "ScriptographerPlugin.h"
@@ -20,6 +22,12 @@
 #include "AIMenuCommandNotifiers.h"
  
 ScriptographerPlugin *gPlugin = NULL;
+
+ 
+IMPLEMENT_APP_NO_MAIN(MyWxApp);
+BEGIN_EVENT_TABLE(MyWxApp, wxApp)
+	END_EVENT_TABLE()
+
 
 ScriptographerPlugin::ScriptographerPlugin(SPMessageData *messageData) {
 	// Set the global sSPBasic pointer only once here, as it may be converted to
@@ -56,6 +64,7 @@ ScriptographerPlugin::ScriptographerPlugin(SPMessageData *messageData) {
 #ifdef LOGFILE
 	m_logFile = NULL;
 #endif
+
 }
 
 ScriptographerPlugin::~ScriptographerPlugin() {
@@ -669,13 +678,10 @@ ASErr ScriptographerPlugin::onShutdownPlugin(SPInterfaceMessage *message) {
 		
 		SetWindowLongPtr(windowRefParent, GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(s_defaultAppWindowProc));
 
-    //temp - mydebug    
-      	error = sAIMenu->AddMenuItemZString(gPlugin->getPluginRef(), "A my test Panel", kOtherPalettesMenuGroup, ZREF("A Third Party Panel"),
-										kMenuItemNoOptions, &fEmptyPanelPanelMenuItemHandle);
-    	if (error)
 		    return error;
     //temp - mydebug 
 
+     wxUninitialize();
     
 #endif //#ifndef ADM_FREE
 	}

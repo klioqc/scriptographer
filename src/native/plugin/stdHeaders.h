@@ -51,7 +51,8 @@
 #define isnan(x) _isnan(x)
 #define isinf(x) (!_finite(x))
 
-
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
 #include "commonctrls.h"
 
 #endif // WIN_ENV

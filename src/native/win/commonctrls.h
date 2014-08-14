@@ -169,7 +169,7 @@ public:
     SetWindowPos(hWnd, NULL, x, y, width, height, SWP_SHOWWINDOW);
   }
 
-  void SetText(char *text)
+  void SetText(TCHAR *text)
   {
     SetWindowText(hWnd, text);
   }

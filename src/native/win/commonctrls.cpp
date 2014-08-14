@@ -10,14 +10,19 @@
  * All rights reserved. See LICENSE file for details.
  */
 
+
+
+
 #include "stdHeaders.h"
 #include "ScriptographerEngine.h"
 #include "ScriptographerPlugin.h"
 #include <hash_map>
 #include "commonctrls.h"
 #include <CommCtrl.h>
-#pragma comment(lib,"comctl32.lib")
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+//#pragma comment(lib,"comctl32.lib")
+//
+
+//#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 LRESULT CALLBACK CDialog::StaticWndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam) {
 
@@ -160,7 +165,14 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
        dlg->OnCreate();
 
        error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
-    
+
+      wxWindow* wxaipanel = new wxWindow;
+       wxaipanel->SetHWND ((WXHWND)dlg->hWnd);
+     // new wxTextCtrl(wxaipanel, -1, "test");
+
+      {
+        wxString qq = "aa";
+      }
        return dlg;
 
    }
@@ -266,8 +278,8 @@ void CDialog::Destroy()
         {
             
             	hWnd = CreateWindowEx( 
-		            0,  "BUTTON",   // Predefined class; Unicode assumed. 
-		            "no text here now",		//  
+		            0,  _T("BUTTON"),   // Predefined class; Unicode assumed. 
+		            _T("no text here now"),		//  
 		            WS_VISIBLE | WS_CHILD | ES_LEFT  | BS_PUSHBUTTON | BS_USERBUTTON,  // Styles. BS_OWNERDRAW?
 		            rect->left,         // x position. 
 		            rect->top,         // y position. 
@@ -307,8 +319,8 @@ void CDialog::Destroy()
         {
              
             	hWnd = CreateWindowEx( 
-		            0,  "EDIT",   // Predefined class; Unicode assumed. 
-		            "no text here now",		//  
+		            0,  _T("EDIT"),   // Predefined class; Unicode assumed. 
+		            _T("no text here now"),		//  
 		            WS_VISIBLE | WS_CHILD | ES_LEFT  | editFlags, 
 		            rect->left,         // x position. 
 		            rect->top,         // y position. 
@@ -389,7 +401,7 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
 
 	SendMessage(fHwndResultEdit, (UINT) WM_SETTEXT, 0, (LPARAM)L"100"); 
   */
-#define CustomEditClassName "CustomEdit"
+#define CustomEditClassName _T("CustomEdit")
 /* Declaration */
 	LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -401,7 +413,7 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
 			WNDCLASSEX customEditClass;
 			customEditClass.cbSize = sizeof(customEditClass);
 
-			::GetClassInfoEx(NULL, "EDIT", &customEditClass);
+			::GetClassInfoEx(NULL, _T("EDIT"), &customEditClass);
 
 			customEditClass.hInstance = inAppInstance;
 			customEditClass.lpszClassName = CustomEditClassName;
@@ -446,8 +458,8 @@ HWND CreateButton(HWND hDlg)
 
 
 	return ::CreateWindowEx(		0, 
-             "BUTTON",   
-						"buttn name",
+             _T("BUTTON"),   
+						_T("buttn name"),
 						WS_VISIBLE | WS_CHILD | ES_LEFT | BS_PUSHBUTTON | BS_USERBUTTON,  // Styles. BS_OWNERDRAW?
 		        30,         // x position. 
 		        130,         // y position. 
@@ -470,7 +482,7 @@ HWND CreateItem( char * itemType, HWND hDlg)
   return CreateCustomEdit( 
 
 		0, //L"EDIT",   // Predefined class; Unicode assumed. 
-		"",		//  
+		_T(""),		//  
 		WS_VISIBLE | WS_CHILD | ES_RIGHT /*| ES_NUMBER*/ | WS_TABSTOP,  // Styles. 
 		0,         // x position. 
 		0,         // y position. 

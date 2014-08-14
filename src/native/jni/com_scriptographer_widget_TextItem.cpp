@@ -15,11 +15,11 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextItem_nativeSetText(
 	    CCommonControl *item = gEngine->getItemObject(env, obj);
 		
       if (text != NULL) {
-			  char *chars = gEngine->convertString(env, text);
-			  item->SetText(chars);
-			  delete chars;
+			//  TCHAR *chars = gEngine->convertString_ASUnicode(env, text);
+			//  item->SetText(chars);
+			//  delete chars;
 		} else {
-			  item->SetText("");
+			//  item->SetText("");
 		}
 
 

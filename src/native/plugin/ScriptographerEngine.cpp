@@ -11,6 +11,7 @@
  */
 
 #include "stdHeaders.h"
+#include <tchar.h>
 #include "ScriptographerEngine.h"
 #include "ScriptographerPlugin.h"
 #include "AppContext.h"
@@ -244,8 +245,13 @@ void ScriptographerEngine::init() {
 	// On Mac, the static ones can be used without problems:
     CreateJavaVMProc createJavaVM = NULL;
     GetDefaultJavaVMInitArgsProc getDefaultJavaVMInitArgs = NULL;
+
+#ifdef ADM_FREE
+    wxInitialize();
+#endif
+
 #ifdef WIN_ENV
-	loadJavaVM("server", &createJavaVM, &getDefaultJavaVMInitArgs); //todo: server or client ?
+	loadJavaVM(_T("server"), &createJavaVM, &getDefaultJavaVMInitArgs); //todo: server or client ?
 #else // !WIN_ENV
 	createJavaVM = JNI_CreateJavaVM;
 	getDefaultJavaVMInitArgs = JNI_GetDefaultJavaVMInitArgs;

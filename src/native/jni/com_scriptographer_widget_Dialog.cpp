@@ -265,6 +265,11 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
 	DialogData data = { fPanel, defaultProc };
 	dialogDataMap[hWnd] = data;
 
+
+  /*wxWindow* wxaipanel = new wxWindow;
+  wxaipanel->SetHWND ((WXHWND)hDlg);
+  new wxTextCtrl(wxaipanel, -1, "test");
+*/
 #endif // WIN_ENV
 
   //error = SetIcon(fPanel);

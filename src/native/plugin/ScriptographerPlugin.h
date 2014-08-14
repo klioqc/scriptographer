@@ -203,3 +203,11 @@ private:
 };
 
 extern ScriptographerPlugin *gPlugin;
+
+
+class MyWxApp : public wxApp
+{
+  virtual bool OnInit() { wxApp::OnInit(); return true;}
+    DECLARE_EVENT_TABLE()
+};
+
