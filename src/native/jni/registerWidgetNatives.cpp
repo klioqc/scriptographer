@@ -72,10 +72,15 @@
 #include "com_scriptographer_widget_Button.h"
 #include "com_scriptographer_widget_Dialog.h"
 #include "com_scriptographer_widget_Image.h"
+#include "com_scriptographer_widget_ImagePane.h"
 #include "com_scriptographer_widget_Item.h"
+#include "com_scriptographer_widget_ListEntry.h"
+#include "com_scriptographer_widget_ListItem.h"
+#include "com_scriptographer_widget_ModalDialog.h"
 #include "com_scriptographer_widget_TextEditItem.h"
 #include "com_scriptographer_widget_TextItem.h"
 #include "com_scriptographer_widget_TextValueItem.h"
+#include "com_scriptographer_widget_ToggleItem.h"
 #include "com_scriptographer_widget_ValueItem.h"
 
 /* Native methods for class com_scriptographer_ai_Annotator */
@@ -884,6 +889,11 @@ static const JNINativeMethod com_scriptographer_widget_Image_methods[] = {
 	{ "nativeEndDrawer", "()V", (void *) &Java_com_scriptographer_widget_Image_nativeEndDrawer }
 };
 
+/* Native methods for class com_scriptographer_widget_ImagePane */
+static const JNINativeMethod com_scriptographer_widget_ImagePane_methods[] = {
+	{ "nativeSetImage", "(I)V", (void *) &Java_com_scriptographer_widget_ImagePane_nativeSetImage }
+};
+
 /* Native methods for class com_scriptographer_widget_Item */
 static const JNINativeMethod com_scriptographer_widget_Item_methods[] = {
 	{ "nativeCreate", "(Lcom/scriptographer/widget/Dialog;Ljava/lang/String;I)I", (void *) &Java_com_scriptographer_widget_Item_nativeCreate },
@@ -929,6 +939,67 @@ static const JNINativeMethod com_scriptographer_widget_Item_methods[] = {
 	{ "hideToolTip", "()V", (void *) &Java_com_scriptographer_widget_Item_hideToolTip }
 };
 
+/* Native methods for class com_scriptographer_widget_ListEntry */
+static const JNINativeMethod com_scriptographer_widget_ListEntry_methods[] = {
+	{ "nativeCreate", "(Lcom/scriptographer/widget/ListItem;II)I", (void *) &Java_com_scriptographer_widget_ListEntry_nativeCreate },
+	{ "nativeDestroy", "()V", (void *) &Java_com_scriptographer_widget_ListEntry_nativeDestroy },
+	{ "getIndex", "()I", (void *) &Java_com_scriptographer_widget_ListEntry_getIndex },
+	{ "setSelected", "(Z)V", (void *) &Java_com_scriptographer_widget_ListEntry_setSelected },
+	{ "isSelected", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isSelected },
+	{ "makeInBounds", "()V", (void *) &Java_com_scriptographer_widget_ListEntry_makeInBounds },
+	{ "isInBounds", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isInBounds },
+	{ "setEnabled", "(Z)V", (void *) &Java_com_scriptographer_widget_ListEntry_setEnabled },
+	{ "isEnabled", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isEnabled },
+	{ "setActive", "(Z)V", (void *) &Java_com_scriptographer_widget_ListEntry_setActive },
+	{ "isActive", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isActive },
+	{ "setChecked", "(Z)V", (void *) &Java_com_scriptographer_widget_ListEntry_setChecked },
+	{ "isChecked", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isChecked },
+	{ "setSeparator", "(Z)V", (void *) &Java_com_scriptographer_widget_ListEntry_setSeparator },
+	{ "isSeparator", "()Z", (void *) &Java_com_scriptographer_widget_ListEntry_isSeparator },
+	{ "getLocalRect", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_ListEntry_getLocalRect },
+	{ "getBounds", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_ListEntry_getBounds },
+	{ "localToScreen", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_ListEntry_localToScreen__II },
+	{ "screenToLocal", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_ListEntry_screenToLocal__II },
+	{ "localToScreen", "(IIII)Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_ListEntry_localToScreen__IIII },
+	{ "screenToLocal", "(IIII)Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_ListEntry_screenToLocal__IIII },
+	{ "invalidate", "()V", (void *) &Java_com_scriptographer_widget_ListEntry_invalidate__ },
+	{ "invalidate", "(IIII)V", (void *) &Java_com_scriptographer_widget_ListEntry_invalidate__IIII },
+	{ "update", "()V", (void *) &Java_com_scriptographer_widget_ListEntry_update },
+	{ "nativeSetImage", "(I)V", (void *) &Java_com_scriptographer_widget_ListEntry_nativeSetImage },
+	{ "nativeSetSelectedImage", "(I)V", (void *) &Java_com_scriptographer_widget_ListEntry_nativeSetSelectedImage },
+	{ "nativeSetDisabledImage", "(I)V", (void *) &Java_com_scriptographer_widget_ListEntry_nativeSetDisabledImage },
+	{ "setText", "(Ljava/lang/String;)V", (void *) &Java_com_scriptographer_widget_ListEntry_setText },
+	{ "getText", "()Ljava/lang/String;", (void *) &Java_com_scriptographer_widget_ListEntry_getText }
+};
+
+/* Native methods for class com_scriptographer_widget_ListItem */
+static const JNINativeMethod com_scriptographer_widget_ListItem_methods[] = {
+	{ "nativeInit", "(I)I", (void *) &Java_com_scriptographer_widget_ListItem_nativeInit },
+	{ "setTrackEntryMask", "(I)V", (void *) &Java_com_scriptographer_widget_ListItem_setTrackEntryMask },
+	{ "getTrackEntryMask", "()I", (void *) &Java_com_scriptographer_widget_ListItem_getTrackEntryMask },
+	{ "nativeSetTrackEntryCallback", "(Z)V", (void *) &Java_com_scriptographer_widget_ListItem_nativeSetTrackEntryCallback },
+	{ "nativeSetDrawEntryCallback", "(Z)V", (void *) &Java_com_scriptographer_widget_ListItem_nativeSetDrawEntryCallback },
+	{ "setEntrySize", "(II)V", (void *) &Java_com_scriptographer_widget_ListItem_setEntrySize },
+	{ "getEntrySize", "()Lcom/scriptographer/ui/Size;", (void *) &Java_com_scriptographer_widget_ListItem_getEntrySize },
+	{ "setEntryTextRect", "(IIII)V", (void *) &Java_com_scriptographer_widget_ListItem_setEntryTextRect },
+	{ "getEntryTextRect", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_ListItem_getEntryTextRect },
+	{ "nativeSetBackgroundColor", "(I)V", (void *) &Java_com_scriptographer_widget_ListItem_nativeSetBackgroundColor },
+	{ "selectByText", "(Ljava/lang/String;)V", (void *) &Java_com_scriptographer_widget_ListItem_selectByText },
+	{ "get", "(Ljava/lang/String;)Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_get__Ljava_lang_String_2 },
+	{ "getAt", "(II)Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_getAt },
+	{ "getSelectedEntry", "()Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_getSelectedEntry },
+	{ "getSelectedEntries", "()[Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_getSelectedEntries },
+	{ "size", "()I", (void *) &Java_com_scriptographer_widget_ListItem_size },
+	{ "get", "(I)Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_get__I },
+	{ "remove", "(I)Lcom/scriptographer/widget/ListEntry;", (void *) &Java_com_scriptographer_widget_ListItem_remove }
+};
+
+/* Native methods for class com_scriptographer_widget_ModalDialog */
+static const JNINativeMethod com_scriptographer_widget_ModalDialog_methods[] = {
+	{ "nativeDoModal", "()Lcom/scriptographer/widget/Item;", (void *) &Java_com_scriptographer_widget_ModalDialog_nativeDoModal },
+	{ "endModal", "()V", (void *) &Java_com_scriptographer_widget_ModalDialog_endModal }
+};
+
 /* Native methods for class com_scriptographer_widget_TextEditItem */
 static const JNINativeMethod com_scriptographer_widget_TextEditItem_methods[] = {
 	{ "getFractionDigits", "()I", (void *) &Java_com_scriptographer_widget_TextEditItem_getFractionDigits },
@@ -959,6 +1030,12 @@ static const JNINativeMethod com_scriptographer_widget_TextValueItem_methods[] =
 	{ "nativeGetUnits", "()I", (void *) &Java_com_scriptographer_widget_TextValueItem_nativeGetUnits },
 	{ "setShowUnits", "(Z)V", (void *) &Java_com_scriptographer_widget_TextValueItem_setShowUnits },
 	{ "getShowUnits", "()Z", (void *) &Java_com_scriptographer_widget_TextValueItem_getShowUnits }
+};
+
+/* Native methods for class com_scriptographer_widget_ToggleItem */
+static const JNINativeMethod com_scriptographer_widget_ToggleItem_methods[] = {
+	{ "isChecked", "()Z", (void *) &Java_com_scriptographer_widget_ToggleItem_isChecked },
+	{ "setChecked", "(Z)V", (void *) &Java_com_scriptographer_widget_ToggleItem_setChecked }
 };
 
 /* Native methods for class com_scriptographer_widget_ValueItem */
@@ -1137,8 +1214,20 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 	registerClassNatives(env, "com/scriptographer/widget/Image", com_scriptographer_widget_Image_methods,
 		sizeof(com_scriptographer_widget_Image_methods) / sizeof(JNINativeMethod));
 
+	registerClassNatives(env, "com/scriptographer/widget/ImagePane", com_scriptographer_widget_ImagePane_methods,
+		sizeof(com_scriptographer_widget_ImagePane_methods) / sizeof(JNINativeMethod));
+
 	registerClassNatives(env, "com/scriptographer/widget/Item", com_scriptographer_widget_Item_methods,
 		sizeof(com_scriptographer_widget_Item_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/ListEntry", com_scriptographer_widget_ListEntry_methods,
+		sizeof(com_scriptographer_widget_ListEntry_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/ListItem", com_scriptographer_widget_ListItem_methods,
+		sizeof(com_scriptographer_widget_ListItem_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/ModalDialog", com_scriptographer_widget_ModalDialog_methods,
+		sizeof(com_scriptographer_widget_ModalDialog_methods) / sizeof(JNINativeMethod));
 
 	registerClassNatives(env, "com/scriptographer/widget/TextEditItem", com_scriptographer_widget_TextEditItem_methods,
 		sizeof(com_scriptographer_widget_TextEditItem_methods) / sizeof(JNINativeMethod));
@@ -1148,6 +1237,9 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 
 	registerClassNatives(env, "com/scriptographer/widget/TextValueItem", com_scriptographer_widget_TextValueItem_methods,
 		sizeof(com_scriptographer_widget_TextValueItem_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/ToggleItem", com_scriptographer_widget_ToggleItem_methods,
+		sizeof(com_scriptographer_widget_ToggleItem_methods) / sizeof(JNINativeMethod));
 
 	registerClassNatives(env, "com/scriptographer/widget/ValueItem", com_scriptographer_widget_ValueItem_methods,
 		sizeof(com_scriptographer_widget_ValueItem_methods) / sizeof(JNINativeMethod));

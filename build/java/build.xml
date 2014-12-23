@@ -461,6 +461,7 @@ Scriptographer build instructions
 
 		   	<!--widget-->
 		   	<class name="com.scriptographer.widget.Dialog" />
+			<class name="com.scriptographer.widget.ModalDialog" />
 			<class name="com.scriptographer.widget.Notifier" />
 			<class name="com.scriptographer.widget.Item" />
 		   	<class name="com.scriptographer.widget.ValueItem" />
@@ -469,7 +470,14 @@ Scriptographer build instructions
 		   	<class name="com.scriptographer.widget.Button" />
 			<class name="com.scriptographer.widget.Image" />
 			<class name="com.scriptographer.widget.ImageButton" />
+			<class name="com.scriptographer.widget.ImagePane" />
 			<class name="com.scriptographer.widget.TextEditItem" />
+			<class name="com.scriptographer.widget.TextPane" />
+			<class name="com.scriptographer.widget.ToggleItem" />
+			
+		  	<class name="com.scriptographer.widget.ListItem" />
+			<class name="com.scriptographer.widget.ListEntry" />
+				
 
 		</javah>
 		<echo id="echo" level="info" />

@@ -420,6 +420,21 @@
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Image.cpp">
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ImagePane.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ModalDialog.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ToggleItem.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ListEntry.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ListItem.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\icon.ico">

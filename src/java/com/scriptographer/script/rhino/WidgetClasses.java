@@ -33,6 +33,8 @@ import com.scriptographer.ui.DialogColor;
 
 
 
+
+
 import com.scriptographer.ai.Annotator;
 import com.scriptographer.ai.AreaText;
 import com.scriptographer.ai.Artboard;
@@ -90,16 +92,21 @@ import com.scriptographer.ui.Palette;
 
 
 import com.scriptographer.widget.Button;
-//tmp - add  unconditionally
+import com.scriptographer.widget.CheckBox;
+import com.scriptographer.widget.ImageCheckBox;
+import com.scriptographer.widget.ImagePane;
 import com.scriptographer.widget.FloatingDialog;
 import com.scriptographer.widget.Image;
+import com.scriptographer.widget.ListBox;
 import com.scriptographer.widget.ListEntry;
 import com.scriptographer.widget.ListItem;
 import com.scriptographer.widget.ModalDialog;
 import com.scriptographer.widget.PopupDialog;
 import com.scriptographer.widget.TextEdit;
+import com.scriptographer.widget.TextPane;
 import com.scriptographer.widget.TextValueItem;
 import com.scriptographer.widget.ImageButton;
+import com.scriptographer.widget.ToggleItem;
 
 /**
  * @author Olga
@@ -177,17 +184,24 @@ public class WidgetClasses {
 		
 		//not adm, but native 
 		
-		Button.class,
+		Button.class,	
+		CheckBox.class,
 		Dialog.class,
 		ImageButton.class,
+		ImageCheckBox.class,
+		ImagePane.class,
 	 	FloatingDialog.class,
 	 	ModalDialog.class,
 	 	PopupDialog.class,
 	 	Image.class,
+	 	ListBox.class,
 	 	ListEntry.class,
 		ListItem.class,
 		TextEdit.class,
 		TextValueItem.class,
+		TextPane.class,
+		
+		ToggleItem.class,
 
 	};
 }
