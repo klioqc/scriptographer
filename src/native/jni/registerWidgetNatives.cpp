@@ -71,9 +71,12 @@
 #include "com_scriptographer_ui_MenuItem.h"
 #include "com_scriptographer_widget_Button.h"
 #include "com_scriptographer_widget_Dialog.h"
+#include "com_scriptographer_widget_HierarchyListBox.h"
+#include "com_scriptographer_widget_HierarchyListEntry.h"
 #include "com_scriptographer_widget_Image.h"
 #include "com_scriptographer_widget_ImagePane.h"
 #include "com_scriptographer_widget_Item.h"
+#include "com_scriptographer_widget_ItemGroup.h"
 #include "com_scriptographer_widget_ListEntry.h"
 #include "com_scriptographer_widget_ListItem.h"
 #include "com_scriptographer_widget_ModalDialog.h"
@@ -81,6 +84,7 @@
 #include "com_scriptographer_widget_TextItem.h"
 #include "com_scriptographer_widget_TextValueItem.h"
 #include "com_scriptographer_widget_ToggleItem.h"
+#include "com_scriptographer_widget_Tracker.h"
 #include "com_scriptographer_widget_ValueItem.h"
 
 /* Native methods for class com_scriptographer_ai_Annotator */
@@ -877,6 +881,66 @@ static const JNINativeMethod com_scriptographer_widget_Dialog_methods[] = {
 	{ "nativeSetMaximumSize", "(II)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetMaximumSize }
 };
 
+/* Native methods for class com_scriptographer_widget_HierarchyListBox */
+static const JNINativeMethod com_scriptographer_widget_HierarchyListBox_methods[] = {
+	{ "nativeCreateChildList", "(Lcom/scriptographer/widget/HierarchyListEntry;)I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_nativeCreateChildList },
+	{ "nativeRemoveList", "(I)Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_nativeRemoveList },
+	{ "setEntrySize", "(IIZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setEntrySize },
+	{ "setEntryTextRect", "(IIIIZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setEntryTextRect },
+	{ "getNonLeafEntryWidth", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getNonLeafEntryWidth },
+	{ "setNonLeafEntryTextRect", "(IIIIZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setNonLeafEntryTextRect },
+	{ "getNonLeafEntryTextRect", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getNonLeafEntryTextRect },
+	{ "getLocalRect", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getLocalRect },
+	{ "localToScreen", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_localToScreen },
+	{ "screenToLocal", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_screenToLocal },
+	{ "localToGlobal", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_localToGlobal__II },
+	{ "globalToLocal", "(II)Lcom/scriptographer/ui/Point;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_globalToLocal__II },
+	{ "localToGlobal", "(IIII)Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_localToGlobal__IIII },
+	{ "globalToLocal", "(IIII)Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_globalToLocal__IIII },
+	{ "setIndentationWidth", "(IZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setIndentationWidth },
+	{ "getIndentationWidth", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getIndentationWidth },
+	{ "setLocalLeftMargin", "(I)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setLocalLeftMargin },
+	{ "getLocalLeftMargin", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getLocalLeftMargin },
+	{ "getGlobalLeftMargin", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getGlobalLeftMargin },
+	{ "setDivided", "(ZZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setDivided },
+	{ "isDivided", "()Z", (void *) &Java_com_scriptographer_widget_HierarchyListBox_isDivided },
+	{ "setFlags", "(IZ)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_setFlags },
+	{ "getFlags", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getFlags },
+	{ "invalidate", "()V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_invalidate },
+	{ "getLeafEntries", "()[Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getLeafEntries },
+	{ "getLeafEntryIndex", "(Lcom/scriptographer/widget/HierarchyListEntry;)I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getLeafEntryIndex },
+	{ "getLeafEntryAt", "(II)Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getLeafEntryAt },
+	{ "getSelectedLeafEntry", "()Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getSelectedLeafEntry },
+	{ "getSelectedEntries", "()[Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getSelectedEntries },
+	{ "getUnnestedSelectedEntries", "()[Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getUnnestedSelectedEntries },
+	{ "swap", "(II)V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_swap },
+	{ "deselectAll", "()V", (void *) &Java_com_scriptographer_widget_HierarchyListBox_deselectAll },
+	{ "getExpandedEntries", "()[Lcom/scriptographer/widget/HierarchyListEntry;", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getExpandedEntries },
+	{ "getExpandedEntryIndex", "(Lcom/scriptographer/widget/HierarchyListEntry;)I", (void *) &Java_com_scriptographer_widget_HierarchyListBox_getExpandedEntryIndex }
+};
+
+/* Native methods for class com_scriptographer_widget_HierarchyListEntry */
+static const JNINativeMethod com_scriptographer_widget_HierarchyListEntry_methods[] = {
+	{ "getItem", "()Lcom/scriptographer/widget/Item;", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_getItem },
+	{ "setExpanded", "(Z)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_setExpanded },
+	{ "isExpanded", "()Z", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_isExpanded },
+	{ "setEntryNameHidden", "(Z)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_setEntryNameHidden },
+	{ "isEntryNameHidden", "()Z", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_isEntryNameHidden },
+	{ "setChildSelectable", "(Z)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_setChildSelectable },
+	{ "isChildSelectable", "()Z", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_isChildSelectable },
+	{ "getDepth", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_getDepth },
+	{ "getVisualDepth", "()I", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_getVisualDepth },
+	{ "areChildrenSelected", "()Z", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_areChildrenSelected },
+	{ "getExpandArrowRect", "()Lcom/scriptographer/ai/Rectangle;", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_getExpandArrowRect },
+	{ "setTextRect", "(Lcom/scriptographer/ai/Rectangle;)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_setTextRect },
+	{ "getEntryItem", "()Lcom/scriptographer/widget/Item;", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_getEntryItem },
+	{ "setEntryItem", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_setEntryItem },
+	{ "nativeSetFont", "(I)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_nativeSetFont },
+	{ "nativeSetTextColor", "(I)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_nativeSetTextColor },
+	{ "nativeSetBackgroundColor", "(I)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_nativeSetBackgroundColor },
+	{ "nativeSetDividerColor", "(I)V", (void *) &Java_com_scriptographer_widget_HierarchyListEntry_nativeSetDividerColor }
+};
+
 /* Native methods for class com_scriptographer_widget_Image */
 static const JNINativeMethod com_scriptographer_widget_Image_methods[] = {
 	{ "nativeCreate", "(III)I", (void *) &Java_com_scriptographer_widget_Image_nativeCreate },
@@ -935,6 +999,12 @@ static const JNINativeMethod com_scriptographer_widget_Item_methods[] = {
 	{ "setToolTipEnabled", "(Z)V", (void *) &Java_com_scriptographer_widget_Item_setToolTipEnabled },
 	{ "showToolTip", "(II)V", (void *) &Java_com_scriptographer_widget_Item_showToolTip },
 	{ "hideToolTip", "()V", (void *) &Java_com_scriptographer_widget_Item_hideToolTip }
+};
+
+/* Native methods for class com_scriptographer_widget_ItemGroup */
+static const JNINativeMethod com_scriptographer_widget_ItemGroup_methods[] = {
+	{ "nativeAdd", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_ItemGroup_nativeAdd },
+	{ "nativeRemove", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_ItemGroup_nativeRemove }
 };
 
 /* Native methods for class com_scriptographer_widget_ListEntry */
@@ -1034,6 +1104,13 @@ static const JNINativeMethod com_scriptographer_widget_TextValueItem_methods[] =
 static const JNINativeMethod com_scriptographer_widget_ToggleItem_methods[] = {
 	{ "isChecked", "()Z", (void *) &Java_com_scriptographer_widget_ToggleItem_isChecked },
 	{ "setChecked", "(Z)V", (void *) &Java_com_scriptographer_widget_ToggleItem_setChecked }
+};
+
+/* Native methods for class com_scriptographer_widget_Tracker */
+static const JNINativeMethod com_scriptographer_widget_Tracker_methods[] = {
+	{ "getCurrentModifiers", "()I", (void *) &Java_com_scriptographer_widget_Tracker_getCurrentModifiers },
+	{ "abort", "()V", (void *) &Java_com_scriptographer_widget_Tracker_abort },
+	{ "releaseMouseCapture", "()V", (void *) &Java_com_scriptographer_widget_Tracker_releaseMouseCapture }
 };
 
 /* Native methods for class com_scriptographer_widget_ValueItem */
@@ -1209,6 +1286,12 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 	registerClassNatives(env, "com/scriptographer/widget/Dialog", com_scriptographer_widget_Dialog_methods,
 		sizeof(com_scriptographer_widget_Dialog_methods) / sizeof(JNINativeMethod));
 
+	registerClassNatives(env, "com/scriptographer/widget/HierarchyListBox", com_scriptographer_widget_HierarchyListBox_methods,
+		sizeof(com_scriptographer_widget_HierarchyListBox_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/HierarchyListEntry", com_scriptographer_widget_HierarchyListEntry_methods,
+		sizeof(com_scriptographer_widget_HierarchyListEntry_methods) / sizeof(JNINativeMethod));
+
 	registerClassNatives(env, "com/scriptographer/widget/Image", com_scriptographer_widget_Image_methods,
 		sizeof(com_scriptographer_widget_Image_methods) / sizeof(JNINativeMethod));
 
@@ -1217,6 +1300,9 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 
 	registerClassNatives(env, "com/scriptographer/widget/Item", com_scriptographer_widget_Item_methods,
 		sizeof(com_scriptographer_widget_Item_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/ItemGroup", com_scriptographer_widget_ItemGroup_methods,
+		sizeof(com_scriptographer_widget_ItemGroup_methods) / sizeof(JNINativeMethod));
 
 	registerClassNatives(env, "com/scriptographer/widget/ListEntry", com_scriptographer_widget_ListEntry_methods,
 		sizeof(com_scriptographer_widget_ListEntry_methods) / sizeof(JNINativeMethod));
@@ -1238,6 +1324,9 @@ void ScriptographerEngine::registerNatives(JNIEnv *env) {
 
 	registerClassNatives(env, "com/scriptographer/widget/ToggleItem", com_scriptographer_widget_ToggleItem_methods,
 		sizeof(com_scriptographer_widget_ToggleItem_methods) / sizeof(JNINativeMethod));
+
+	registerClassNatives(env, "com/scriptographer/widget/Tracker", com_scriptographer_widget_Tracker_methods,
+		sizeof(com_scriptographer_widget_Tracker_methods) / sizeof(JNINativeMethod));
 
 	registerClassNatives(env, "com/scriptographer/widget/ValueItem", com_scriptographer_widget_ValueItem_methods,
 		sizeof(com_scriptographer_widget_ValueItem_methods) / sizeof(JNINativeMethod));

@@ -38,8 +38,9 @@ abstract class NotificationHandler extends NativeObject {
 	*/
 	private Map data;
 
-/* TODO	
+	/* TODO	
 	protected abstract boolean onTrack(Tracker tracker);
+
 	protected abstract boolean onDraw(Drawer drawer);
 
 	public abstract boolean defaultTrack(Tracker tracker);

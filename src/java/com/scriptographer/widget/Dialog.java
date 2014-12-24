@@ -40,42 +40,34 @@ import com.scriptographer.widget.Component.AWTContainer;
  */
 public abstract class Dialog extends Component {
 
-	//	Dialog styles (for Create() call).
-	protected final static int
-		STYLE_MODAL = 0, // wrapped
-		STYLE_ALERT = 1, // wrapped
-		STYLE_FLOATING = 2, // wrapped
-		STYLE_TABBED_FLOATING = 3, // wrapped
-		STYLE_RESIZING_FLOATING = 4, // wrapped
-		STYLE_TABBED_RESIZING_FLOATING = 5, // wrapped
-		STYLE_POPUP = 6, // wrapped
-		STYLE_NOCLOSE_FLOATING = 7, // wrapped
-		STYLE_SYSTEM_ALERT = 8, // wrapped
-		STYLE_POPUP_CONTROL = 9, // wrapped
-		STYLE_RESIZING_MODAL = 10, // wrapped
-		STYLE_LEFTSIDED_FLOATING = 11, // wrapped
-		STYLE_LEFTSIDED_NOCLOSE_FLOATING = 12, // wrapped
-		STYLE_NOTITLE_DOCK_FLOATING = 13, // TODO: wrap this?
-		STYLE_TABBED_HIERARCHY_FLOATING = 14,
-		STYLE_TABBED_RESIZING_HIERARCHY_FLOATING = 15,
-		STYLE_RESIZING_POPUP_PALETTE = 16,
-		STYLE_POPUP_PALETTE = 17,
-		STYLE_HIERARCHY_POPUP_PALETTE = 18,
-		STYLE_RESIZING_HIERARCH_POPUP_PALETTE = 19,
-		STYLE_MODAL_NO_ACTIVATE = 20,
-		STYLE_HOST_DEFINED = 65536;
+	// Dialog styles (for Create() call).
+	protected final static int STYLE_MODAL = 0, // wrapped
+			STYLE_ALERT = 1, // wrapped
+			STYLE_FLOATING = 2, // wrapped
+			STYLE_TABBED_FLOATING = 3, // wrapped
+			STYLE_RESIZING_FLOATING = 4, // wrapped
+			STYLE_TABBED_RESIZING_FLOATING = 5, // wrapped
+			STYLE_POPUP = 6, // wrapped
+			STYLE_NOCLOSE_FLOATING = 7, // wrapped
+			STYLE_SYSTEM_ALERT = 8, // wrapped
+			STYLE_POPUP_CONTROL = 9, // wrapped
+			STYLE_RESIZING_MODAL = 10, // wrapped
+			STYLE_LEFTSIDED_FLOATING = 11, // wrapped
+			STYLE_LEFTSIDED_NOCLOSE_FLOATING = 12, // wrapped
+			STYLE_NOTITLE_DOCK_FLOATING = 13, // TODO: wrap this?
+			STYLE_TABBED_HIERARCHY_FLOATING = 14,
+			STYLE_TABBED_RESIZING_HIERARCHY_FLOATING = 15,
+			STYLE_RESIZING_POPUP_PALETTE = 16,
+			STYLE_POPUP_PALETTE = 17,
+			STYLE_HIERARCHY_POPUP_PALETTE = 18,
+			STYLE_RESIZING_HIERARCH_POPUP_PALETTE = 19,
+			STYLE_MODAL_NO_ACTIVATE = 20, STYLE_HOST_DEFINED = 65536;
 
-	// 
-	protected final static int
-		ITEM_UNIQUE = 0,
-		ITEM_FIRST = -1,
-		ITEM_LAST = -2,
-		ITEM_DEFAULT = -3,
-		ITEM_CANCEL = -4,
-		ITEM_MENU = -5,
-		ITEM_RESIZE = -6,
-		ITEM_PRIVATE_UNIQUE = -7,
-		ITEM_FIRST_UNUSED_PRIVATE = -8;
+	//
+	protected final static int ITEM_UNIQUE = 0, ITEM_FIRST = -1,
+			ITEM_LAST = -2, ITEM_DEFAULT = -3, ITEM_CANCEL = -4,
+			ITEM_MENU = -5, ITEM_RESIZE = -6, ITEM_PRIVATE_UNIQUE = -7,
+			ITEM_FIRST_UNUSED_PRIVATE = -8;
 
 	protected ArrayList<Item> items;
 
@@ -134,36 +126,34 @@ public abstract class Dialog extends Component {
 	private static HashMap<String, Dialog> dialogsByName =
 			new HashMap<String, Dialog>();
 
-	
 	protected Dialog(int style, EnumSet<DialogOption> options) {
 		script = ScriptographerEngine.getCurrentScript();
 		preferences = ScriptographerEngine.getPreferences(script);
 		items = new ArrayList<Item>();
-		try
-		{
-		
-		handle = nativeCreate(name, style, IntegerEnumUtils.getFlags(options));
-		
-		// Always set dialogs hidden first. 
-		// if the OPTION_HIDDEN pseudo flag is not set, the dialog is then
-		// displayed in initialize
-		setVisible(false);
-		size = nativeGetSize();
-		 
-	
-			
-		isResizing = style == STYLE_RESIZING_FLOATING ||
-			style == STYLE_TABBED_RESIZING_FLOATING ||
-			style == STYLE_TABBED_RESIZING_HIERARCHY_FLOATING;
+		try {
 
-		this.options = options != null ? options.clone()
-				: EnumSet.noneOf(DialogOption.class);
-		}
-		catch(Exception e)
-		{
+			handle =
+					nativeCreate(name, style,
+							IntegerEnumUtils.getFlags(options));
+
+			// Always set dialogs hidden first.
+			// if the OPTION_HIDDEN pseudo flag is not set, the dialog is then
+			// displayed in initialize
+			setVisible(false);
+			size = nativeGetSize();
+
+			isResizing =
+					style == STYLE_RESIZING_FLOATING
+							|| style == STYLE_TABBED_RESIZING_FLOATING
+							|| style == STYLE_TABBED_RESIZING_HIERARCHY_FLOATING;
+
+			this.options =
+					options != null ? options.clone() : EnumSet
+							.noneOf(DialogOption.class);
+		} catch (Exception e) {
 			ScriptographerEngine.logError(e);
 		}
-		
+
 		if (handle != 0)
 			dialogs.add(this);
 	}
@@ -175,23 +165,23 @@ public abstract class Dialog extends Component {
 	}
 
 	/**
-	 * This is called when the dialog is displayed the first time.
-	 * It's usually fired a bit after the constructor exits, or
-	 * when setVisible / doModal / setGroupInfo is called.
-	 * We fake this through onActivate and a native dialog timer.
-	 * Whatever fires first, triggers initialize
+	 * This is called when the dialog is displayed the first time. It's usually
+	 * fired a bit after the constructor exits, or when setVisible / doModal /
+	 * setGroupInfo is called. We fake this through onActivate and a native
+	 * dialog timer. Whatever fires first, triggers initialize
 	 */
 	protected void initialize(boolean setBoundaries, boolean initBounds) {
 		// initialize can also be triggered e.g. by setGroupInfo, which needs to
 		// be ignored
 
-	
 		if (!ignoreSizeChange) {
 			if (unitialized) {
 				unitialized = false;
-				// if setVisible was called before proper initialization, visible
+				// if setVisible was called before proper initialization,
+				// visible
 				// is set but it was not natively executed yet. handle this here
-				boolean show = !options.contains(DialogOption.HIDDEN) || visible;
+				boolean show =
+						!options.contains(DialogOption.HIDDEN) || visible;
 				boolean prefsLoaded = false;
 				if (options.contains(DialogOption.REMEMBER_PLACING)) {
 					prefsLoaded = loadPreferences(title);
@@ -218,13 +208,13 @@ public abstract class Dialog extends Component {
 					}
 				}
 				// Center it on screen now if prefs were not loaded above
-			//temp	if (!prefsLoaded)
-					centerOnScreen();
+				// temp if (!prefsLoaded)
+				centerOnScreen();
 				initialized = true;
 				// Execute callback handler
 				onInitialize();
-				//tempif (show)
-					setVisible(true);
+				// tempif (show)
+				setVisible(true);
 			}
 			// setBoundaries is set to false when calling from initializeAll,
 			// because it would be too early to set it there. At least on Mac
@@ -235,7 +225,7 @@ public abstract class Dialog extends Component {
 				if (maxSize != null)
 					nativeSetMaximumSize(maxSize.width, maxSize.height);
 			}
-			// Call initBounds on all items at the first time the dialog is 
+			// Call initBounds on all items at the first time the dialog is
 			// shown. This fixes issues on CS4 and above with wrong item bounds.
 			if (initBounds && !boundsInitialized) {
 				for (Item item : items)
@@ -243,16 +233,16 @@ public abstract class Dialog extends Component {
 				boundsInitialized = true;
 			}
 		}
-	
+
 	}
-	
+
 	public boolean isInitialized() {
 		return initialized;
 	}
 
 	public void destroy() {
 		if (isNotifying) {
-			// If we're in a notification, invoke destroy later to fix  a bug
+			// If we're in a notification, invoke destroy later to fix a bug
 			// on Windows PC and possible future bugs on Mac.
 			invokeLater(new Runnable() {
 				public void run() {
@@ -260,18 +250,15 @@ public abstract class Dialog extends Component {
 				}
 			});
 		} else {
-			
-			
-			
-			nativeDestroy(handle);
+			if(isValid())
+				nativeDestroy(handle);
 			dialogs.remove(this);
 			dialogsByName.remove(name);
 			handle = 0;
-			
-				
+
 		}
 	}
-	
+
 	/**
 	 * @jshide
 	 */
@@ -283,7 +270,7 @@ public abstract class Dialog extends Component {
 	protected boolean canRemove(boolean ignoreKeepAlive) {
 		return script == null || script.canRemove(ignoreKeepAlive);
 	}
-	
+
 	/**
 	 * @jshide
 	 */
@@ -312,11 +299,11 @@ public abstract class Dialog extends Component {
 			// the Window, causing the layout to be regenerated again. Simply
 			// calling doLayout() does not seem to be enough.
 			// This affects CS4 and above on Mac.
-		//	if (dialog.isVisible()) {
-	//			Size size = dialog.getSize();
-		//		size.height--;
-		//		dialog.setSize(size);
-		//	}
+			// if (dialog.isVisible()) {
+			// Size size = dialog.getSize();
+			// size.height--;
+			// dialog.setSize(size);
+			// }
 		}
 	}
 
@@ -331,19 +318,19 @@ public abstract class Dialog extends Component {
 	public void savePreferences(String name) {
 		Preferences prefs = preferences.node(name);
 		// Saving the palette position, tab/dock preference.
-		/* TODO
-		DialogGroupInfo groupInfo = getGroupInfo();
-		Rectangle bounds = getBounds();
-		prefs.put("group", groupInfo.group != null ? groupInfo.group : "");
-		prefs.putInt("positionCode", groupInfo.positionCode);
-		prefs.put("bounds", bounds.x + " " + bounds.y + " " +
-				bounds.width + " " + bounds.height);
-				*/
+		/*
+		 * TODO DialogGroupInfo groupInfo = getGroupInfo(); Rectangle bounds =
+		 * getBounds(); prefs.put("group", groupInfo.group != null ?
+		 * groupInfo.group : ""); prefs.putInt("positionCode",
+		 * groupInfo.positionCode); prefs.put("bounds", bounds.x + " " +
+		 * bounds.y + " " + bounds.width + " " + bounds.height);
+		 */
 	}
 
 	public boolean loadPreferences(String name) {
 		try {
-			if (1==1) return false;
+			if (1 == 1)
+				return false;
 			if (preferences.nodeExists(name)) {
 				Preferences prefs = preferences.node(name);
 
@@ -351,32 +338,33 @@ public abstract class Dialog extends Component {
 				String[] parts = prefs.get("bounds", "").split("\\s");
 				Rectangle bounds;
 				if (parts.length == 4) {
-					bounds = new Rectangle(Integer.parseInt(parts[0]),
-							Integer.parseInt(parts[1]),
-							Integer.parseInt(parts[2]),
-							Integer.parseInt(parts[3]));
+					bounds =
+							new Rectangle(Integer.parseInt(parts[0]),
+									Integer.parseInt(parts[1]),
+									Integer.parseInt(parts[2]),
+									Integer.parseInt(parts[3]));
 				} else {
 					// Pick a default location in case it has never come up
 					// before on this machine
-			//		Rectangle defaultBounds = Dialog.getPaletteLayoutBounds();
-			//		bounds = getBounds();
-		//		bounds.setPoint(defaultBounds.x, defaultBounds.y);
+					// Rectangle defaultBounds =
+					// Dialog.getPaletteLayoutBounds();
+					// bounds = getBounds();
+					// bounds.setPoint(defaultBounds.x, defaultBounds.y);
 				}
 				String group = prefs.get("group", "");
-				/* TODO
-				int positionCode = prefs.getInt("positionCode",
-						DialogGroupInfo.POSITION_DEFAULT);
-				// Restore the position code of the dialog
-				setGroupInfo(group, positionCode);
-				*/
+				/*
+				 * TODO int positionCode = prefs.getInt("positionCode",
+				 * DialogGroupInfo.POSITION_DEFAULT); // Restore the position
+				 * code of the dialog setGroupInfo(group, positionCode);
+				 */
 				// Now set the bounds
-				//BoundsSetter setter = new BoundsSetter(bounds);
-				//setter.run();
+				// BoundsSetter setter = new BoundsSetter(bounds);
+				// setter.run();
 				// Sometimes we need to set bounds again afterwards, as OWL
 				// seems to interfere here...
 				// This leads to annoying jumping around of the dialog.
 				// TODO: See if this can be fixed somehow?
-				//invokeLater(setter);
+				// invokeLater(setter);
 				return true;
 			}
 		} catch (Exception e) {
@@ -628,7 +616,7 @@ public abstract class Dialog extends Component {
 				break;
 			case WINDOW_DEACTIVATE:
 				if (activeDialog == this) {
-					// Keep track of the previously active dialog, as it is 
+					// Keep track of the previously active dialog, as it is
 					// needed in a workaround for falsly activate modal dialogs.
 					previousActiveDialog = activeDialog;
 					activeDialog = null;
@@ -646,20 +634,20 @@ public abstract class Dialog extends Component {
 				break;
 			case WINDOW_HIDE:
 				if (fireOnClose) {
-					// Workaround for missing onClose on CS3. This bug was 
+					// Workaround for missing onClose on CS3. This bug was
 					// reported to Adobe too late, hopefully it will be back
 					// again in CS4...
 					// (NOT. But in CS4, MASK_DOCK_CLOSED is now set, not the
 					// other two).
-					/*todo
-					long code = this.getGroupInfo().positionCode;
-					if ((code & DialogGroupInfo.MASK_DOCK_VISIBLE) == 0 ||
-						(code & DialogGroupInfo.MASK_TAB_HIDDEN) != 0 ||
-						(code & DialogGroupInfo.MASK_DOCK_CLOSED) != 0) {
-						fireOnClose = false;
-						onClose();
-					
-					}*/	
+					/*
+					 * todo long code = this.getGroupInfo().positionCode; if
+					 * ((code & DialogGroupInfo.MASK_DOCK_VISIBLE) == 0 || (code
+					 * & DialogGroupInfo.MASK_TAB_HIDDEN) != 0 || (code &
+					 * DialogGroupInfo.MASK_DOCK_CLOSED) != 0) { fireOnClose =
+					 * false; onClose();
+					 * 
+					 * }
+					 */
 				}
 				visible = false;
 				onHide();
@@ -694,8 +682,8 @@ public abstract class Dialog extends Component {
 	}
 
 	/**
-	 * private callback method, to be called from the native environment
-	 * It calls onResize
+	 * private callback method, to be called from the native environment It
+	 * calls onResize
 	 */
 	private void onSizeChanged(int width, int height, boolean invoke) {
 		if (!ignoreSizeChange && size != null) {
@@ -709,10 +697,10 @@ public abstract class Dialog extends Component {
 			} else if (invoke) {
 				invokeLater(new Runnable() {
 					public void run() {
-					 	Size size = nativeGetSize();
-						 onSizeChanged(size.width, size.height, false);
+						Size size = nativeGetSize();
+						onSizeChanged(size.width, size.height, false);
 						// These dialogs also seem to need a repaint
-						 update();
+						update();
 					}
 				});
 			}
@@ -723,14 +711,12 @@ public abstract class Dialog extends Component {
 	 * Wrapper stuff:
 	 */
 
-	/* TODO: Check these:
-	 * - timer stuff
-	 * - createNestedItem(...);
-	 * - beginAdjustingFocusOrder, doneAdjustingFocusOrder
+	/*
+	 * TODO: Check these: - timer stuff - createNestedItem(...); -
+	 * beginAdjustingFocusOrder, doneAdjustingFocusOrder
 	 */
 
-	
-//	public native void makeOverlay(int handle);
+	// public native void makeOverlay(int handle);
 
 	/**
 	 * Dumps the Mac control hierarchy to the given file. For debug purposes
@@ -738,56 +724,57 @@ public abstract class Dialog extends Component {
 	 * 
 	 * @jshide
 	 */
-//	public native void dumpControlHierarchy(File file); 
+	// public native void dumpControlHierarchy(File file);
 
 	/*
 	 * Dialog creation/destruction
-	 * 
 	 */
 
 	/**
 	 * sets size and bounds
 	 */
 	private native int nativeCreate(String name, int dialogStyle, int options);
-	
+
 	private native void nativeDestroy(int dialogRef);
 
-	
-	
-	/* NOW EMPTY
-	 * Handler activation / deactivation
+	/*
+	 * NOW EMPTY Handler activation / deactivation
 	 */
-	protected  void nativeSetTrackCallback(boolean enabled) {} 
+	protected void nativeSetTrackCallback(boolean enabled) {
+	}
 
-	protected  void nativeSetDrawCallback(boolean enabled) {}
-/* todo
-	public native boolean defaultTrack(Tracker tracker);
+	protected void nativeSetDrawCallback(boolean enabled) {
+	}
 
-	public native void defaultDraw(Drawer drawer);
-*/
-	public  int getTrackMask() { return 0;}
-
-	public  void setTrackMask(int mask) {}
-
-	/* 
-	 * Dialog timer
+	/*
+	 * todo public native boolean defaultTrack(Tracker tracker);
 	 * 
+	 * public native void defaultDraw(Drawer drawer);
+	 */
+	public int getTrackMask() {
+		return 0;
+	}
+
+	public void setTrackMask(int mask) {
+	}
+
+	/*
+	 * Dialog timer
 	 */
 	/*
-	public native ADMTimerRef createTimer(ADMUInt32 inMilliseconds,
-				ADMActionMask inAbortMask, ADMDialogTimerProc inTimerProc,
-				ADMDialogTimerAbortProc inAbortProc, ADMInt32 inOptions);
-	
-	public native void abortTimer(ADMTimerRef inTimerID);
-	*/
-
-	/* 
-	 * Dialog state accessors
-	 *  
+	 * public native ADMTimerRef createTimer(ADMUInt32 inMilliseconds,
+	 * ADMActionMask inAbortMask, ADMDialogTimerProc inTimerProc,
+	 * ADMDialogTimerAbortProc inAbortProc, ADMInt32 inOptions);
+	 * 
+	 * public native void abortTimer(ADMTimerRef inTimerID);
 	 */
 
- 	private native boolean nativeIsVisible();
-	
+	/*
+	 * Dialog state accessors
+	 */
+
+	private native boolean nativeIsVisible();
+
 	public boolean isVisible() {
 		// There are rare occasions where the visible property is still out
 		// of sync with the native visibility, especially when launching
@@ -798,22 +785,22 @@ public abstract class Dialog extends Component {
 		return visible;
 	}
 
- 	private native void nativeSetVisible(boolean visible);
+	private native void nativeSetVisible(boolean visible);
 
 	public void setVisible(boolean visible) {
 		// Do not set visibility natively before the dialog was properly
 		// initialized. otherwise we get a crash on certain systems (not sure
 		// which ones anymore, but this works fine).
 		if (initialized) {
-			fireOnClose  = false;
+			fireOnClose = false;
 			nativeSetVisible(visible);
-			fireOnClose  = true;
+			fireOnClose = true;
 		}
 		this.visible = visible;
 	}
 
 	public native boolean isEnabled();
-	
+
 	public native void setEnabled(boolean enabled);
 
 	public boolean isActive() {
@@ -838,18 +825,17 @@ public abstract class Dialog extends Component {
 		}
 	}
 
-	/* 
+	/*
 	 * Dialog bounds accessors
-	 *
 	 */
 
- 	private native Size nativeGetSize();
-	
- 	private native void nativeSetSize(int width, int height);
+	private native Size nativeGetSize();
 
- 	private native Rectangle nativeGetBounds();
+	private native void nativeSetSize(int width, int height);
 
- 	private native void nativeSetBounds(int x, int y, int width, int height);
+	private native Rectangle nativeGetBounds();
+
+	private native void nativeSetBounds(int x, int y, int width, int height);
 
 	public Rectangle getBounds() {
 		// As kADMWindowDragMovedNotifier does not seem to work, fetch bounds
@@ -876,7 +862,7 @@ public abstract class Dialog extends Component {
 
 	public void setSize(int width, int height) {
 		ignoreSizeChange = true;
-	 	nativeSetSize(width, height);
+		nativeSetSize(width, height);
 		updateSize(width - size.width, height - size.height);
 		ignoreSizeChange = false;
 		sizeSet = true;
@@ -886,7 +872,7 @@ public abstract class Dialog extends Component {
 		if (size != null)
 			setSize(size.width, size.height);
 	}
-	
+
 	/**
 	 * Changes the internal size fields (size / bounds) relatively to their
 	 * previous values. As bounds and size do not represent the same Dimensions
@@ -898,7 +884,7 @@ public abstract class Dialog extends Component {
 	 */
 	protected void updateSize(int deltaX, int deltaY) {
 		if (deltaX != 0 || deltaY != 0) {
-		 	size.set(size.width + deltaX, size.height + deltaY);
+			size.set(size.width + deltaX, size.height + deltaY);
 			// If a container was created, the layout needs to be recalculated
 			// now:
 			if (container != null)
@@ -923,42 +909,39 @@ public abstract class Dialog extends Component {
 
 	/*
 	 * Coordinate system transformations
-	 * 
 	 */
 
-//	public native Point localToScreen(int x, int y);
-	
-	//public native Point screenToLocal(int x, int y);
+	// public native Point localToScreen(int x, int y);
 
-	//public native Rectangle localToScreen(int x, int y, int width, int height);
-	
-	//public native Rectangle screenToLocal(int x, int y, int width, int height);
+	// public native Point screenToLocal(int x, int y);
 
-	/*public Point localToScreen(Point pt) {
-		//return localToScreen(pt.x, pt.y);
-	}
+	// public native Rectangle localToScreen(int x, int y, int width, int
+	// height);
 
-	public Point screenToLocal(Point pt) {
-		return screenToLocal(pt.x, pt.y);
-	}
+	// public native Rectangle screenToLocal(int x, int y, int width, int
+	// height);
 
-	public Rectangle localToScreen(Rectangle rt) {
-		return localToScreen(rt.x, rt.y, rt.width, rt.height);
-	}
-
-	public Rectangle screenToLocal(Rectangle rt) {
-		return screenToLocal(rt.x, rt.y, rt.width, rt.height);
-	}
-*/
+	/*
+	 * public Point localToScreen(Point pt) { //return localToScreen(pt.x,
+	 * pt.y); }
+	 * 
+	 * public Point screenToLocal(Point pt) { return screenToLocal(pt.x, pt.y);
+	 * }
+	 * 
+	 * public Rectangle localToScreen(Rectangle rt) { return localToScreen(rt.x,
+	 * rt.y, rt.width, rt.height); }
+	 * 
+	 * public Rectangle screenToLocal(Rectangle rt) { return screenToLocal(rt.x,
+	 * rt.y, rt.width, rt.height); }
+	 */
 	/*
 	 * Dialog redraw requests
-	 * 
 	 */
 
 	public native void invalidate();
-	
+
 	public native void invalidate(int x, int y, int width, int height);
-	
+
 	public native void update();
 
 	public void invalidate(Rectangle rt) {
@@ -972,30 +955,25 @@ public abstract class Dialog extends Component {
 
 	/*
 	 * Cursor ID accessors
-	 * 
 	 */
 
-//	private native int nativeGetCursor();
-	
-	//private native void nativeSetCursor(int cursor);
-/* todo
-	public Cursor getCursor() {
-		return IntegerEnumUtils.get(Cursor.class, nativeGetCursor());
-	}
+	// private native int nativeGetCursor();
 
-	public void setCursor(Cursor cursor) {
-		if (cursor != null)
-			nativeSetCursor(cursor.value);
-	}
-*/
-	
-	/* 
+	// private native void nativeSetCursor(int cursor);
+	/*
+	 * todo public Cursor getCursor() { return
+	 * IntegerEnumUtils.get(Cursor.class, nativeGetCursor()); }
+	 * 
+	 * public void setCursor(Cursor cursor) { if (cursor != null)
+	 * nativeSetCursor(cursor.value); }
+	 */
+
+	/*
 	 * Dialog text accessors
-	 *
 	 */
 
 	protected native int nativeGetFont();
-	
+
 	protected native void nativeSetFont(int font);
 
 	public String getTitle() {
@@ -1006,14 +984,14 @@ public abstract class Dialog extends Component {
 
 	public void setTitle(String title) {
 		this.title = title != null ? title : "";
-		 nativeSetTitle(title);
+		nativeSetTitle(title);
 		// If the dialog name is not set yet, use the title
 		if (name.equals("")) {
 			// Append script path to name
-			setName(script != null
-					? StringUtils.join(ScriptographerEngine.getScriptPath(
-							script.getFile(), false), "_") + "_" + title
-					: title);
+			setName(script != null ? StringUtils
+					.join(ScriptographerEngine.getScriptPath(script.getFile(),
+							false), "_")
+					+ "_" + title : title);
 		}
 	}
 
@@ -1052,16 +1030,14 @@ public abstract class Dialog extends Component {
 
 	/*
 	 * dialog length constraints
-	 * 
 	 */
 
 	/*
-	 * There seems to be a problem on CS3 with setting min / max size
-	 * before all layout is initialized. The workaround is to reflect these
-	 * properties in the wrapper and then only set them natively when the dialog
-	 * is activate.
+	 * There seems to be a problem on CS3 with setting min / max size before all
+	 * layout is initialized. The workaround is to reflect these properties in
+	 * the wrapper and then only set them natively when the dialog is activate.
 	 */
-	
+
 	private native void nativeSetMinimumSize(int width, int height);
 
 	private native void nativeSetMaximumSize(int width, int height);
@@ -1075,7 +1051,7 @@ public abstract class Dialog extends Component {
 		if (initialized && isResizing)
 			nativeSetMinimumSize(width, height);
 	}
-	
+
 	public void setMinimumSize(Size size) {
 		if (size != null)
 			setMinimumSize(size.width, size.height);
@@ -1100,19 +1076,19 @@ public abstract class Dialog extends Component {
 			setMaximumSize(size.width, size.height);
 	}
 
-//	public native Size getIncrement();
-//	
-//	public native void setIncrement(int hor, int ver);
-//
-//	public void setIncrement(Size increment) {
-//		if (increment != null)
-//			setIncrement(increment.width, increment.height);
-//	}
-//
-//	public void setIncrement(Point increment) {
-//		if (increment != null)
-//			setIncrement(increment.x, increment.y);
-//	}
+	// public native Size getIncrement();
+	//
+	// public native void setIncrement(int hor, int ver);
+	//
+	// public void setIncrement(Size increment) {
+	// if (increment != null)
+	// setIncrement(increment.width, increment.height);
+	// }
+	//
+	// public void setIncrement(Point increment) {
+	// if (increment != null)
+	// setIncrement(increment.x, increment.y);
+	// }
 
 	public Size getPreferredSize() {
 		if (container != null) {
@@ -1129,156 +1105,122 @@ public abstract class Dialog extends Component {
 		return null;
 	}
 
-	/* 
+	/*
 	 * item accessors
-	 * 
 	 */
 
-	//protected native int getItemHandle(int itemID);
-/* todo
-	private PopupMenu popupMenu = null;
-
-	public PopupMenu getPopupMenu() {
-		if (popupMenu == null) {
-			int handle = getItemHandle(ITEM_MENU);
-			// We need to pass false for isChild as we want notifiers installed
-			popupMenu = handle != 0 ? new PopupMenu(this, handle, false) : null;
-		}
-		return popupMenu;
-	}
-
-	private Button resizeButton = null;
-
-	public Button getResizeButton() {
-		if (resizeButton == null) {
-			int handle = getItemHandle(ITEM_RESIZE);
-			resizeButton = handle != 0 ? new Button(this, handle, false) : null;
-		}
-		return resizeButton;
-	}
-*/
-	/* 
+	// protected native int getItemHandle(int itemID);
+	/*
+	 * todo private PopupMenu popupMenu = null;
+	 * 
+	 * public PopupMenu getPopupMenu() { if (popupMenu == null) { int handle =
+	 * getItemHandle(ITEM_MENU); // We need to pass false for isChild as we want
+	 * notifiers installed popupMenu = handle != 0 ? new PopupMenu(this, handle,
+	 * false) : null; } return popupMenu; }
+	 * 
+	 * private Button resizeButton = null;
+	 * 
+	 * public Button getResizeButton() { if (resizeButton == null) { int handle
+	 * = getItemHandle(ITEM_RESIZE); resizeButton = handle != 0 ? new
+	 * Button(this, handle, false) : null; } return resizeButton; }
+	 */
+	/*
 	 * default/cancel items
-	 * 
 	 */
 
-//	public native Item getDefaultItem();
-	
-//	public native void setDefaultItem(Item item);
+	// public native Item getDefaultItem();
 
-//	public native Item getCancelItem();
-	
-	//public native void setCancelItem(Item item);
+	// public native void setDefaultItem(Item item);
 
-	/* 
-	 * dialog state accessors	
-	 * 
+	// public native Item getCancelItem();
+
+	// public native void setCancelItem(Item item);
+
+	/*
+	 * dialog state accessors
 	 */
 
-	//public native boolean isCollapsed();
+	// public native boolean isCollapsed();
 
-	//public native boolean isUpdateEnabled();
-	
-	//public native void setUpdateEnabled(boolean updateEnabled);
+	// public native boolean isUpdateEnabled();
 
-	//public native boolean isForcedOnScreen();
-	
-	//public native void setForcedOnScreen(boolean forcedOnScreen);
+	// public native void setUpdateEnabled(boolean updateEnabled);
+
+	// public native boolean isForcedOnScreen();
+
+	// public native void setForcedOnScreen(boolean forcedOnScreen);
 
 	/*
 	 * dialog group functions
-	 *
 	 */
-/* todo?
-	public native DialogGroupInfo getGroupInfo();
-	
-	private native void nativeSetGroupInfo(String group, int positionCode);
-	
-	public void setGroupInfo(String group, int positionCode) {
-		// ignore size changes since it would happen to early and the
-		// new size would not be returned by native ADM from within setGroupInfo.
-		// So get the new size after and call onSizeChanged manually.
-		ignoreSizeChange = true;
-		nativeSetGroupInfo(group, positionCode);
-		ignoreSizeChange = false;
-		Size size = nativeGetSize();
-		onSizeChanged(size.width, size.height, false);
-	}
+	/*
+	 * todo? public native DialogGroupInfo getGroupInfo();
+	 * 
+	 * private native void nativeSetGroupInfo(String group, int positionCode);
+	 * 
+	 * public void setGroupInfo(String group, int positionCode) { // ignore size
+	 * changes since it would happen to early and the // new size would not be
+	 * returned by native ADM from within setGroupInfo. // So get the new size
+	 * after and call onSizeChanged manually. ignoreSizeChange = true;
+	 * nativeSetGroupInfo(group, positionCode); ignoreSizeChange = false; Size
+	 * size = nativeGetSize(); onSizeChanged(size.width, size.height, false); }
+	 * 
+	 * public void setGroupInfo(DialogGroupInfo info) { setGroupInfo(info.group,
+	 * info.positionCode); }
+	 */
 
-	public void setGroupInfo(DialogGroupInfo info) {
-		setGroupInfo(info.group, info.positionCode);
-	}
-*/
-	
 	/*
 	 * Support for various standard dialogs:
 	 */
 
-/*	private static native File nativeFileDialog(String message, String filter,
-			File directory, String filename, boolean open);
-
-	private static File fileDialog(String message, String[] filters,
-			File selectedFile, boolean open) {
-		String filter = null;
-		// Converts the filters to one long string, separated by \0
-		// as needed by the native function.
-		if (filters != null) {
-			StringBuffer buf = new StringBuffer();
-			for (int i = 0; i < filters.length; i++) {
-				buf.append(filters[i]);
-				buf.append('\0');
-			}
-			buf.append('\0');
-			filter = buf.toString();
-		}
-		File directory;
-		String filename;
-		if (selectedFile == null) {
-			directory = null;
-			filename = null;
-		} else if (selectedFile.isDirectory()) {
-			directory = selectedFile;
-			filename = "";
-		} else {
-			directory = selectedFile.getParentFile();
-			filename = selectedFile.getName();
-		}
-		return nativeFileDialog(message, filter, directory, filename, open);
-	}
-
-	public static File fileOpen(String message, String[] filters,
-			File selectedFile) {
-		return fileDialog(message, filters, selectedFile, true);
-	}
-
-	public static File fileSave(String message, String[] filters,
-			File selectedFile) {
-		return fileDialog(message, filters, selectedFile, false);
-	}
-
-	public static native File chooseDirectory(String message, File selectedDir);
-
-	public static native Color chooseColor(Color color);
-*/
+	/*
+	 * private static native File nativeFileDialog(String message, String
+	 * filter, File directory, String filename, boolean open);
+	 * 
+	 * private static File fileDialog(String message, String[] filters, File
+	 * selectedFile, boolean open) { String filter = null; // Converts the
+	 * filters to one long string, separated by \0 // as needed by the native
+	 * function. if (filters != null) { StringBuffer buf = new StringBuffer();
+	 * for (int i = 0; i < filters.length; i++) { buf.append(filters[i]);
+	 * buf.append('\0'); } buf.append('\0'); filter = buf.toString(); } File
+	 * directory; String filename; if (selectedFile == null) { directory = null;
+	 * filename = null; } else if (selectedFile.isDirectory()) { directory =
+	 * selectedFile; filename = ""; } else { directory =
+	 * selectedFile.getParentFile(); filename = selectedFile.getName(); } return
+	 * nativeFileDialog(message, filter, directory, filename, open); }
+	 * 
+	 * public static File fileOpen(String message, String[] filters, File
+	 * selectedFile) { return fileDialog(message, filters, selectedFile, true);
+	 * }
+	 * 
+	 * public static File fileSave(String message, String[] filters, File
+	 * selectedFile) { return fileDialog(message, filters, selectedFile, false);
+	 * }
+	 * 
+	 * public static native File chooseDirectory(String message, File
+	 * selectedDir);
+	 * 
+	 * public static native Color chooseColor(Color color);
+	 */
 	/**
 	 * @jshide
 	 */
-	//public static native Rectangle getPaletteLayoutBounds();
+	// public static native Rectangle getPaletteLayoutBounds();
 
 	/**
-	 * Returns the screen size for centering of dialogs. Ideally
-	 * this should be public and somewhere where it makes sense.
+	 * Returns the screen size for centering of dialogs. Ideally this should be
+	 * public and somewhere where it makes sense.
 	 */
-	//protected static native Size getScreenSize();
+	// protected static native Size getScreenSize();
 
 	public void centerOnScreen() {
 		// Visually center dialog on Screen,
 		// bit higher up than mathematically centered
-		//Size screen = Dialog.getScreenSize(), size = this.getSize();
-		//this.setPosition(
-			//(screen.width - size.width) / 2,
-			//(8 * screen.height / 10 - size.height) / 2
-		//);
+		// Size screen = Dialog.getScreenSize(), size = this.getSize();
+		// this.setPosition(
+		// (screen.width - size.width) / 2,
+		// (8 * screen.height / 10 - size.height) / 2
+		// );
 	}
 
 	/*
@@ -1293,7 +1235,7 @@ public abstract class Dialog extends Component {
 
 	/**
 	 * doLayout recalculates the layout, but does not change the dialog's size
-	 *
+	 * 
 	 */
 	public void doLayout() {
 		if (container != null)
@@ -1301,20 +1243,18 @@ public abstract class Dialog extends Component {
 	}
 
 	/**
-	 * AWTContainer wraps an UI Dialog and pretends it is an AWT Container,
-	 * in order to take advantage of all the nice LayoutManagers in AWT.
+	 * AWTContainer wraps an UI Dialog and pretends it is an AWT Container, in
+	 * order to take advantage of all the nice LayoutManagers in AWT.
 	 * 
 	 * This goes hand in hand with the AWTComponent that wraps an IDM Item in a
 	 * component.
 	 * 
-	 * Unfortunately, some LayoutManagers access fields in Container not
-	 * visible from the outside, so size information has to be passed up by
-	 * super calls.
+	 * Unfortunately, some LayoutManagers access fields in Container not visible
+	 * from the outside, so size information has to be passed up by super calls.
 	 * 
-	 * Attention: the UI bounds are the outside of the window, while here we
-	 * use the size of the AWT bounds for the inside! Also, for layout the
-	 * location of the dialog doesn't matter, so let's only work with size for
-	 * simplicity
+	 * Attention: the UI bounds are the outside of the window, while here we use
+	 * the size of the AWT bounds for the inside! Also, for layout the location
+	 * of the dialog doesn't matter, so let's only work with size for simplicity
 	 * 
 	 * @author lehni
 	 */

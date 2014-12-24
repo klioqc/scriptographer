@@ -186,7 +186,7 @@ void CDialog::Destroy()
 		
     if(fPanel)
 		{
-      
+    
       AIPanelUserData uData;
 			
 			AIErr err = sAIPanel->GetUserData(fPanel, uData);
@@ -466,6 +466,8 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
     
       if (strcmpi(itemType, PICTURE_CHECKBOX)  == 0)
       return new CheckBoxControl(controlID);
+
+     gPlugin->log("Unable to find control: %s", itemType);
 
     return new CCommonControl(controlID);
 }

@@ -416,7 +416,6 @@
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_TextEditItem.cpp">
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\native\win\commonctrls.cpp" />
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Image.cpp">
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
@@ -433,6 +432,21 @@
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ListItem.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_Tracker.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_HierarchyListBox.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_HierarchyListEntry.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\jni\com_scriptographer_widget_ItemGroup.cpp">
+      <Filter>Native\JNI\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\native\win\commonctrls.cpp">
       <Filter>Native\JNI\Widget</Filter>
     </ClCompile>
   </ItemGroup>

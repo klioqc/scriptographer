@@ -35,6 +35,7 @@ import com.scriptographer.ui.DialogColor;
 
 
 
+
 import com.scriptographer.ai.Annotator;
 import com.scriptographer.ai.AreaText;
 import com.scriptographer.ai.Artboard;
@@ -93,20 +94,34 @@ import com.scriptographer.ui.Palette;
 
 import com.scriptographer.widget.Button;
 import com.scriptographer.widget.CheckBox;
+import com.scriptographer.widget.Frame;
 import com.scriptographer.widget.ImageCheckBox;
 import com.scriptographer.widget.ImagePane;
 import com.scriptographer.widget.FloatingDialog;
 import com.scriptographer.widget.Image;
+import com.scriptographer.widget.HierarchyListBox;
+import com.scriptographer.widget.HierarchyListEntry;
+import com.scriptographer.widget.ImageRadioButton;
+import com.scriptographer.widget.ItemGroup;
 import com.scriptographer.widget.ListBox;
 import com.scriptographer.widget.ListEntry;
 import com.scriptographer.widget.ListItem;
 import com.scriptographer.widget.ModalDialog;
 import com.scriptographer.widget.PopupDialog;
+import com.scriptographer.widget.PopupList;
+import com.scriptographer.widget.PopupMenu;
+import com.scriptographer.widget.ProgressBar;
+import com.scriptographer.widget.RadioButton;
+import com.scriptographer.widget.ScrollBar;
+import com.scriptographer.widget.Slider;
+import com.scriptographer.widget.Spacer;
+import com.scriptographer.widget.SpinEdit;
 import com.scriptographer.widget.TextEdit;
 import com.scriptographer.widget.TextPane;
 import com.scriptographer.widget.TextValueItem;
 import com.scriptographer.widget.ImageButton;
 import com.scriptographer.widget.ToggleItem;
+import com.scriptographer.widget.Tracker;
 
 /**
  * @author Olga
@@ -173,6 +188,7 @@ public class WidgetClasses {
 		Timer.class,
 		
 		// UI, alphabetically
+		Dialog.class,
 	
 		Key.class,
 		MenuGroup.class,
@@ -186,22 +202,35 @@ public class WidgetClasses {
 		
 		Button.class,	
 		CheckBox.class,
-		Dialog.class,
+	 	FloatingDialog.class,
+		Frame.class,
+		HierarchyListBox.class,
+		HierarchyListEntry.class,
+	 	Image.class,
 		ImageButton.class,
 		ImageCheckBox.class,
+		ImageRadioButton.class,
 		ImagePane.class,
-	 	FloatingDialog.class,
-	 	ModalDialog.class,
-	 	PopupDialog.class,
-	 	Image.class,
+		ItemGroup.class,
 	 	ListBox.class,
 	 	ListEntry.class,
 		ListItem.class,
+	 	ModalDialog.class,
+	 	PopupDialog.class,
+		PopupList.class,
+		PopupMenu.class,
+		ProgressBar.class,
+		RadioButton.class,
+		ScrollBar.class,
+		Slider.class,
+		Spacer.class,
+		SpinEdit.class,
+		TextPane.class,
 		TextEdit.class,
 		TextValueItem.class,
-		TextPane.class,
 		
 		ToggleItem.class,
+		Tracker.class
 
 	};
 }
