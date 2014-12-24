@@ -482,13 +482,13 @@ public:
 	jobject convertSize(JNIEnv *env, AIRealPoint *size, jobject res = NULL) {
 		return convertSize(env, size->h, size->v, res);
 	}
-	
+#ifdef ADM_FREE	
 	jobject convertSize(JNIEnv *env, AISize *size, jobject res = NULL) {
 		return convertSize(env, size->width, size->height, res);
 	}
-	void convertSize(JNIEnv *env, jobject size, AIRealPoint *res);
 	void convertSize(JNIEnv *env, jobject size, AISize *res);
-	
+#endif
+  void convertSize(JNIEnv *env, jobject size, AIRealPoint *res);
   jobject convertUISize(JNIEnv *env, float width, float height, jobject res = NULL);
 
 	// com.scriptoggrapher.ai.Matrix <-> AIRealMatrix
@@ -797,6 +797,7 @@ public:
 extern ScriptographerEngine *gEngine;
 
 //mydebug
+#ifdef ADM_FREE
 extern AIMenuItemHandle fEmptyPanelPanelMenuItemHandle;
 typedef struct {
 	AIPanelRef panel;
@@ -806,6 +807,7 @@ typedef struct {
 #include <hash_map>
 typedef hash_map<HWND, DialogData> DialogDataMap;
 extern DialogDataMap dialogDataMap;
+#endif
 //end mydebug
 
 

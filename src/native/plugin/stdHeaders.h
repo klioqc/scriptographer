@@ -51,9 +51,6 @@
 #define isnan(x) _isnan(x)
 #define isinf(x) (!_finite(x))
 
-
-#include "commonctrls.h"
-
 #endif // WIN_ENV
 
 // JNI
@@ -69,6 +66,14 @@
 using namespace std;
 
 #include "suites.h"
+
+
+
+#ifdef WIN_ENV
+#ifdef ADM_FREE
+#include "commonctrls.h"
+#endif // ADM_FREE
+#endif // WIN_ENV
 
 #include "Array.h"
 

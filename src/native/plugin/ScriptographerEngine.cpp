@@ -1214,7 +1214,7 @@ void ScriptographerEngine::convertSize(JNIEnv *env, jobject size,
 	res->v = height;
 	EXCEPTION_CHECK(env);
 }
-
+#ifdef ADM_FREE
 void  ScriptographerEngine::convertSize(JNIEnv *env, jobject size, AISize *res){
 	jdouble width = env->GetDoubleField(size, fid_ai_Size_width);
 	jdouble height = env->GetDoubleField(size, fid_ai_Size_height);
@@ -1224,6 +1224,7 @@ void  ScriptographerEngine::convertSize(JNIEnv *env, jobject size, AISize *res){
 	res->height = height;
 	EXCEPTION_CHECK(env);
 }
+#endif
 
 // com.scriptoggrapher.ai.Matrix <-> AIRealMatrix
 jobject ScriptographerEngine::convertMatrix(JNIEnv *env,
@@ -2482,6 +2483,7 @@ ASErr ScriptographerEngine::MenuItem_onSelect(AIMenuMessage *message) {
 
 
 		////temp - mydebug
+#ifdef ADM_FREE
     if (message->menuItem == fEmptyPanelPanelMenuItemHandle)
     {
         for (DialogDataMap::iterator iter = dialogDataMap.begin(); 
@@ -2496,6 +2498,7 @@ ASErr ScriptographerEngine::MenuItem_onSelect(AIMenuMessage *message) {
 
         }
     }
+#endif
     ////temp - end mydebug
 
 		callStaticVoidMethod(env, cls_ui_MenuItem, mid_ui_MenuItem_onSelect,

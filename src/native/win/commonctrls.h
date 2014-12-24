@@ -1,3 +1,5 @@
+
+
 #ifndef _Included_commonctrl_h
 #define _Included_commonctrl_h
 
@@ -254,7 +256,6 @@ private:
   LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam);
   WNDPROC oldWndProc;
 };
-
 
 
 #endif
