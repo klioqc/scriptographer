@@ -15,6 +15,7 @@
 package com.scriptographer.adm;
 
 import com.scriptographer.ai.Color;
+import com.scriptographer.ui.ImageType;
 import com.scriptographer.ui.Rectangle;
 import com.scriptographer.ui.Point;
 

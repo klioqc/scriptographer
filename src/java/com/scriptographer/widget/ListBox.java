@@ -42,8 +42,8 @@ public class ListBox extends ListItem<ListEntry> {
 	protected ListBox() {
 	}
 
-	public EnumSet<ListStyle> getStyle() {
-		return IntegerEnumUtils.getSet(ListStyle.class, nativeGetStyle());
+	public EnumSet<com.scriptographer.widget.ListStyle> getStyle() {
+		return IntegerEnumUtils.getSet(com.scriptographer.widget.ListStyle.class, nativeGetStyle());
 	}
 
 	public void setStyle(EnumSet<ListStyle> style) {

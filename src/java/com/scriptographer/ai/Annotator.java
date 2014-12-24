@@ -16,7 +16,7 @@ package com.scriptographer.ai;
 
 import java.util.ArrayList;
 
-import com.scriptographer.ScriptographerEngine; 
+import com.scriptographer.ScriptographerEngine;
 import com.scriptographer.ScriptographerException;
 import com.scratchdisk.script.Callable;
 import com.scratchdisk.util.IntMap;
@@ -36,11 +36,11 @@ public class Annotator extends NativeObject {
 	// this is list of drawers that map viewports to created ADM Drawer objects:
 	private static SoftIntMap<Drawer> drawers = new SoftIntMap<Drawer>();
 	private static int counter = 0;
-	
+
 	public Annotator() {
 		// now see first whether there is an unusedEffect already:
 		ArrayList unusedAnnotators = getUnusedAnnotators();
-		
+
 		int index = unusedAnnotators.size() - 1;
 		if (index >= 0) {
 			Annotator annotator = (Annotator) unusedAnnotators.get(index);
@@ -51,25 +51,25 @@ public class Annotator extends NativeObject {
 			unusedAnnotators.remove(index);
 		} else {
 			handle = nativeCreate("Scriptographer Annotator " + (counter++));
-		}		
+		}
 
 		if (handle == 0)
 			throw new ScriptographerException("Unable to create Annotator.");
-		
+
 		active = false;
-		
+
 		annotators.put(handle, this);
 	}
-	
+
 	/**
 	 * Called from the native environment.
 	 */
 	protected Annotator(int handle) {
 		super(handle);
 	}
-	
+
 	private native int nativeCreate(String name);
-	
+
 	/**
 	 * @param active if {@code true}, activates the annotator, otherwise
 	 *        deactivates it
@@ -83,7 +83,7 @@ public class Annotator extends NativeObject {
 	public boolean isActive() {
 		return active;
 	}
-	
+
 	private native boolean nativeSetActive(int handle, boolean active);
 
 	/**
@@ -92,20 +92,21 @@ public class Annotator extends NativeObject {
 	public void invalidate(int x, int y, int width, int height) {
 		nativeInvalidate(handle, x, y, width, height);
 	}
-	
+
 	public void invalidate(Rectangle rect) {
 		// TODO: implement DocumentView and pass handle to it!
-		nativeInvalidate(handle, (int) rect.x, (int) rect.y,
-				(int) rect.width, (int) rect.height);
+		nativeInvalidate(handle, (int) rect.x, (int) rect.y, (int) rect.width,
+				(int) rect.height);
 	}
-	
+
 	private native void nativeInvalidate(int viewHandle, int x, int y,
 			int width, int height);
-	
+
 	public void dispose() {
 		// see whether we're still linked:
 		if (annotators.get(handle) == this) {
-			// if so remove it and put it to the list of unused timers, for later
+			// if so remove it and put it to the list of unused timers, for
+			// later
 			// recycling
 			annotators.remove(handle);
 			getUnusedAnnotators().add(this);
@@ -120,13 +121,13 @@ public class Annotator extends NativeObject {
 		Object[] annotators = Annotator.annotators.values().toArray();
 		for (int i = 0; i < annotators.length; i++)
 			((Annotator) annotators[i]).dispose();
-		
+
 		// also clean up the port drawers:
 		Object[] drawers = Annotator.drawers.values().toArray();
 		for (int i = 0; i < drawers.length; i++)
 			((Drawer) drawers[i]).dispose();
 	}
-	
+
 	private static ArrayList<Annotator> getUnusedAnnotators() {
 		if (unusedAnnotators == null)
 			unusedAnnotators = nativeGetAnnotators();
@@ -141,7 +142,7 @@ public class Annotator extends NativeObject {
 		this.onDraw = onDraw;
 		this.setActive(onDraw != null);
 	}
-	
+
 	public Callable getOnDraw() {
 		return onDraw;
 	}
@@ -156,7 +157,7 @@ public class Annotator extends NativeObject {
 	public void setOnInvalidate(Callable onInvalidate) {
 		this.onInvalidate = onInvalidate;
 	}
-	
+
 	public Callable getOnInvalidate() {
 		return onInvalidate;
 	}
@@ -169,14 +170,17 @@ public class Annotator extends NativeObject {
 	/**
 	 * To be called from the native environment:
 	 */
-	private static void onDraw(int handle, int portHandle, int viewHandle, int docHandle) {
+	private static void onDraw(int handle, int portHandle, int viewHandle,
+			int docHandle) {
 		Annotator annotator = getAnnotator(handle);
 		if (annotator != null) {
-			annotator.onDraw(createDrawer(portHandle),
-					DocumentView.wrapHandle(viewHandle, Document.wrapHandle(docHandle)));
+			annotator.onDraw(
+					createDrawer(portHandle),
+					DocumentView.wrapHandle(viewHandle,
+							Document.wrapHandle(docHandle)));
 		}
 	}
-	
+
 	private static void onInvalidate(int handle) {
 		Annotator annotator = getAnnotator(handle);
 		if (annotator != null) {
@@ -189,12 +193,11 @@ public class Annotator extends NativeObject {
 	}
 
 	/**
-	 * Returns a Drawer for the passed portHandle.
-	 * The drawers are cashed and reused for the same port.
-	 * TODO: Remove dependency from adm.Drawer and introduce a new ui.Drawer
-	 * that makes the abstraction behind the scenes. Or: Use an interface called
-	 * ui.Drawer and have different implementations sharing that common
-	 * interface.
+	 * Returns a Drawer for the passed portHandle. The drawers are cashed and
+	 * reused for the same port. TODO: Remove dependency from adm.Drawer and
+	 * introduce a new ui.Drawer that makes the abstraction behind the scenes.
+	 * Or: Use an interface called ui.Drawer and have different implementations
+	 * sharing that common interface.
 	 * 
 	 * @param portHandle
 	 */
@@ -206,7 +209,7 @@ public class Annotator extends NativeObject {
 		}
 		return drawer;
 	}
-	
+
 	private static native Drawer nativeCreateDrawer(int portHandle);
 
 	protected void finalize() {

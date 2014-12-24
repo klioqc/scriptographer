@@ -266,7 +266,8 @@ void CDialog::Destroy()
         {
             
             	hWnd = CreateWindowEx( 
-		            0,  "BUTTON",   // Predefined class; Unicode assumed. 
+		            0,  
+                "BUTTON",   // Predefined class; Unicode assumed. 
 		            "no text here now",		//  
 		            WS_VISIBLE | WS_CHILD | ES_LEFT  | BS_PUSHBUTTON | BS_USERBUTTON,  // Styles. BS_OWNERDRAW?
 		            rect->left,         // x position. 
@@ -288,6 +289,86 @@ void CDialog::Destroy()
      }
   };
    
+  class CheckBoxControl : public CCommonControl
+  {
+    public:
+        CheckBoxControl(int id):CCommonControl(id) {};
+    
+        virtual bool Create(HWND hDlg, RECT* rect)
+        {
+            
+            	hWnd = CreateWindowEx( 
+		            0,  
+                "BUTTON",   // Predefined class; Unicode assumed. 
+		            "no text here now",		//  
+		            WS_VISIBLE | WS_CHILD | ES_LEFT   | BS_CHECKBOX,  // Styles. BS_OWNERDRAW?
+		            rect->left,         // x position. 
+		            rect->top,         // y position. 
+		            rect->right,        // width.
+		            rect->bottom,        // height.
+		            hDlg,       // Parent window.
+		            (HMENU) controlID,
+		            (HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
+		            NULL);      // Pointer not needed.
+          
+              return true;
+        }
+
+     bool CheckBoxControl::OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam)
+     {
+       /*switch (LOWORD(wParam)) {
+    case 1:
+        checked = IsDlgButtonChecked(hwnd, 1);
+        if (checked) {
+            CheckDlgButton(hwnd, 1, BST_UNCHECKED);
+        } else {
+            CheckDlgButton(hwnd, 1, BST_CHECKED);
+    break;*/
+        return OnNotify(USER_CHANGED);
+        return true;
+     }
+  };
+  
+  class RadioButtonControl : public CCommonControl
+  {
+    public:
+        RadioButtonControl(int id):CCommonControl(id) {};
+    
+        virtual bool Create(HWND hDlg, RECT* rect)
+        {
+            
+            	hWnd = CreateWindowEx( 
+		            0,  
+                "BUTTON",   // Predefined class; Unicode assumed. 
+		            "no text here now",		//  
+		            WS_VISIBLE | WS_CHILD | ES_LEFT   | BS_RADIOBUTTON,  // Styles. BS_OWNERDRAW?
+		            rect->left,         // x position. 
+		            rect->top,         // y position. 
+		            rect->right,        // width.
+		            rect->bottom,        // height.
+		            hDlg,       // Parent window.
+		            (HMENU) controlID,
+		            (HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
+		            NULL);      // Pointer not needed.
+          
+              return true;
+        }
+
+     bool RadioButtonControl::OnCommand(int notifyCode, WPARAM wParam, LPARAM lParam)
+     {
+       /*switch (LOWORD(wParam)) {
+    case 1:
+        checked = IsDlgButtonChecked(hwnd, 1);
+        if (checked) {
+            CheckDlgButton(hwnd, 1, BST_UNCHECKED);
+        } else {
+            CheckDlgButton(hwnd, 1, BST_CHECKED);
+    break;*/
+        return OnNotify(USER_CHANGED);
+        return true;
+     }
+  };
+
   enum  EditFlags  {
         None     = 0,
         ReadOnly = 1,
@@ -307,9 +388,38 @@ void CDialog::Destroy()
         {
              
             	hWnd = CreateWindowEx( 
-		            0,  "EDIT",   // Predefined class; Unicode assumed. 
+		            0,  
+                "EDIT",   // Predefined class; Unicode assumed. 
 		            "no text here now",		//  
-		            WS_VISIBLE | WS_CHILD | ES_LEFT  | editFlags, 
+		            WS_VISIBLE | WS_CHILD | ES_LEFT | editFlags, 
+		            rect->left,         // x position. 
+		            rect->top,         // y position. 
+		            rect->right,        // width.
+		            rect->bottom,        // height.
+		            hDlg,       // Parent window.
+		            (HMENU) controlID,
+		            (HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
+		            NULL);      // Pointer not needed.
+          
+              return true;
+        }
+  };
+
+ class StaticControl : public CCommonControl
+  {
+    DWORD editFlags;
+
+    public:
+        StaticControl(int id, DWORD flags ):CCommonControl(id) 
+          {editFlags = flags;};
+    
+      virtual bool Create(HWND hDlg, RECT* rect)
+        {
+             
+            	hWnd = CreateWindowEx( 
+		            0,  "STATIC",   // Predefined class; Unicode assumed. 
+		            "no text here now",		//  
+		            WS_VISIBLE | WS_CHILD | SS_LEFT  | editFlags, 
 		            rect->left,         // x position. 
 		            rect->top,         // y position. 
 		            rect->right,        // width.
@@ -330,22 +440,33 @@ void CDialog::Destroy()
 //factory for creating control
 CCommonControl *  CreateControl(char * itemType, int controlID)
 {
-
+    //push button
     if (strcmpi(itemType, TEXT_PUSHBUTTON) == 0)
       return new ButtonControl(controlID);
     
    //edit boxes 
-    if (strcmpi(itemType, TEXT_EDIT))
+    if (strcmpi(itemType, TEXT_EDIT)  == 0)
       return new EditControl(controlID, (int) EditFlags::None);
-    if (strcmpi(itemType,  TEXT_EDIT_READONLY))
+    if (strcmpi(itemType,  TEXT_EDIT_READONLY)  == 0)
       return new EditControl(controlID, ES_READONLY );
-    if (strcmpi(itemType, TEXT_EDIT_MULTILINE))
+    if (strcmpi(itemType, TEXT_EDIT_MULTILINE)  == 0)
       return new EditControl(controlID,  ES_MULTILINE);
-    if (strcmpi(itemType, TEXT_EDIT_MULTILINE_READONLY))
+    if (strcmpi(itemType, TEXT_EDIT_MULTILINE_READONLY)  == 0)
       return new EditControl(controlID,  ES_MULTILINE | ES_READONLY);
     
+    //static
+    if (strcmpi(itemType, TEXT_STATIC)  == 0 ||  (strcmpi(itemType, TEXT_STATIC_MULTILINE)  == 0))
+      return new StaticControl(controlID, (int) EditFlags::None);
     
     
+     
+
+     if (strcmpi(itemType, TEXT_CHECKBOX)  == 0)
+      return new CheckBoxControl(controlID);
+    
+      if (strcmpi(itemType, PICTURE_CHECKBOX)  == 0)
+      return new CheckBoxControl(controlID);
+
     return new CCommonControl(controlID);
 }
 
@@ -461,26 +582,26 @@ HWND CreateButton(HWND hDlg)
 	
 }
 
-HWND CreateItem( char * itemType, HWND hDlg)
-{
-  if (strcmp(TEXT_PUSHBUTTON, itemType) == 0)
-    return CreateButton(hDlg);
-
-
-  return CreateCustomEdit( 
-
-		0, //L"EDIT",   // Predefined class; Unicode assumed. 
-		"",		//  
-		WS_VISIBLE | WS_CHILD | ES_RIGHT /*| ES_NUMBER*/ | WS_TABSTOP,  // Styles. 
-		0,         // x position. 
-		0,         // y position. 
-		100,        // width.
-		20,        // height.
-		hDlg,       // Parent window.
-		NULL, //(HMENU) ID_YEdit,
-		(HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
-		NULL);     
-}
+//HWND CreateItem( char * itemType, HWND hDlg)
+//{
+//  if (strcmp(TEXT_PUSHBUTTON, itemType) == 0)
+//    return CreateButton(hDlg);
+//
+//
+//  return CreateCustomEdit( 
+//
+//		0, //L"EDIT",   // Predefined class; Unicode assumed. 
+//		"",		//  
+//		WS_VISIBLE | WS_CHILD | ES_RIGHT /*| ES_NUMBER*/ | WS_TABSTOP,  // Styles. 
+//		0,         // x position. 
+//		0,         // y position. 
+//		100,        // width.
+//		20,        // height.
+//		hDlg,       // Parent window.
+//		NULL, //(HMENU) ID_YEdit,
+//		(HINSTANCE)GetWindowLongPtr(hDlg, GWLP_HINSTANCE), 
+//		NULL);     
+//}
 
 LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{

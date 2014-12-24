@@ -20,8 +20,8 @@ import java.util.EnumSet;
 import com.scratchdisk.util.IntMap;
 import com.scratchdisk.util.IntegerEnumUtils;
 import com.scriptographer.ScriptographerException;
-import com.scriptographer.adm.Image;
 import com.scriptographer.sg.CoordinateSystem;
+import com.scriptographer.ui.ImageBase;
 
 /**
  * The Tool object refers to the Scriptographer tool in the Illustrator tool
@@ -64,9 +64,9 @@ public class Tool extends ToolHandler {
 	private static IntMap<Tool> tools = new IntMap<Tool>();
 	private static ArrayList<Tool> unusedTools = null;
 
-	private Image image;
-	private Image rolloverImage;
-	private Image defaultImage;
+	private ImageBase image;
+	private ImageBase rolloverImage;
+	private ImageBase defaultImage;
 
 	private String name;
 
@@ -76,7 +76,7 @@ public class Tool extends ToolHandler {
 	/**
 	 * @jshide
 	 */
-	public Tool(String name, Image image, EnumSet<ToolOption> options,
+	public Tool(String name, ImageBase image, EnumSet<ToolOption> options,
 			Tool groupTool, Tool toolsetTool) {
 		this.name = name;
 		defaultImage = image;
@@ -110,16 +110,16 @@ public class Tool extends ToolHandler {
 		tools.put(handle, this);
 	}
 
-	public Tool(String name, Image image, EnumSet<ToolOption> options,
+	public Tool(String name, ImageBase image, EnumSet<ToolOption> options,
 			Tool groupTool) {
 		this(name, image, options, groupTool, null);
 	}
 
-	public Tool(String name, Image image, EnumSet<ToolOption> options) {
+	public Tool(String name, ImageBase image, EnumSet<ToolOption> options) {
 		this(name, image, options, null, null);
 	}
 
-	public Tool(String name, Image image) {
+	public Tool(String name, ImageBase image) {
 		this(name, image, null, null, null);
 	}
 
@@ -236,26 +236,26 @@ public class Tool extends ToolHandler {
 		nativeSetOptions(IntegerEnumUtils.getFlags(options));
 	}
 
-	public Image getImage() {
+	public ImageBase getImage() {
 		return image;
 	}
 
 	private native void nativeSetImage(int iconHandle);
 
-	public void setImage(Image image) {
+	public void setImage(ImageBase image) {
 		nativeSetImage(image != null ? image.createIconHandle() : 0);
 		this.image = image;
 		if (defaultImage == null)
 			defaultImage = image;
 	}
 
-	public Image getRolloverImage() {
+	public ImageBase getRolloverImage() {
 		return rolloverImage;
 	}
 
 	private native void nativeSetRolloverImage(int iconHandle);
 
-	public void setRolloverImage(Image image) {
+	public void setRolloverImage(ImageBase image) {
 		nativeSetRolloverImage(image != null ? image.createIconHandle() : 0);
 		this.rolloverImage = image;
 	}

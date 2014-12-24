@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 import com.scriptographer.adm.Dialog;
 import com.scriptographer.adm.Image;
-import com.scriptographer.adm.ImageType;
+import com.scriptographer.ui.ImageType;
 import com.scriptographer.ai.Color;
 import com.scriptographer.ui.Component;
 import com.scriptographer.ui.Palette;

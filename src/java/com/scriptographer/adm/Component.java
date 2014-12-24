@@ -30,6 +30,7 @@ import com.scriptographer.ScriptographerException;
 import com.scriptographer.adm.layout.TableLayout;
 import com.scriptographer.ui.Border;
 import com.scriptographer.ui.DialogFont;
+import com.scriptographer.ui.ImageType;
 import com.scriptographer.adm.ComponentWrapper;
 import com.scriptographer.adm.Content;
 import com.scriptographer.ui.Size;

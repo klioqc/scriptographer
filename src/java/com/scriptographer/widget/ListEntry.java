@@ -13,9 +13,10 @@
 package com.scriptographer.widget;
 
 import java.io.IOException;
+
+import com.scriptographer.adm.Image;
 import com.scriptographer.ui.Rectangle;
 import com.scriptographer.ui.Point;
-
 import com.scriptographer.ScriptographerEngine; 
 import com.scriptographer.ScriptographerException;
 import com.scratchdisk.script.Callable;
@@ -281,7 +282,7 @@ public class ListEntry extends NotificationHandler {
 	}
 		
 	public void setImage(Object obj) throws IOException {
-		image = Image.getImage(obj);
+		image = (Image)Image.getImage(obj);
 		nativeSetImage(image != null ? image.createIconHandle() : 0);
 	}
 	
@@ -290,7 +291,7 @@ public class ListEntry extends NotificationHandler {
 	}
 	
 	public void setSelectedImage(Object obj) throws IOException {
-		selectedImage = Image.getImage(obj);
+		selectedImage = (Image)Image.getImage(obj);
 		nativeSetSelectedImage(selectedImage != null ?
 				selectedImage.createIconHandle() : 0);
 	}
@@ -300,7 +301,7 @@ public class ListEntry extends NotificationHandler {
 	}
 
 	public void setDisabledImage(Object obj) throws IOException {
-		disabledImage = Image.getImage(obj);
+		disabledImage = (Image)Image.getImage(obj);
 		nativeSetDisabledImage(disabledImage != null ?
 				disabledImage.createIconHandle() : 0);
 	}

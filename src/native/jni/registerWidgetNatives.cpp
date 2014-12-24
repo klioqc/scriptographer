@@ -884,9 +884,7 @@ static const JNINativeMethod com_scriptographer_widget_Image_methods[] = {
 	{ "nativeSetPixels", "([IIII)V", (void *) &Java_com_scriptographer_widget_Image_nativeSetPixels___3IIII },
 	{ "nativeGetPixels", "([IIII)V", (void *) &Java_com_scriptographer_widget_Image_nativeGetPixels },
 	{ "nativeSetPixels", "(II)V", (void *) &Java_com_scriptographer_widget_Image_nativeSetPixels__II },
-	{ "nativeCreateIcon", "()I", (void *) &Java_com_scriptographer_widget_Image_nativeCreateIcon },
-	{ "nativeBeginDrawer", "()I", (void *) &Java_com_scriptographer_widget_Image_nativeBeginDrawer },
-	{ "nativeEndDrawer", "()V", (void *) &Java_com_scriptographer_widget_Image_nativeEndDrawer }
+	{ "nativeCreateIcon", "()I", (void *) &Java_com_scriptographer_widget_Image_nativeCreateIcon }
 };
 
 /* Native methods for class com_scriptographer_widget_ImagePane */
