@@ -310,3 +310,17 @@ JNIEXPORT jstring JNICALL Java_com_scriptographer_widget_ListEntry_getText(
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
+
+/*
+ * boolean defaultTrack(com.scriptographer.widget.Tracker arg1)
+ */
+JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_ListEntry_defaultTrack(JNIEnv *env, jobject obj, jobject tracker) {
+	try {
+	/*	#define DEFAULT_TRACK(SUITE) \
+			return SUITE->DefaultTrack(entry, gEngine->getTrackerHandle(env, tracker));
+				
+		DEFINE_METHOD(DEFAULT_TRACK)*/
+	} EXCEPTION_CONVERT(env);
+	return false;
+}
+

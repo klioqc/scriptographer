@@ -242,10 +242,9 @@ public class Tracker extends NativeObject {
 		this.virtualKey = virtualKey;
 		this.character = character;
 		this.time = time;
-		/*TODO
+		
 		return handler.onTrack(this);
-		*/
-		return false;
+	
 	}
 
 	public Point getPoint() {

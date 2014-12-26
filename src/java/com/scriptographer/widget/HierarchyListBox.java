@@ -131,13 +131,13 @@ public class HierarchyListBox extends ListItem<HierarchyListEntry> {
 		return func == null && parentEntry != null ?
 				parentEntry.getList().getOnDestroy() : func;
 	}
-
+/* TODO?
 	public Callable getOnDraw() {
 		Callable func = super.getOnDraw();
 		return func == null && parentEntry != null ?
 				parentEntry.getList().getOnDraw() : func;
 	}
-
+*/
 	public Callable getOnResize() {
 		Callable func = super.getOnResize();
 		return func == null && parentEntry != null ?

@@ -743,12 +743,13 @@ public abstract class Dialog extends Component {
 	protected void nativeSetTrackCallback(boolean enabled) {
 	}
 
-	protected void nativeSetDrawCallback(boolean enabled) {
+	public native boolean defaultTrack(Tracker tracker);
+	
+	/*
+	 * TODO? or to remove 
+	 * 	protected void nativeSetDrawCallback(boolean enabled) {
 	}
 
-	/*
-	 * todo public native boolean defaultTrack(Tracker tracker);
-	 * 
 	 * public native void defaultDraw(Drawer drawer);
 	 */
 	public int getTrackMask() {

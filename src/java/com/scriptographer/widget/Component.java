@@ -177,7 +177,7 @@ public abstract class Component extends NotificationHandler {
 	public Callable getOnTrack() {
 		return onTrack;
 	}
-/*
+
 	protected boolean onTrack(Tracker tracker) {
 		// Retrieve through getter so it can be overridden by subclasses,
 		// e.g. HierarchyListBox
@@ -189,7 +189,8 @@ public abstract class Component extends NotificationHandler {
 		}
 		return true;
 	}
-*/
+
+	/* TODO or to remove
 	protected Callable onDraw = null;
 
 	public void setOnDraw(Callable func) {
@@ -201,7 +202,7 @@ public abstract class Component extends NotificationHandler {
 		return onDraw;
 	}
 
-	/*
+
 	protected boolean onDraw(Drawer drawer) {
 		// Retrieve through getter so it can be overridden by subclasses,
 		// e.g. HierarchyListBox

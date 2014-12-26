@@ -38,11 +38,11 @@ public class ListEntry extends NotificationHandler {
 	 * @param index
 	 */
 	public ListEntry(ListItem list, int index) {
-/*	todo	
+	
 		if (list instanceof HierarchyListBox && !(this instanceof HierarchyListEntry))
 			throw new ScriptographerException(
 					"Use HierarchyListEntry objects for HierarchyListBox");
-*/	
+	
 		handle = nativeCreate(list, index, list.getUniqueId());
 		if (handle == 0)
 			throw new ScriptographerException("Unable to create list entry.");
@@ -67,8 +67,10 @@ public class ListEntry extends NotificationHandler {
 	 * Callback functions
 	 */
 	
-/* todo	
+
 	public native boolean defaultTrack(Tracker tracker);
+	
+	/* TODO? or to remove		
 	public native void defaultDraw(Drawer drawer);
 
 	protected boolean onDraw(Drawer drawer) {
@@ -80,7 +82,7 @@ public class ListEntry extends NotificationHandler {
 		}
 		return true;
 	}
-
+*/	
 	protected boolean onTrack(Tracker tracker) {
 		Callable onTrackEntry = list.getOnTrackEntry();
 		if (onTrackEntry != null) {
@@ -90,7 +92,7 @@ public class ListEntry extends NotificationHandler {
 		}
 		return true;
 	}
-*/	
+
 	Callable onDestroy = null;
 
 	public Callable getOnDestroy() {

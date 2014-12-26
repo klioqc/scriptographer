@@ -147,15 +147,6 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetTrackCallbac
 	} EXCEPTION_CONVERT(env);
 }
 
-/*
- * void nativeSetDrawCallback(boolean arg1)
- */
-JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetDrawCallback(
-		JNIEnv *env, jobject obj, jboolean arg1) {
-	try {
-		// TODO: define nativeSetDrawCallback
-	} EXCEPTION_CONVERT(env);
-}
 
 /*
  * int getTrackMask()
@@ -540,4 +531,25 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_hideToolTip(
 	try {
 		// TODO: define hideToolTip
 	} EXCEPTION_CONVERT(env);
+}
+
+/*
+ * void nativeSetDrawCallback(boolean arg1)
+ */
+JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetDrawCallback(
+		JNIEnv *env, jobject obj, jboolean arg1) {
+	try {
+		// TODO: define nativeSetDrawCallback
+	} EXCEPTION_CONVERT(env);
+}
+
+/*
+ * boolean defaultTrack(com.scriptographer.widget.Tracker arg1)
+ */
+JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_defaultTrack(
+		JNIEnv *env, jobject obj, jobject arg1) {
+	try {
+		// TODO: define defaultTrack
+	} EXCEPTION_CONVERT(env);
+	return false;
 }

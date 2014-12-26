@@ -212,8 +212,10 @@ public abstract class Item extends Component {
 	 */
 	protected native void nativeSetTrackCallback(boolean enabled);
 	protected native void nativeSetDrawCallback(boolean enabled);
-/* TODO
+
 	public native boolean defaultTrack(Tracker tracker);
+	
+	/* TODO? or to remove
 	public native void defaultDraw(Drawer drawer);
 */
 	public native int getTrackMask();

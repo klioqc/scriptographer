@@ -432,8 +432,33 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeDestroy(
 	} EXCEPTION_CONVERT(env);
 }
 
+#ifdef likeadm
+/*
+ * void nativeSetTrackCallback(boolean enabled)
+ */
+JNIEXPORT void JNICALL Java_com_scriptographer_adm_Dialog_nativeSetTrackCallback(
+		JNIEnv *env, jobject obj, jboolean enabled) {
+	try {
+		/*ADMDialogRef dialog = gEngine->getDialogHandle(env, obj);
+		DEFINE_CALLBACK_PROC(Dialog_onTrack);
+		sADMDialog->SetTrackProc(dialog, enabled
+				? (ADMDialogTrackProc) CALLBACK_PROC(Dialog_onTrack) : NULL);*/
+	} EXCEPTION_CONVERT(env);
+}
 
-
+/*
+ * boolean defaultTrack(com.scriptographer.adm.Tracker tracker)
+ */
+JNIEXPORT jboolean JNICALL Java_com_scriptographer_adm_Dialog_defaultTrack(
+		JNIEnv *env, jobject obj, jobject tracker) {
+	try {
+	/*	ADMDialogRef dialog = gEngine->getDialogHandle(env, obj);
+		return sADMDialog->DefaultTrack(dialog,
+				gEngine->getTrackerHandle(env, tracker));*/
+	} EXCEPTION_CONVERT(env);
+	return false;
+}
+#endif
 /*
  * boolean nativeIsVisible()
  */
@@ -697,4 +722,15 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetTitle(
 		  }
     }
 	} EXCEPTION_CONVERT(env);
+}
+
+/*
+ * boolean defaultTrack(com.scriptographer.widget.Tracker arg1)
+ */
+JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Dialog_defaultTrack(
+		JNIEnv *env, jobject obj, jobject arg1) {
+	try {
+		// TODO: define defaultTrack
+	} EXCEPTION_CONVERT(env);
+	return false;
 }

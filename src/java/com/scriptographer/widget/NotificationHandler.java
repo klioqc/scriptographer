@@ -30,20 +30,22 @@ import com.scriptographer.ui.NativeObject;
  */
 abstract class NotificationHandler extends NativeObject {
 	
-	/*TODO
+	
 	@SuppressWarnings("unused")
 	private Tracker tracker = new Tracker();
+	/*TODO? or to remove
  	@SuppressWarnings("unused")
 	private Drawer drawer = new Drawer();
 	*/
 	private Map data;
 
-	/* TODO	
+	
 	protected abstract boolean onTrack(Tracker tracker);
-
-	protected abstract boolean onDraw(Drawer drawer);
-
+	
 	public abstract boolean defaultTrack(Tracker tracker);
+	
+	/*TODO? or to remove
+	protected abstract boolean onDraw(Drawer drawer);
 	public abstract void defaultDraw(Drawer drawer);
 */	
 	protected abstract void onNotify(Notifier notifier);

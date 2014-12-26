@@ -859,6 +859,7 @@ static const JNINativeMethod com_scriptographer_widget_Button_methods[] = {
 static const JNINativeMethod com_scriptographer_widget_Dialog_methods[] = {
 	{ "nativeCreate", "(Ljava/lang/String;II)I", (void *) &Java_com_scriptographer_widget_Dialog_nativeCreate },
 	{ "nativeDestroy", "(I)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeDestroy },
+	{ "defaultTrack", "(Lcom/scriptographer/widget/Tracker;)Z", (void *) &Java_com_scriptographer_widget_Dialog_defaultTrack },
 	{ "nativeIsVisible", "()Z", (void *) &Java_com_scriptographer_widget_Dialog_nativeIsVisible },
 	{ "nativeSetVisible", "(Z)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetVisible },
 	{ "isEnabled", "()Z", (void *) &Java_com_scriptographer_widget_Dialog_isEnabled },
@@ -963,6 +964,7 @@ static const JNINativeMethod com_scriptographer_widget_Item_methods[] = {
 	{ "nativeDestroy", "(I)V", (void *) &Java_com_scriptographer_widget_Item_nativeDestroy },
 	{ "nativeSetTrackCallback", "(Z)V", (void *) &Java_com_scriptographer_widget_Item_nativeSetTrackCallback },
 	{ "nativeSetDrawCallback", "(Z)V", (void *) &Java_com_scriptographer_widget_Item_nativeSetDrawCallback },
+	{ "defaultTrack", "(Lcom/scriptographer/widget/Tracker;)Z", (void *) &Java_com_scriptographer_widget_Item_defaultTrack },
 	{ "getTrackMask", "()I", (void *) &Java_com_scriptographer_widget_Item_getTrackMask },
 	{ "setTrackMask", "(I)V", (void *) &Java_com_scriptographer_widget_Item_setTrackMask },
 	{ "nativeSetStyle", "(I)V", (void *) &Java_com_scriptographer_widget_Item_nativeSetStyle },
@@ -1009,6 +1011,7 @@ static const JNINativeMethod com_scriptographer_widget_ItemGroup_methods[] = {
 
 /* Native methods for class com_scriptographer_widget_ListEntry */
 static const JNINativeMethod com_scriptographer_widget_ListEntry_methods[] = {
+	{ "defaultTrack", "(Lcom/scriptographer/widget/Tracker;)Z", (void *) &Java_com_scriptographer_widget_ListEntry_defaultTrack },
 	{ "nativeCreate", "(Lcom/scriptographer/widget/ListItem;II)I", (void *) &Java_com_scriptographer_widget_ListEntry_nativeCreate },
 	{ "nativeDestroy", "()V", (void *) &Java_com_scriptographer_widget_ListEntry_nativeDestroy },
 	{ "getIndex", "()I", (void *) &Java_com_scriptographer_widget_ListEntry_getIndex },
