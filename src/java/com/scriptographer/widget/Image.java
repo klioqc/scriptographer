@@ -43,8 +43,13 @@ public class Image extends ImageBase {
 	 */
 	public Image(File file) throws IOException {
 		super(file);
-		// TODO Auto-generated constructor stub
+		
 	}
+	
+	public Image(URL url) throws IOException {
+			super(url);
+	}
+	
 	/**
 	 * @param width
 	 * @param height

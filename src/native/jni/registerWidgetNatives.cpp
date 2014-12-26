@@ -879,7 +879,15 @@ static const JNINativeMethod com_scriptographer_widget_Dialog_methods[] = {
 	{ "nativeSetTitle", "(Ljava/lang/String;)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetTitle },
 	{ "nativeSetName", "(Ljava/lang/String;)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetName },
 	{ "nativeSetMinimumSize", "(II)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetMinimumSize },
-	{ "nativeSetMaximumSize", "(II)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetMaximumSize }
+	{ "nativeSetMaximumSize", "(II)V", (void *) &Java_com_scriptographer_widget_Dialog_nativeSetMaximumSize },
+	{ "getItemHandle", "(I)I", (void *) &Java_com_scriptographer_widget_Dialog_getItemHandle },
+	{ "getDefaultItem", "()Lcom/scriptographer/widget/Item;", (void *) &Java_com_scriptographer_widget_Dialog_getDefaultItem },
+	{ "setDefaultItem", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_Dialog_setDefaultItem },
+	{ "getCancelItem", "()Lcom/scriptographer/widget/Item;", (void *) &Java_com_scriptographer_widget_Dialog_getCancelItem },
+	{ "setCancelItem", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_Dialog_setCancelItem },
+	{ "nativeFileDialog", "(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/String;Z)Ljava/io/File;", (void *) &Java_com_scriptographer_widget_Dialog_nativeFileDialog },
+	{ "chooseDirectory", "(Ljava/lang/String;Ljava/io/File;)Ljava/io/File;", (void *) &Java_com_scriptographer_widget_Dialog_chooseDirectory },
+	{ "chooseColor", "(Lcom/scriptographer/ai/Color;)Lcom/scriptographer/ai/Color;", (void *) &Java_com_scriptographer_widget_Dialog_chooseColor }
 };
 
 /* Native methods for class com_scriptographer_widget_HierarchyListBox */

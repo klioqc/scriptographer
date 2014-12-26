@@ -734,3 +734,89 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Dialog_defaultTrack(
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
+
+/*
+ * int getItemHandle(int arg1)
+ */
+JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_getItemHandle(
+		JNIEnv *env, jobject obj, jint arg1) {
+	try {
+		// TODO: define getItemHandle
+	} EXCEPTION_CONVERT(env);
+	return 0;
+}
+
+/*
+ * com.scriptographer.widget.Item getDefaultItem()
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getDefaultItem(
+		JNIEnv *env, jobject obj) {
+	try {
+		// TODO: define getDefaultItem
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * void setDefaultItem(com.scriptographer.widget.Item arg1)
+ */
+JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setDefaultItem(
+		JNIEnv *env, jobject obj, jobject arg1) {
+	try {
+		// TODO: define setDefaultItem
+	} EXCEPTION_CONVERT(env);
+}
+
+/*
+ * com.scriptographer.widget.Item getCancelItem()
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getCancelItem(
+		JNIEnv *env, jobject obj) {
+	try {
+		// TODO: define getCancelItem
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * void setCancelItem(com.scriptographer.widget.Item arg1)
+ */
+JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setCancelItem(
+		JNIEnv *env, jobject obj, jobject arg1) {
+	try {
+		// TODO: define setCancelItem
+	} EXCEPTION_CONVERT(env);
+}
+
+/*
+ * java.io.File nativeFileDialog(java.lang.String arg1, java.lang.String arg2, java.io.File arg3, java.lang.String arg4, boolean arg5)
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeFileDialog(
+		JNIEnv *env, jclass cls, jstring arg1, jstring arg2, jobject arg3, jstring arg4, jboolean arg5) {
+	try {
+		// TODO: define nativeFileDialog
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * java.io.File chooseDirectory(java.lang.String arg1, java.io.File arg2)
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_chooseDirectory(
+		JNIEnv *env, jclass cls, jstring arg1, jobject arg2) {
+	try {
+		// TODO: define chooseDirectory
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * com.scriptographer.ai.Color chooseColor(com.scriptographer.ai.Color arg1)
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_chooseColor(
+		JNIEnv *env, jclass cls, jobject arg1) {
+	try {
+		// TODO: define chooseColor
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}

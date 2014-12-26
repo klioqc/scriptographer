@@ -26,6 +26,8 @@ import com.scratchdisk.util.IntegerEnumUtils;
 import com.scratchdisk.util.StringUtils;
 import com.scriptographer.ScriptographerEngine;
 import com.scriptographer.ScriptographerException;
+import com.scriptographer.widget.Button;
+import com.scriptographer.widget.PopupMenu;
 import com.scriptographer.ai.Color;
 import com.scriptographer.sg.Script;
 import com.scriptographer.ui.DialogFont;
@@ -1110,32 +1112,39 @@ public abstract class Dialog extends Component {
 	 * item accessors
 	 */
 
-	// protected native int getItemHandle(int itemID);
-	/*
-	 * todo private PopupMenu popupMenu = null;
-	 * 
-	 * public PopupMenu getPopupMenu() { if (popupMenu == null) { int handle =
-	 * getItemHandle(ITEM_MENU); // We need to pass false for isChild as we want
-	 * notifiers installed popupMenu = handle != 0 ? new PopupMenu(this, handle,
-	 * false) : null; } return popupMenu; }
-	 * 
-	 * private Button resizeButton = null;
-	 * 
-	 * public Button getResizeButton() { if (resizeButton == null) { int handle
-	 * = getItemHandle(ITEM_RESIZE); resizeButton = handle != 0 ? new
-	 * Button(this, handle, false) : null; } return resizeButton; }
-	 */
+	protected native int getItemHandle(int itemID);
+
+	private PopupMenu popupMenu = null;
+
+	public PopupMenu getPopupMenu() {
+		if (popupMenu == null) {
+			int handle = getItemHandle(ITEM_MENU);
+			// We need to pass false for isChild as we want notifiers installed
+			popupMenu = handle != 0 ? new PopupMenu(this, handle, false) : null;
+		}
+		return popupMenu;
+	}
+
+	private Button resizeButton = null;
+
+	public Button getResizeButton() {
+		if (resizeButton == null) {
+			int handle = getItemHandle(ITEM_RESIZE);
+			resizeButton = handle != 0 ? new Button(this, handle, false) : null;
+		}
+		return resizeButton;
+	}
 	/*
 	 * default/cancel items
 	 */
 
-	// public native Item getDefaultItem();
+	public native Item getDefaultItem();
 
-	// public native void setDefaultItem(Item item);
+	public native void setDefaultItem(Item item);
 
-	// public native Item getCancelItem();
+	public native Item getCancelItem();
 
-	// public native void setCancelItem(Item item);
+	public native void setCancelItem(Item item);
 
 	/*
 	 * dialog state accessors
@@ -1174,36 +1183,53 @@ public abstract class Dialog extends Component {
 	 * Support for various standard dialogs:
 	 */
 
-	/*
-	 * private static native File nativeFileDialog(String message, String
-	 * filter, File directory, String filename, boolean open);
-	 * 
-	 * private static File fileDialog(String message, String[] filters, File
-	 * selectedFile, boolean open) { String filter = null; // Converts the
-	 * filters to one long string, separated by \0 // as needed by the native
-	 * function. if (filters != null) { StringBuffer buf = new StringBuffer();
-	 * for (int i = 0; i < filters.length; i++) { buf.append(filters[i]);
-	 * buf.append('\0'); } buf.append('\0'); filter = buf.toString(); } File
-	 * directory; String filename; if (selectedFile == null) { directory = null;
-	 * filename = null; } else if (selectedFile.isDirectory()) { directory =
-	 * selectedFile; filename = ""; } else { directory =
-	 * selectedFile.getParentFile(); filename = selectedFile.getName(); } return
-	 * nativeFileDialog(message, filter, directory, filename, open); }
-	 * 
-	 * public static File fileOpen(String message, String[] filters, File
-	 * selectedFile) { return fileDialog(message, filters, selectedFile, true);
-	 * }
-	 * 
-	 * public static File fileSave(String message, String[] filters, File
-	 * selectedFile) { return fileDialog(message, filters, selectedFile, false);
-	 * }
-	 * 
-	 * public static native File chooseDirectory(String message, File
-	 * selectedDir);
-	 * 
-	 * public static native Color chooseColor(Color color);
-	 */
-	/**
+	private static native File nativeFileDialog(String message, String filter,
+			File directory, String filename, boolean open);
+
+	private static File fileDialog(String message, String[] filters,
+			File selectedFile, boolean open) {
+		String filter = null;
+		// Converts the filters to one long string, separated by \0
+		// as needed by the native function.
+		if (filters != null) {
+			StringBuffer buf = new StringBuffer();
+			for (int i = 0; i < filters.length; i++) {
+				buf.append(filters[i]);
+				buf.append('\0');
+			}
+			buf.append('\0');
+			filter = buf.toString();
+		}
+		File directory;
+		String filename;
+		if (selectedFile == null) {
+			directory = null;
+			filename = null;
+		} else if (selectedFile.isDirectory()) {
+			directory = selectedFile;
+			filename = "";
+		} else {
+			directory = selectedFile.getParentFile();
+			filename = selectedFile.getName();
+		}
+		return nativeFileDialog(message, filter, directory, filename, open);
+	}
+
+	public static File fileOpen(String message, String[] filters,
+			File selectedFile) {
+		return fileDialog(message, filters, selectedFile, true);
+	}
+
+	public static File fileSave(String message, String[] filters,
+			File selectedFile) {
+		return fileDialog(message, filters, selectedFile, false);
+	}
+
+	public static native File chooseDirectory(String message, File selectedDir);
+
+	public static native Color chooseColor(Color color);
+	  
+	 /**
 	 * @jshide
 	 */
 	// public static native Rectangle getPaletteLayoutBounds();

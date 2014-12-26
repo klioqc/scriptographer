@@ -144,23 +144,23 @@ public abstract class Component extends NotificationHandler {
 		nativeSetTrackCallback(enabled);
 		trackCallback = enabled;
 	}
+// TODO?
+//	private boolean drawCallback = false;
+//
+//	/**
+//	 * @jshide
+//	 */
+//	public boolean getDrawCallback() {
+//		return drawCallback;
+//	}
+//
+//	abstract protected void nativeSetDrawCallback(boolean enabled);
+//
+//	public void setDrawCallback(boolean enabled) {
+//		nativeSetDrawCallback(enabled);
+//		drawCallback = enabled;
+//	}
 
-	private boolean drawCallback = false;
-
-	/**
-	 * @jshide
-	 */
-	public boolean getDrawCallback() {
-		return drawCallback;
-	}
-
-	abstract protected void nativeSetDrawCallback(boolean enabled);
-
-	public void setDrawCallback(boolean enabled) {
-		nativeSetDrawCallback(enabled);
-		drawCallback = enabled;
-	}
-	
 	/**
 	 * @param mask Tracker.MASK_*
 	 */

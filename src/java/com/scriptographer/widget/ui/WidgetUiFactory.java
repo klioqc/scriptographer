@@ -33,11 +33,17 @@ import java.io.File;
 //import java.io.IOException;
 //import java.util.HashMap;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import com.scriptographer.ai.Color;
 import com.scriptographer.ui.Component;
+import com.scriptographer.ui.ImageType;
 import com.scriptographer.ui.Palette;
 import com.scriptographer.ui.PaletteProxy;
 import com.scriptographer.ui.UiFactory;
+import com.scriptographer.widget.Dialog;
+import com.scriptographer.widget.Image;
 
 /**
  * @author Olga
@@ -45,76 +51,57 @@ import com.scriptographer.ui.UiFactory;
  */
 public class WidgetUiFactory extends UiFactory {
 
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#alert(java.lang.String, java.lang.String)
-	 */
-	@Override
 	public void alert(String title, String message) {
-		// TODO Auto-generated method stub
-		
+		AlertDialog.alert(title, message);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#chooseColor(com.scriptographer.ai.Color)
-	 */
-	@Override
-	public Color chooseColor(Color color) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#chooseDirectory(java.lang.String, java.io.File)
-	 */
-	@Override
-	public File chooseDirectory(String message, File selectedDir) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#confirm(java.lang.String, java.lang.String)
-	 */
-	@Override
 	public boolean confirm(String title, String message) {
-		// TODO Auto-generated method stub
-		return false;
+		return ConfirmDialog.confirm(title, message);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#fileOpen(java.lang.String, java.lang.String[], java.io.File)
-	 */
-	@Override
-	public File fileOpen(String message, String[] filters, File selectedFile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#fileSave(java.lang.String, java.lang.String[], java.io.File)
-	 */
-	@Override
-	public File fileSave(String message, String[] filters, File selectedFile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#prompt(java.lang.String, com.scriptographer.ui.Component[])
-	 */
-	@Override
 	public Object[] prompt(String title, Component[] components) {
-		// TODO Auto-generated method stub
-		return null;
+		return PromptDialog.prompt(title, components);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.scriptographer.ui.UiFactory#createPalette(com.scriptographer.ui.Palette, com.scriptographer.ui.Component[])
-	 */
-	@Override
 	public PaletteProxy createPalette(Palette palette, Component[] components) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WidgetPaletteProxy(palette, components);
 	}
 
+	public File chooseDirectory(String message, File selectedDir) {
+		return Dialog.chooseDirectory(message, selectedDir);
+	}
+
+	public File fileOpen(String message, String[] filters, File selectedFile) {
+		return Dialog.fileOpen(message, filters, selectedFile);
+	}
+
+	public File fileSave(String message, String[] filters, File selectedFile) {
+		return Dialog.fileSave(message, filters, selectedFile);
+	}
+
+	public Color chooseColor(Color color) {
+		return Dialog.chooseColor(color);
+	}
+	
+	/**
+	 * Load image from resource with given name
+	 */
+	protected static Image getImage(String filename) {
+		Image image = images.get(filename);
+		if (image == null) {
+			try {
+				image = new Image(WidgetUiFactory.class.getClassLoader().getResource(
+						"com/scriptographer/ui/resources/" + filename));
+			} catch (IOException e) {
+				System.err.println(e);
+				image = new Image(1, 1, ImageType.RGB);
+			}
+		}
+		images.put(filename, image);
+		return image;
+	}
+
+	// Cache for getImage.
+	private static HashMap<String, Image> images = new HashMap<String, Image>();
 }
+
