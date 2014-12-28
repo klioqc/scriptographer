@@ -49,7 +49,8 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
       break;
 
 	default:
-		return DefWindowProc(hWnd,uMsg,wParam,lParam);
+    	/* For all other messages call default window proc */
+		return CallWindowProc(oldWndProc, hWnd, uMsg, wParam, lParam);
 	};
 	return 0;
 }
@@ -84,9 +85,11 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
      HWND child = (HWND)lParam;
      return false;
    }
-  
+#ifdef test 
  void PanelClosedNotifyProc(AIPanelRef fPanel)
 {
+  return; //it is called when panel visibility is changed. why???
+
 	if (gEngine != NULL) {
 
 		JNIEnv *env = gEngine->getEnv();
@@ -121,7 +124,63 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 		} EXCEPTION_CATCH_REPORT(env);
 	}
 }
+#endif
 
+  void PanelSizeChangedNotifyProc(AIPanelRef fPanel)
+  {
+   JNIEnv *env = gEngine->getEnv();
+	  	try {
+			  if (gEngine != NULL) {
+		      JNIEnv *env = gEngine->getEnv();
+			    jobject obj = gEngine->getDialogObject(fPanel);
+        
+           AISize size;
+		       AIErr error = sAIPanel->GetSize(fPanel, size);
+	
+			  gEngine->callVoidMethod(env, obj,
+					  gEngine->mid_widget_Dialog_onSizeChanged,
+					 (jint) size.width, (jint) size.height, true);
+      }
+		} EXCEPTION_CATCH_REPORT(env);
+	
+  }
+  void inVisibilityChangedNotifyProc (AIPanelRef fPanel, AIBoolean isVisible){
+    //test code for now
+     JNIEnv *env = gEngine->getEnv();
+	  	try {
+			  if (gEngine != NULL) {
+		      JNIEnv *env = gEngine->getEnv();
+			    jobject obj = gEngine->getDialogObject(fPanel);
+        
+           AISize size;
+		       AIErr error = sAIPanel->GetSize(fPanel, size);
+           if (size.width >1000)
+           {
+             //limit width - some bug?
+             size.width = 1000;
+             sAIPanel->SetSize(fPanel, size);
+           }
+	
+      }
+		} EXCEPTION_CATCH_REPORT(env);
+  }
+
+  void inStateChangeNotifyProc (AIPanelRef fPanel, ai::int16 newState)
+  {
+    //test code for now
+     JNIEnv *env = gEngine->getEnv();
+	  	try {
+			  if (gEngine != NULL) {
+		      JNIEnv *env = gEngine->getEnv();
+			    jobject obj = gEngine->getDialogObject(fPanel);
+        
+           AISize size;
+		       AIErr error = sAIPanel->GetSize(fPanel, size);
+	
+	
+      }
+		} EXCEPTION_CATCH_REPORT(env);
+  }
 
    CDialog::CDialog( AIPanelRef panel )
   {
@@ -134,7 +193,7 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 
  
 
-   CDialog * CDialog::CreateCDialog(ASUnicode * dlgName, int style, CControlInitProc Dialog_onInit, void * userData, int options)
+   CDialog * CDialog::CreateCDialog( ai::UnicodeString dlgName, int style, CControlInitProc Dialog_onInit, jobject userData, int options)
    {
       	AIPanelRef fPanel;
         AIPanelFlyoutMenuRef fPanelFlyoutMenu;
@@ -159,7 +218,11 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
        dlg->SetInitProc(Dialog_onInit);
        dlg->OnCreate();
 
-       error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+       //error = sAIPanel->SetClosedNotifyProc(fPanel, PanelClosedNotifyProc);
+
+       error = sAIPanel->SetSizeChangedNotifyProc(fPanel, PanelSizeChangedNotifyProc);
+       error = sAIPanel->SetStateChangedNotifyProc(fPanel, inStateChangeNotifyProc);
+       error = sAIPanel->SetVisibilityChangedNotifyProc(fPanel, inVisibilityChangedNotifyProc);
     
        return dlg;
 
@@ -197,8 +260,8 @@ void CDialog::Destroy()
 			gEngine->setIntField(env, obj, gEngine->fid_ui_NativeObject_handle, 0);
 			env->DeleteGlobalRef(obj);
 
-      error = sAIPanel->SetClosedNotifyProc(fPanel, NULL);
-
+      // error = sAIPanel->SetClosedNotifyProc(fPanel, NULL);
+       error = sAIPanel->SetSizeChangedNotifyProc(fPanel, NULL);
        SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)(oldWndProc));
        SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)(0));
 
@@ -458,8 +521,6 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
     if (strcmpi(itemType, TEXT_STATIC)  == 0 ||  (strcmpi(itemType, TEXT_STATIC_MULTILINE)  == 0))
       return new StaticControl(controlID, (int) EditFlags::None);
     
-    
-     
 
      if (strcmpi(itemType, TEXT_CHECKBOX)  == 0)
       return new CheckBoxControl(controlID);
@@ -472,7 +533,7 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
     return new CCommonControl(controlID);
 }
 
-
+#ifdef mydebug
 //mydebug
 
 /* Initialize static variables */
@@ -632,3 +693,4 @@ LRESULT CALLBACK CustomEditWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
 
 
 //end mydebug
+#endif //mydebug

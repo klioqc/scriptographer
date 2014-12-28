@@ -383,6 +383,10 @@ public:
 #endif
 #else // for non ADM
 
+  
+	jclass cls_widget_Dialog;
+	jmethodID mid_widget_Dialog_onSizeChanged;
+
 	jclass cls_widget_Image;
 	jfieldID fid_widget_Image_byteWidth;
 	jfieldID fid_widget_Image_bitsPerPixel;
@@ -487,6 +491,10 @@ public:
 		return convertSize(env, size->width, size->height, res);
 	}
 	void convertSize(JNIEnv *env, jobject size, AISize *res);
+  	// com.scriptographer.adm.Point <-> ADMPoint
+	jobject convertPoint(JNIEnv *env, POINT *point, jobject res = NULL);
+	void convertPoint(JNIEnv *env, jobject point, POINT *res);
+
 #endif
   void convertSize(JNIEnv *env, jobject size, AIRealPoint *res);
   jobject convertUISize(JNIEnv *env, float width, float height, jobject res = NULL);
@@ -724,6 +732,7 @@ public:
 
 	int getControlObjectHandle(JNIEnv *env, jobject obj, const char *name);
 	jobject getDialogObject(CDialog * dlg);
+  jobject getDialogObject(AIPanelRef fPanel);
   jobject getItemObject(CCommonControl * item);
   
   inline CCommonControl* getItemObject(JNIEnv *env, jobject obj) {

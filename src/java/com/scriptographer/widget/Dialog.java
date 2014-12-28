@@ -28,6 +28,7 @@ import com.scriptographer.ScriptographerEngine;
 import com.scriptographer.ScriptographerException;
 import com.scriptographer.widget.Button;
 import com.scriptographer.widget.PopupMenu;
+import com.scriptographer.adm.DialogGroupInfo;
 import com.scriptographer.ai.Color;
 import com.scriptographer.sg.Script;
 import com.scriptographer.ui.DialogFont;
@@ -320,19 +321,17 @@ public abstract class Dialog extends Component {
 	public void savePreferences(String name) {
 		Preferences prefs = preferences.node(name);
 		// Saving the palette position, tab/dock preference.
-		/*
-		 * TODO DialogGroupInfo groupInfo = getGroupInfo(); Rectangle bounds =
-		 * getBounds(); prefs.put("group", groupInfo.group != null ?
-		 * groupInfo.group : ""); prefs.putInt("positionCode",
-		 * groupInfo.positionCode); prefs.put("bounds", bounds.x + " " +
-		 * bounds.y + " " + bounds.width + " " + bounds.height);
-		 */
+		//DialogGroupInfo groupInfo = getGroupInfo();
+		Rectangle bounds = getBounds();
+		//prefs.put("group", groupInfo.group != null ? groupInfo.group : "");
+		//prefs.putInt("positionCode", groupInfo.positionCode);
+		prefs.put("bounds", bounds.x + " " + bounds.y + " " + bounds.width
+				+ " " + bounds.height);
 	}
 
 	public boolean loadPreferences(String name) {
 		try {
-			if (1 == 1)
-				return false;
+
 			if (preferences.nodeExists(name)) {
 				Preferences prefs = preferences.node(name);
 
@@ -348,10 +347,10 @@ public abstract class Dialog extends Component {
 				} else {
 					// Pick a default location in case it has never come up
 					// before on this machine
-					// Rectangle defaultBounds =
-					// Dialog.getPaletteLayoutBounds();
-					// bounds = getBounds();
-					// bounds.setPoint(defaultBounds.x, defaultBounds.y);
+					Rectangle defaultBounds =
+					 Dialog.getPaletteLayoutBounds();
+					bounds = getBounds();
+					bounds.setPoint(defaultBounds.x, defaultBounds.y);
 				}
 				String group = prefs.get("group", "");
 				/*
@@ -360,13 +359,13 @@ public abstract class Dialog extends Component {
 				 * code of the dialog setGroupInfo(group, positionCode);
 				 */
 				// Now set the bounds
-				// BoundsSetter setter = new BoundsSetter(bounds);
-				// setter.run();
+				  BoundsSetter setter = new BoundsSetter(bounds);
+				 setter.run();
 				// Sometimes we need to set bounds again afterwards, as OWL
 				// seems to interfere here...
 				// This leads to annoying jumping around of the dialog.
 				// TODO: See if this can be fixed somehow?
-				// invokeLater(setter);
+				  invokeLater(setter);
 				return true;
 			}
 		} catch (Exception e) {
@@ -1232,22 +1231,22 @@ public abstract class Dialog extends Component {
 	 /**
 	 * @jshide
 	 */
-	// public static native Rectangle getPaletteLayoutBounds();
+	  public static native Rectangle getPaletteLayoutBounds();
 
 	/**
 	 * Returns the screen size for centering of dialogs. Ideally this should be
 	 * public and somewhere where it makes sense.
 	 */
-	// protected static native Size getScreenSize();
+	protected static native Size getScreenSize();
 
 	public void centerOnScreen() {
 		// Visually center dialog on Screen,
 		// bit higher up than mathematically centered
-		// Size screen = Dialog.getScreenSize(), size = this.getSize();
-		// this.setPosition(
-		// (screen.width - size.width) / 2,
-		// (8 * screen.height / 10 - size.height) / 2
-		// );
+		  Size screen = Dialog.getScreenSize();
+		  Size size = this.getSize();
+		  int x = (screen.width - size.width) / 2;
+		  int y =  (8 * screen.height / 10 - size.height) / 2;
+		  this.setPosition(x,y);
 	}
 
 	/*

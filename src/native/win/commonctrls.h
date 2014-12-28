@@ -176,6 +176,11 @@ public:
     SetWindowText(hWnd, text);
   }
 
+  void SetText( ai::UnicodeString text)
+  {
+   		SendMessageW(hWnd, (UINT) WM_SETTEXT, 0, (LPARAM)text.as_ASUnicode().c_str());
+
+  }
 
 protected:
   HWND hWnd;
@@ -222,7 +227,7 @@ class CDialog : public CControl
 public:
   CDialog( AIPanelRef panel );
   
-  static CDialog * CreateCDialog(ASUnicode * dlgname, int style, CControlInitProc Dialog_onInit, void * userData, int options);
+  static CDialog * CreateCDialog( ai::UnicodeString dlgName, int style, CControlInitProc Dialog_onInit, jobject userData, int options);
 
   CCommonControl * CreateItem(char * itemType,  RECT* rect, CControlInitProc Item_onInit, void * userData);
 

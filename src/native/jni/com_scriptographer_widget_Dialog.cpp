@@ -30,24 +30,7 @@ void ASAPI Dialog_onDestroy(CControl * ctrl) {
 		} EXCEPTION_CATCH_REPORT(env);
 	}
 }
-/*
-void ASAPI Dialog_onSizeChanged(CControl * item, ADMNotifierRef notifier) {
-	item->DefaultNotify(notifier);
-	if (sADMNotifier->IsNotifierType(notifier, kADMBoundsChangedNotifier)) {
-		JNIEnv *env = gEngine->getEnv();
-		try {
-			ADMDialogRef dialog = sADMItem->GetDialog(item);
-			jobject obj = gEngine->getDialogObject(dialog);
-			ADMRect size;
-			sADMDialog->GetLocalRect(dialog, &size);
-			AppContext context;
-			gEngine->callVoidMethod(env, obj,
-					gEngine->mid_adm_Dialog_onSizeChanged,
-					size.right, size.bottom, true);
-		} EXCEPTION_CATCH_REPORT(env);
-	}
-}
-*/
+
 
 void ASAPI Dialog_onNotify(CControl * ctrl, char * notifier) {
 
@@ -123,9 +106,11 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeCreate(
   JNIEnv *env, jobject obj, jstring name, jint style, jint options)
 {
   try {
-		ASUnicode *str = gEngine->convertString_ASUnicode(env, name);
+     char *chars = gEngine->convertString(env, name);
+     ai::UnicodeString str =  ai::UnicodeString(chars); 
+
     CDialog * dialog = CDialog::CreateCDialog(str, style, Dialog_onInit, env->NewGlobalRef(obj), options);
-		delete str;
+		delete chars;
 
     //mydebug
     sAIMenu->AddMenuItemZString(gPlugin->getPluginRef(), "A my test Panel", kOtherPalettesMenuGroup, ZREF("A Third Party Panel"),
@@ -583,7 +568,17 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetBounds(
 JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getPosition(
 		JNIEnv *env, jobject obj) {
 	try {
-		// TODO: define getPosition
+	  CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+		 RECT rc;
+      dlg->GetBounds(&rc);
+      POINT pt;
+      pt.x = rc.left;
+      pt.y = rc.top;
+      return gEngine->convertPoint(env, &pt);
+
+    }
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -592,9 +587,18 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getPosition(
  * void setPosition(int arg1, int arg2)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setPosition(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
+		JNIEnv *env, jobject obj, jint x, jint y) {
 	try {
-		// TODO: define setPosition
+
+		  CDialog * dlg = gEngine->getDialog(env, obj);
+		  if (dlg)
+      {
+		    AIPoint point; 
+        point.h = x < 0 ? 0 : x; 
+        point.v = y < 0 ? 0 : y; ;
+		    AIErr error = sAIPanel->Move(dlg->Panel(), point);
+		   
+      }
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -664,9 +668,16 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetName(
  * void nativeSetMinimumSize(int arg1, int arg2)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetMinimumSize(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
+		JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		// TODO: define nativeSetMinimumSize
+	CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+      AISize size;
+      size.width = width;
+      size.height = height;
+		  AIErr error = sAIPanel->SetMinimumSize(dlg->Panel(), size);
+    }
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -674,9 +685,16 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetMinimumSiz
  * void nativeSetMaximumSize(int arg1, int arg2)
  */
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetMaximumSize(
-		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
+		JNIEnv *env, jobject obj, jint width, jint height) {
 	try {
-		// TODO: define nativeSetMaximumSize
+  CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+      AISize size;
+      size.width = width;
+      size.height = height;
+		  AIErr error = sAIPanel->SetMaximumSize(dlg->Panel(), size);
+    }
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -817,6 +835,33 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_chooseColor(
 		JNIEnv *env, jclass cls, jobject arg1) {
 	try {
 		// TODO: define chooseColor
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * com.scriptographer.ui.Rectangle getPaletteLayoutBounds()
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getPaletteLayoutBounds(
+		JNIEnv *env, jclass cls) {
+	try {
+		// TODO: define getPaletteLayoutBounds
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * com.scriptographer.ui.Size getScreenSize()
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getScreenSize(
+		JNIEnv *env, jclass cls) {
+	try {
+	
+#ifdef WIN_ENV
+		RECT rect;
+		GetWindowRect(GetDesktopWindow(), &rect);
+#endif // WIN_ENV
+		return gEngine->convertRectangle(env, &rect);
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }

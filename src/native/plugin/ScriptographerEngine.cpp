@@ -712,6 +712,8 @@ void ScriptographerEngine::initReflection(JNIEnv *env) {
 #endif
 #else
 	//TODO: widget classes...
+  cls_widget_Dialog = loadClass(env, "com/scriptographer/widget/Dialog");
+	mid_widget_Dialog_onSizeChanged = getMethodID(env, cls_widget_Dialog, "onSizeChanged", "(IIZ)V");
 
   cls_widget_Image = loadClass(env, "com/scriptographer/widget/Image");
 	fid_widget_Image_byteWidth = getFieldID(env, cls_widget_Image, "byteWidth", "I");
@@ -1196,10 +1198,10 @@ jobject ScriptographerEngine::convertUISize(JNIEnv *env, float width,
 		float height, jobject res) {
 	if (res == NULL) {
 		return newObject(env, cls_ui_Size, cid_ui_Size,
-				(jdouble) width, (jdouble) height);
+				(jint) width, (jint) height);
 	} else {
 		callVoidMethod(env, res, mid_ui_Size_set,
-				(jdouble) width, (jdouble) height);
+				(jint) width, (jint) height);
 		return res;
 	}
 }
@@ -1390,6 +1392,31 @@ void ScriptographerEngine::convertRectangle(JNIEnv *env,
 	res->top = env->GetIntField(rect, fid_ui_Rectangle_y);
 	res->right = res->left + env->GetIntField(rect, fid_ui_Rectangle_width);
 	res->bottom = res->top + env->GetIntField(rect, fid_ui_Rectangle_height);
+	EXCEPTION_CHECK(env);
+}
+
+// com.scriptographer.ui.Point <-> POINT
+jobject ScriptographerEngine::convertPoint(JNIEnv *env,
+		POINT *point, jobject res) {
+	if (res == NULL) {
+		return newObject(env, cls_ui_Point, cid_ui_Point,
+				(jint) point->x, (jint) point->y);
+	} else {
+		callVoidMethod(env, res, mid_ui_Point_set,
+				(jint) point->y, (jint) point->y);
+		return res;
+	}
+}
+
+void ScriptographerEngine::convertPoint(JNIEnv *env,
+		jobject point, POINT *res) {
+	if (env->IsInstanceOf(point, cls_ui_Point)) {
+		res->x = env->GetIntField(point, fid_ui_Point_x);
+		res->y = env->GetIntField(point, fid_ui_Point_y);
+	} else if (env->IsInstanceOf(point, cls_ai_Point)) {
+		res->x = (short) env->GetDoubleField(point, fid_ai_Point_x);
+		res->y = (short) env->GetDoubleField(point, fid_ai_Point_y);
+	}
 	EXCEPTION_CHECK(env);
 }
 
@@ -2714,11 +2741,22 @@ int ScriptographerEngine::getControlObjectHandle(JNIEnv *env, jobject obj, const
 jobject ScriptographerEngine::getDialogObject(CDialog * dlg)
 {
   jobject obj = NULL;
-	if (dlg != NULL && sAIPanel != NULL) {
+
+	if (dlg != NULL)
+    return getDialogObject(dlg->Panel());
+   
+	return obj;
+}
+
+jobject ScriptographerEngine::getDialogObject(AIPanelRef fPanel)
+{
+  jobject obj = NULL;
+	if (fPanel != NULL && sAIPanel != NULL) {
     AIPanelUserData userData;
-		 sAIPanel->GetUserData(dlg->Panel(), userData);
+		 sAIPanel->GetUserData(fPanel, userData);
      obj = (jobject)userData;
-		 if (obj == NULL) throw new StringException("The dialog is not linked to a scripting object.");
+		 if (obj == NULL) 
+       throw new StringException("The dialog is not linked to a scripting object.");
 	}
 	return obj;
 }

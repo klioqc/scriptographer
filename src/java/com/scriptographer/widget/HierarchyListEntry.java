@@ -27,9 +27,10 @@ public class HierarchyListEntry extends ListEntry {
 	private DialogColor textColor = DialogColor.TEXT;
 	private DialogColor dividerColor = DialogColor.BLACK;
 	protected HierarchyListBox childList = null;
-	
+
 	/**
 	 * This constructor is used by HierarchyListBox#createEntry / ListItem#add
+	 * 
 	 * @param list
 	 * @param index
 	 */
@@ -42,31 +43,29 @@ public class HierarchyListEntry extends ListEntry {
 		if (hasChildren)
 			createChildList();
 	}
-	
+
 	public HierarchyListEntry(HierarchyListBox list) {
 		this(list, false);
 	}
 
 	/*
 	 * container accessors
-	 *
 	 */
-	
+
 	public native Item getItem();
 
 	/*
 	 * hierarchy accessors
-	 *
 	 */
-	
+
 	public HierarchyListEntry getParentEntry() {
 		return ((HierarchyListBox) getList()).getParentEntry();
 	}
-	
+
 	public HierarchyListBox getChildList() {
 		return childList;
 	}
-	
+
 	public HierarchyListBox createChildList() {
 		if (childList == null)
 			childList = new HierarchyListBox(this);
@@ -74,24 +73,27 @@ public class HierarchyListEntry extends ListEntry {
 	}
 
 	public native void setExpanded(boolean expanded);
+
 	public native boolean isExpanded();
 
 	public native void setEntryNameHidden(boolean nameHidden);
+
 	public native boolean isEntryNameHidden();
 
 	public native void setChildSelectable(boolean selectable);
+
 	public native boolean isChildSelectable();
 
 	public native int getDepth();
+
 	public native int getVisualDepth();
 
 	/*
 	 * selection
-	 *
 	 */
 
 	public native boolean areChildrenSelected();
-	
+
 	// for the automatic bean detection in rhino, so it becomes exposes
 	// as a read-only property named .childrenSelected
 	// TODO: find better name!
@@ -101,34 +103,34 @@ public class HierarchyListEntry extends ListEntry {
 
 	/*
 	 * bounds accessors
-	 *
 	 */
 
 	public native Rectangle getExpandArrowRect();
 
 	/*
 	 * for in-place editing: text rect used to display the edit field.
-	 *
 	 */
 
 	public native void setTextRect(Rectangle rect);
 
 	/*
 	 * for controls in lists
-	 *
 	 */
 
 	public native Item getEntryItem();
+
 	public native void setEntryItem(Item item);
-		
+
 	/*
 	 * customizing appearance
-	 *
 	 */
-	
+
 	public native void nativeSetFont(int font);
+
 	public native void nativeSetTextColor(int color);
+
 	public native void nativeSetBackgroundColor(int color); // Drawer.COLOR_*
+
 	public native void nativeSetDividerColor(int color);
 
 	public void setFont(DialogFont font) {
@@ -137,7 +139,7 @@ public class HierarchyListEntry extends ListEntry {
 			nativeSetFont(font.value);
 		}
 	}
-	
+
 	public DialogFont getFont() {
 		return font;
 	}
@@ -148,7 +150,7 @@ public class HierarchyListEntry extends ListEntry {
 			nativeSetTextColor(color.value());
 		}
 	}
-	
+
 	public DialogColor getTextColor() {
 		return textColor;
 	}
@@ -159,7 +161,7 @@ public class HierarchyListEntry extends ListEntry {
 			nativeSetBackgroundColor(color.value());
 		}
 	}
-	
+
 	public DialogColor getBackgroundColor() {
 		return bgColor;
 	}
@@ -170,7 +172,7 @@ public class HierarchyListEntry extends ListEntry {
 			nativeSetDividerColor(color.value());
 		}
 	}
-	
+
 	public DialogColor getDividerColor() {
 		return dividerColor;
 	}

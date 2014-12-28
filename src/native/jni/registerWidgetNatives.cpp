@@ -887,7 +887,9 @@ static const JNINativeMethod com_scriptographer_widget_Dialog_methods[] = {
 	{ "setCancelItem", "(Lcom/scriptographer/widget/Item;)V", (void *) &Java_com_scriptographer_widget_Dialog_setCancelItem },
 	{ "nativeFileDialog", "(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;Ljava/lang/String;Z)Ljava/io/File;", (void *) &Java_com_scriptographer_widget_Dialog_nativeFileDialog },
 	{ "chooseDirectory", "(Ljava/lang/String;Ljava/io/File;)Ljava/io/File;", (void *) &Java_com_scriptographer_widget_Dialog_chooseDirectory },
-	{ "chooseColor", "(Lcom/scriptographer/ai/Color;)Lcom/scriptographer/ai/Color;", (void *) &Java_com_scriptographer_widget_Dialog_chooseColor }
+	{ "chooseColor", "(Lcom/scriptographer/ai/Color;)Lcom/scriptographer/ai/Color;", (void *) &Java_com_scriptographer_widget_Dialog_chooseColor },
+	{ "getPaletteLayoutBounds", "()Lcom/scriptographer/ui/Rectangle;", (void *) &Java_com_scriptographer_widget_Dialog_getPaletteLayoutBounds },
+	{ "getScreenSize", "()Lcom/scriptographer/ui/Size;", (void *) &Java_com_scriptographer_widget_Dialog_getScreenSize }
 };
 
 /* Native methods for class com_scriptographer_widget_HierarchyListBox */

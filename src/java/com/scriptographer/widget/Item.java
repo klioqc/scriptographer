@@ -432,7 +432,7 @@ public abstract class Item extends Component {
 		// TODO: verify for which items nativeGetBestSize really works!
 		Size size = null;
 		double factor = isSmall() ? 0.75 : 1;
-		/* TODO
+		
 		switch (type) {
 		case PICTURE_STATIC:
 		case PICTURE_CHECKBOX:
@@ -511,15 +511,15 @@ public abstract class Item extends Component {
 				}
 			}
 		}
-		*/
+		
 		if (size == null) {
 			// If it's not a button, use the current size of the object.
 			// This is needed e.g. for Spacers, where its current size
 			// is the preferred size too.
-			size = /* TODO 
+			size = 
 					this instanceof Button
 					? new Size(120, 20).multiply(factor) 
-					:*/ getSize();
+					: getSize();
 		}
 		// Add margins
 		size.width += margin.left + margin.right;

@@ -668,15 +668,6 @@ ASErr ScriptographerPlugin::onShutdownPlugin(SPInterfaceMessage *message) {
 		AIErr  error = sAIAppContext->GetPlatformAppWindow(&windowRefParent);
 		
 		SetWindowLongPtr(windowRefParent, GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(s_defaultAppWindowProc));
-
-    //temp - mydebug    
-      	error = sAIMenu->AddMenuItemZString(gPlugin->getPluginRef(), "A my test Panel", kOtherPalettesMenuGroup, ZREF("A Third Party Panel"),
-										kMenuItemNoOptions, &fEmptyPanelPanelMenuItemHandle);
-    	if (error)
-		    return error;
-    //temp - mydebug 
-
-    
 #endif //#ifndef ADM_FREE
 	}
 	UnhookWindowsHookEx(s_defaultGetMessageProc);
