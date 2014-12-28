@@ -16,7 +16,8 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextItem_nativeSetText(
 		
       if (text != NULL) {
 			  char *chars = gEngine->convertString(env, text);
-			  item->SetText(chars);
+       	
+			  item->SetText(ai::UnicodeString(chars));
 			  delete chars;
 		} else {
 			  item->SetText("");

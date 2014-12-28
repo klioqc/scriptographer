@@ -504,7 +504,7 @@ void CDialog::Destroy()
 CCommonControl *  CreateControl(char * itemType, int controlID)
 {
     //push button
-    if (strcmpi(itemType, TEXT_PUSHBUTTON) == 0)
+    if (strcmpi(itemType, TEXT_PUSHBUTTON) == 0 || strcmpi(itemType, PICTURE_PUSHBUTTON) == 0)
       return new ButtonControl(controlID);
     
    //edit boxes 
@@ -518,16 +518,16 @@ CCommonControl *  CreateControl(char * itemType, int controlID)
       return new EditControl(controlID,  ES_MULTILINE | ES_READONLY);
     
     //static
-    if (strcmpi(itemType, TEXT_STATIC)  == 0 ||  (strcmpi(itemType, TEXT_STATIC_MULTILINE)  == 0))
+    if (strcmpi(itemType, TEXT_STATIC)  == 0 ||  
+      (strcmpi(itemType, TEXT_STATIC_MULTILINE)  == 0) ||
+      (strcmpi(itemType, PICTURE_STATIC)  == 0)
+      )
       return new StaticControl(controlID, (int) EditFlags::None);
     
 
-     if (strcmpi(itemType, TEXT_CHECKBOX)  == 0)
+     if (strcmpi(itemType, TEXT_CHECKBOX)  == 0 ||  (strcmpi(itemType, PICTURE_CHECKBOX)  == 0))
       return new CheckBoxControl(controlID);
-    
-      if (strcmpi(itemType, PICTURE_CHECKBOX)  == 0)
-      return new CheckBoxControl(controlID);
-
+ 
      gPlugin->log("Unable to find control: %s", itemType);
 
     return new CCommonControl(controlID);
