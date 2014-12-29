@@ -2,7 +2,7 @@
 
 #ifndef _Included_commonctrl_h
 #define _Included_commonctrl_h
-
+#include <strsafe.h>
 
 /*
 * com.scriptographer.widget.Item
@@ -103,7 +103,9 @@ typedef void (*CControlNotifyProc)( CControl* inItem , char * notifier);
 class CControl
 {
 public: 
-  CControl(){};
+  CControl(){
+  _hfont = NULL;
+  };
 
 
   void SetInitProc(CControlInitProc initProc)
@@ -166,9 +168,18 @@ public:
   {
     GetWindowRect(hWnd, rc);
   }
+  void GetClientRect(RECT * rc)
+  {
+     ::GetClientRect(hWnd, rc);
+  }
   void SetBounds(int x,int y, int width, int height)
   {
     SetWindowPos(hWnd, NULL, x, y, width, height, SWP_SHOWWINDOW);
+     //MoveWindow(hWnd, 
+     //                  x, y,                  // starting x- and y-coordinates 
+     //                  width,        // width 
+     //                  height,        // height
+     //                  TRUE);   
   }
 
   void SetText(char *text)
@@ -179,11 +190,39 @@ public:
   void SetText( ai::UnicodeString text)
   {
    		SendMessageW(hWnd, (UINT) WM_SETTEXT, 0, (LPARAM)text.as_ASUnicode().c_str());
+  }
 
+  void SetFont(HFONT hfont)
+  {
+     SendMessage(hWnd, WM_SETFONT, WPARAM (hfont), TRUE);
+     if (_hfont == NULL)
+       _hfont = hfont;
+  }
+
+  SIZE GetTextSize(LPWSTR text)
+  {
+      SIZE sz; 
+      size_t  pcch;
+      StringCchLengthW(text, STRSAFE_MAX_CCH, &pcch);
+      HDC hdc = GetDC(hWnd);
+      SelectObject(hdc,  _hfont); 
+      GetTextExtentPoint32W(hdc, text, pcch, &sz); 
+
+      return sz;
+  }
+  int GetTextLen()
+  {
+    return GetWindowTextLengthW(hWnd); 
+  }
+
+  int GetText(LPWSTR stringBuf, int maxLen)
+  {
+    return GetWindowTextW(hWnd,stringBuf, maxLen); 
   }
 
 protected:
   HWND hWnd;
+  HFONT   _hfont;
 
 private:
   void * userData;
@@ -260,6 +299,10 @@ private:
   static LRESULT CALLBACK StaticWndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam);
   LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam);
   WNDPROC oldWndProc;
+
+  LOGFONT _defaultLogFont;
+
+
 };
 
 

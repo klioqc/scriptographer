@@ -23,7 +23,5 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextItem_nativeSetText(
 			  item->SetText("");
 		}
 
-
-
 	} EXCEPTION_CONVERT(env);
 }

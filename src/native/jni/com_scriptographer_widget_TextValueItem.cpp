@@ -2,6 +2,8 @@
 #include "ScriptographerEngine.h"
 #include "com_scriptographer_widget_TextValueItem.h"
 
+#include "ScriptographerPlugin.h"
+
 /*
  * com.scriptographer.widget.TextValueItem
  */
@@ -31,7 +33,17 @@ try {
 JNIEXPORT jstring JNICALL Java_com_scriptographer_widget_TextValueItem_getText(
 		JNIEnv *env, jobject obj) {
 	try {
-		// TODO: define getText
+		CCommonControl * item = gEngine->getItemObject(env, obj);
+    if (item != NULL)
+    {
+     
+		    long len = item->GetTextLen();
+		    ASUnicode *chars = new ASUnicode[len];
+		    item->GetText((LPWSTR)chars, len);
+		    jstring res = gEngine->convertString(env, chars, len);
+		    delete chars;
+		    return res;
+    }
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -42,7 +54,7 @@ JNIEXPORT jstring JNICALL Java_com_scriptographer_widget_TextValueItem_getText(
 JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextValueItem_nativeSetJustification(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
-		// TODO: define nativeSetJustification
+	  gPlugin->log("nativeGetJustification");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -53,6 +65,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_TextValueItem_nativeGetJus
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetJustification
+     gPlugin->log("nativeGetJustification");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -64,6 +77,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextValueItem_nativeSetUni
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetUnits
+     gPlugin->log("nativeSetUnits");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -74,6 +88,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_TextValueItem_nativeGetUni
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetUnits
+    gPlugin->log("nativeGetUnits");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -85,6 +100,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_TextValueItem_setShowUnits
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setShowUnits
+        gPlugin->log("setShowUnits");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -95,6 +111,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_TextValueItem_getShowU
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define getShowUnits
+      gPlugin->log("getShowUnits");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }

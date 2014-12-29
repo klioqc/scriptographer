@@ -32,6 +32,7 @@ import com.scriptographer.ScriptographerException;
 import com.scriptographer.adm.layout.TableLayout;
 import com.scriptographer.ui.Border;
 import com.scriptographer.ui.DialogFont;
+import com.scriptographer.ui.ImageType;
 import com.scriptographer.ui.Size;
 import com.scriptographer.widget.ComponentWrapper;
 
@@ -74,40 +75,49 @@ public abstract class Component extends NotificationHandler {
 
 	public Size getTextSize(String text, int maxWidth, boolean ignoreBreaks) {
 		// Create an image to get a drawer to calculate text sizes
-		/*Image image = new Image(1, 1, ImageType.RGB);
-		Drawer drawer = image.getDrawer();
-		drawer.setFont(getFont());
+		//Image image = new Image(1, 1, ImageType.RGB);
+		//Drawer drawer = image.getDrawer();
+		//drawer.setFont(getFont());
+		
 		// Split at new lines chars, and measure each line separately
 		String[] lines = ignoreBreaks ? new String[] {
 			text.replaceAll("\r\n|\n|\r", " ")
 		} : text.split("\r\n|\n|\r");
+			
 		Size size = new Size(0, 0);
+		
+		
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
 			if (line.length() == 0)
 				line = " "; // Make sure empty lines are measured too
-
-			// Calculate the size of this part, using the drawer
-			int width = drawer.getTextWidth(line);
+			
+			// Calculate the size of this line
+			Size lineSize = nativeGetTextSize(line);
+			
+			
+			int width = lineSize.width;
 			if (maxWidth > 0 && width > maxWidth)
 				width = maxWidth;
-			int height = drawer.getTextHeight(line, width + 1);
+			int height = lineSize.height;
 
 			// And add up size
 			if (width > size.width)
 				size.width = width;
 			size.height += height;
 		}
-		drawer.dispose();
+		//drawer.dispose();
 		return size;
-		*/
-		return  new Size(10,10);
+		
+		//return  new Size(10,10);
 	}
 
 	public Size getTextSize(String text) {
 		return getTextSize(text, -1, false);
 	}
-
+	
+	protected abstract Size nativeGetTextSize(String text);
+	
 	public boolean isSmall() {
 		DialogFont font = getFont();
 		switch (font) {

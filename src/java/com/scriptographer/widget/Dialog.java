@@ -832,9 +832,11 @@ public abstract class Dialog extends Component {
 	 */
 
 	private native Size nativeGetSize();
-
+	
 	private native void nativeSetSize(int width, int height);
-
+	
+	protected native Size nativeGetTextSize(String text);
+	
 	private native Rectangle nativeGetBounds();
 
 	private native void nativeSetBounds(int x, int y, int width, int height);

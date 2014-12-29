@@ -428,6 +428,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_adm_Dialog_nativeSetTrackCallback
 		DEFINE_CALLBACK_PROC(Dialog_onTrack);
 		sADMDialog->SetTrackProc(dialog, enabled
 				? (ADMDialogTrackProc) CALLBACK_PROC(Dialog_onTrack) : NULL);*/
+     gPlugin->log("nativeSetTrackCallback");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -440,6 +441,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_adm_Dialog_defaultTrack(
 	/*	ADMDialogRef dialog = gEngine->getDialogHandle(env, obj);
 		return sADMDialog->DefaultTrack(dialog,
 				gEngine->getTrackerHandle(env, tracker));*/
+    gPlugin->log("defaultTrack");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -489,6 +491,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetActive(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define nativeSetActive
+    gPlugin->log("nativeSetActive");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -504,7 +507,12 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetSize(
     {
 		  AISize size;
 		  AIErr error = sAIPanel->GetSize(dlg->Panel(), size);
-		  return gEngine->convertUISize(env, size.width, size.height);
+
+      // gPlugin->log("nativeGetSize %f %f", size.width, size.height);
+       //return gEngine->convertUISize(env, size.width, size.height);
+      RECT rc;
+      dlg->GetClientRect(&rc);
+		  return gEngine->convertUISize(env,    rc.right -rc.left, rc.bottom - rc.top);
     }
 	} EXCEPTION_CONVERT(env);
 	return NULL;
@@ -540,6 +548,9 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetBounds(
     {
       RECT rc;
       dlg->GetBounds(&rc);
+
+      gPlugin->log("nativeGetBounds %d %d %d %d", rc.left, rc.top, rc.right, rc.bottom);
+
 			return gEngine->convertRectangle(env, &rc);
     }
 	} EXCEPTION_CONVERT(env);
@@ -556,6 +567,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetBounds(
 		if (dlg)
     {
       DEFINE_UI_RECT(rc, x, y, width, height);
+        gPlugin->log("dlg nativeSetBounds %d %d %d %d",rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
       dlg->SetBounds(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
     }
   
@@ -609,6 +621,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_invalidate__(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define invalidate
+    gPlugin->log("invalidate");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -619,6 +632,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_invalidate__IIII(
 		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
 	try {
 			//todo: adm ADMFont enum implementation?
+    gPlugin->log("invalidate");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -629,6 +643,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_update(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define update
+    gPlugin->log("update");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -639,6 +654,10 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_nativeGetFont(
 		JNIEnv *env, jobject obj) {
 	try {
 		//todo: adm ADMFont enum implementation?
+    //call SystemParametersInfo(SPI_GETNONCLIENTMETRICS,sizeof(NONCLIENTMETRICS), &ncm, 0);
+    //and compare ting with dialog deafultfont?
+    //for now always return normal font = 0
+    gPlugin->log("nativeGetFont");
 		return 0;
 	} EXCEPTION_CONVERT(env);
 	return 0;
@@ -651,6 +670,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetFont(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetFont
+    gPlugin->log("nativeSetFont %d", arg1);
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -661,6 +681,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_nativeSetName(
 		JNIEnv *env, jobject obj, jstring arg1) {
 	try {
 		// TODO: define nativeSetName
+    gPlugin->log("nativeSetName");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -705,6 +726,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Dialog_isEnabled(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isEnabled
+    gPlugin->log("isEnabled");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -716,6 +738,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setEnabled(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setEnabled
+    gPlugin->log("setEnabled");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -749,6 +772,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Dialog_defaultTrack(
 		JNIEnv *env, jobject obj, jobject arg1) {
 	try {
 		// TODO: define defaultTrack
+     gPlugin->log("defaultTrack");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -760,6 +784,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Dialog_getItemHandle(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define getItemHandle
+     gPlugin->log("getItemHandle");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -771,6 +796,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getDefaultItem(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define getDefaultItem
+     gPlugin->log("getDefaultItem");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -782,6 +808,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setDefaultItem(
 		JNIEnv *env, jobject obj, jobject arg1) {
 	try {
 		// TODO: define setDefaultItem
+    gPlugin->log("setDefaultItem");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -792,6 +819,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getCancelItem(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define getCancelItem
+    gPlugin->log("getCancelItem");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -803,6 +831,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Dialog_setCancelItem(
 		JNIEnv *env, jobject obj, jobject arg1) {
 	try {
 		// TODO: define setCancelItem
+    gPlugin->log("setCancelItem");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -846,6 +875,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getPaletteLayout
 		JNIEnv *env, jclass cls) {
 	try {
 		// TODO: define getPaletteLayoutBounds
+     gPlugin->log("getPaletteLayoutBounds");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -861,7 +891,33 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_getScreenSize(
 		RECT rect;
 		GetWindowRect(GetDesktopWindow(), &rect);
 #endif // WIN_ENV
-		return gEngine->convertRectangle(env, &rect);
+		return gEngine->convertUISize(env, rect.right - rect.left, rect.bottom - rect.top);
+	} EXCEPTION_CONVERT(env);
+	return NULL;
+}
+
+/*
+ * com.scriptographer.ui.Size nativeGetTextSize(java.lang.String arg1)
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Dialog_nativeGetTextSize(
+		JNIEnv *env, jobject obj, jstring text) {
+	try {
+		  CDialog * dlg = gEngine->getDialog(env, obj);
+		if (dlg)
+    {
+    /*   char *chars = gEngine->convertString(env, text);
+       SIZE size = dlg->GetTextSize(chars);
+			  delete chars;
+        return gEngine->convertUISize(env, size.cx, size.cy);
+      */
+       ai::UnicodeString str = gEngine->convertString_UnicodeString(env, text); 
+       SIZE size = dlg->GetTextSize((LPWSTR)str.as_ASUnicode().c_str());
+			
+        gPlugin->log("GetTextSize   %d %d",   size.cx, size.cy);
+      //delete chars;
+        return gEngine->convertUISize(env, size.cx, size.cy);
+    }
+
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }

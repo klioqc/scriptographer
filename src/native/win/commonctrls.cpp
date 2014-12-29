@@ -136,10 +136,19 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
         
            AISize size;
 		       AIErr error = sAIPanel->GetSize(fPanel, size);
-	
+	          
+           RECT rc;
+
+           CDialog  * dlg = gEngine->getDialog(env, obj);
+           dlg->GetClientRect(&rc);
+           gPlugin->log("PanelSizeChangedNotifyProc GetSize %f %f", size.width, size.height);
+             gPlugin->log("PanelSizeChangedNotifyProc GetClientRect %d %d", rc.right -rc.left, rc.bottom - rc.top);
+
 			  gEngine->callVoidMethod(env, obj,
 					  gEngine->mid_widget_Dialog_onSizeChanged,
-					 (jint) size.width, (jint) size.height, true);
+					 //(jint) size.width, (jint) size.height,
+           rc.right -rc.left, rc.bottom - rc.top,
+           true);
       }
 		} EXCEPTION_CATCH_REPORT(env);
 	
@@ -189,6 +198,23 @@ LRESULT CDialog::WndProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
     AIPanelPlatformWindow wnd;
     sAIPanel->GetPlatformWindow(fPanel, wnd);
     hWnd = (HWND)wnd;
+
+    NONCLIENTMETRICS ncm = { sizeof(NONCLIENTMETRICS), 0 };
+    #if (WINVER >= 0x0600)
+      OSVERSIONINFO osvi = { sizeof(OSVERSIONINFO), 0 };
+      GetVersionEx(&osvi);
+      if (osvi.dwMajorVersion < 6) {
+          ncm.cbSize -= sizeof(int);
+      }
+    #endif
+    if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0)) {
+        _defaultLogFont = ncm.lfMessageFont;
+        _defaultLogFont.lfHeight += 3;
+        _hfont = CreateFontIndirect(&_defaultLogFont);
+        SetFont(_hfont);
+    }
+
+
   }
 
  
@@ -279,7 +305,7 @@ void CDialog::Destroy()
 			fPanelFlyoutMenu = NULL;
 
 		}
-
+    DeleteObject(_hfont);
 		//TODO call back call on destoy - from win proc notifier!?!
   }
 
@@ -296,6 +322,7 @@ void CDialog::Destroy()
       ctrlMap[ctrlId] = ctrl;
 
       ctrl->Create(hWnd, rect);
+      ctrl->SetFont(_hfont);
 
       return ctrl;
   }

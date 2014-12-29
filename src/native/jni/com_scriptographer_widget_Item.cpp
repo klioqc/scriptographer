@@ -123,6 +123,7 @@ JNIEXPORT jstring JNICALL Java_com_scriptographer_widget_Item_nativeInit(
 		JNIEnv *env, jobject obj, jint arg1, jboolean arg2) {
 	try {
 		// TODO: define nativeInit
+     gPlugin->log("nativeInit");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -134,6 +135,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeDestroy(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeDestroy
+      gPlugin->log("nativeDestroy");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -144,6 +146,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetTrackCallbac
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define nativeSetTrackCallback
+      gPlugin->log("nativeSetTrackCallback");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -155,6 +158,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_getTrackMask(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define getTrackMask
+    gPlugin->log("getTrackMask");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -166,6 +170,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setTrackMask(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define setTrackMask
+      gPlugin->log("setTrackMask");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -176,6 +181,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetStyle(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetStyle
+      gPlugin->log("nativeSetStyle");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -186,6 +192,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeGetStyle(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetStyle
+      gPlugin->log("nativeGetStyle");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -197,6 +204,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_getChildItemHandle(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define getChildItemHandle
+      gPlugin->log("getChildItemHandle");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -208,6 +216,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_isVisible(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isVisible
+      gPlugin->log("isVisible");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -219,6 +228,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setVisible(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setVisible
+    gPlugin->log("setVisible");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -229,6 +239,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_isEnabled(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isEnabled
+     gPlugin->log("isEnabled");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -240,6 +251,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setEnabled(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setEnabled
+     gPlugin->log("setEnabled");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -250,6 +262,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_isActive(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isActive
+     gPlugin->log("isActive");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -261,6 +274,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setActive(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setActive
+     gPlugin->log("setActive");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -271,6 +285,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_isKnown(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isKnown
+    gPlugin->log("isKnown");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -282,6 +297,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setKnown(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setKnown
+    gPlugin->log("setKnown");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -292,6 +308,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_wantsFocus(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define wantsFocus
+    gPlugin->log("wantsFocus");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -303,6 +320,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setWantsFocus(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setWantsFocus
+    gPlugin->log("setWantsFocus");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -329,8 +347,8 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBounds(
 	try {
 		
     CCommonControl * item = gEngine->getItemObject(env, obj);
-    item->SetBounds( x, y, width, height);
-	
+    item->SetBounds( x, y, width , height);
+	  gPlugin->log("SetBounds %d %d %d %d", x, y, width, height );
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -341,7 +359,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetSize(JNIEnv 
 	try {
 		 CCommonControl * item = gEngine->getItemObject(env, obj);
 	   item->SetWindowSize(width, height);
-	
+	 gPlugin->log("setSize %d %d", width, height );
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -352,6 +370,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_localToScreen__II(
 		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
 	try {
 		// TODO: define localToScreen
+    gPlugin->log("localToScreen");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -363,6 +382,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_screenToLocal__II(
 		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
 	try {
 		// TODO: define screenToLocal
+    gPlugin->log("screenToLocal");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -374,6 +394,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_localToScreen__III
 		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
 	try {
 		// TODO: define localToScreen
+    gPlugin->log("localToScreen");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -385,6 +406,7 @@ JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_screenToLocal__III
 		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
 	try {
 		// TODO: define screenToLocal
+     gPlugin->log("screenToLocal");
 	} EXCEPTION_CONVERT(env);
 	return NULL;
 }
@@ -396,6 +418,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_invalidate__(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define invalidate
+     gPlugin->log("invalidate");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -406,6 +429,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_invalidate__IIII(
 		JNIEnv *env, jobject obj, jint arg1, jint arg2, jint arg3, jint arg4) {
 	try {
 		// TODO: define invalidate
+     gPlugin->log("invalidate");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -416,6 +440,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_update(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define update
+     gPlugin->log("update");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -426,6 +451,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeGetFont(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetFont
+     gPlugin->log("nativeGetFont");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -437,6 +463,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetFont(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetFont
+     gPlugin->log("nativeSetFont");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -447,6 +474,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetBackgroundCo
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetBackgroundColor
+      gPlugin->log("nativeSetBackgroundColor");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -457,6 +485,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeGetBackgroundCo
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetBackgroundColor
+     gPlugin->log("nativeGetBackgroundColor");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -468,6 +497,7 @@ JNIEXPORT jint JNICALL Java_com_scriptographer_widget_Item_nativeGetCursor(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define nativeGetCursor
+     gPlugin->log("nativeGetCursor");
 	} EXCEPTION_CONVERT(env);
 	return 0;
 }
@@ -479,6 +509,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetCursor(
 		JNIEnv *env, jobject obj, jint arg1) {
 	try {
 		// TODO: define nativeSetCursor
+       gPlugin->log("nativeSetCursor");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -489,6 +520,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetTooltip(
 		JNIEnv *env, jobject obj, jstring arg1) {
 	try {
 		// TODO: define nativeSetTooltip
+       gPlugin->log("nativeSetTooltip");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -499,6 +531,7 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_isToolTipEnabled(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define isToolTipEnabled
+       gPlugin->log("isToolTipEnabled");
 	} EXCEPTION_CONVERT(env);
 	return false;
 }
@@ -510,6 +543,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_setToolTipEnabled(
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define setToolTipEnabled
+       gPlugin->log("setToolTipEnabled");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -520,6 +554,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_showToolTip(
 		JNIEnv *env, jobject obj, jint arg1, jint arg2) {
 	try {
 		// TODO: define showToolTip
+       gPlugin->log("showToolTip");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -530,6 +565,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_hideToolTip(
 		JNIEnv *env, jobject obj) {
 	try {
 		// TODO: define hideToolTip
+       gPlugin->log("hideToolTip");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -540,6 +576,7 @@ JNIEXPORT void JNICALL Java_com_scriptographer_widget_Item_nativeSetDrawCallback
 		JNIEnv *env, jobject obj, jboolean arg1) {
 	try {
 		// TODO: define nativeSetDrawCallback
+       gPlugin->log("nativeSetDrawCallback");
 	} EXCEPTION_CONVERT(env);
 }
 
@@ -550,6 +587,30 @@ JNIEXPORT jboolean JNICALL Java_com_scriptographer_widget_Item_defaultTrack(
 		JNIEnv *env, jobject obj, jobject arg1) {
 	try {
 		// TODO: define defaultTrack
+    gPlugin->log("defaultTrack");
 	} EXCEPTION_CONVERT(env);
 	return false;
+}
+
+/*
+ * com.scriptographer.ui.Size nativeGetTextSize(java.lang.String arg1)
+ */
+JNIEXPORT jobject JNICALL Java_com_scriptographer_widget_Item_nativeGetTextSize(
+		JNIEnv *env, jobject obj, jstring text) {
+	try {
+		
+     CCommonControl * item = gEngine->getItemObject(env, obj);
+		if (item)
+    {
+       //char *chars = gEngine->convertString(env, text);
+       ai::UnicodeString str = gEngine->convertString_UnicodeString(env, text); 
+       SIZE size = item->GetTextSize((LPWSTR)str.as_ASUnicode().c_str());
+			
+        gPlugin->log("GetTextSize  %d %d",  size.cx, size.cy);
+      //delete chars;
+        return gEngine->convertUISize(env, size.cx, size.cy);
+    }
+      
+	} EXCEPTION_CONVERT(env);
+	return NULL;
 }

@@ -393,7 +393,7 @@ public abstract class Item extends Component {
 	public Size getSize() {
 		return bounds.getSize();
 	}
-
+	protected native Size nativeGetTextSize(String text);
 	/**
 	 * @jshide
 	 */
